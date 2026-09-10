@@ -29,7 +29,7 @@ Guía para que un agente cree commits que otra persona pueda leer, revisar y rev
    - Divide cuando el árbol mezcla temas: refactor y feature, formateo masivo y lógica, backend y frontend sin relación, o dependencias nuevas y su uso.
    - No dividas lo que no compila ni pasa tests por separado. Ante la duda entre dos commits acoplados, deja uno.
    - Para dividir, repite el ciclo stagear → commitear por tema, en orden de dependencia: primero lo que el resto necesita (renombres, utilidades, migraciones), después lo que lo usa.
-   - Si un mismo archivo tiene cambios de dos temas, usa `git add -p` para stagear solo los hunks de uno.
+   - Si un mismo archivo mezcla dos temas y no tienes terminal interactiva (`git add -p` la necesita), guarda los hunks de un tema en un parche con `git diff` y aplícalo con `git apply --cached`. Si no es viable, commitea el archivo completo y dilo en la respuesta.
    - Deja fuera lo que no pertenece a ningún commit: experimentos, prints de depuración, archivos de scratch, configuración local.
 3. **Stagear explícitamente**
    - `git add <ruta>` archivo por archivo o por directorio acotado.
