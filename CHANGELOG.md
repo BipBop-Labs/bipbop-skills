@@ -10,4 +10,4 @@ Todos los cambios relevantes de este proyecto se documentan aquí. El formato si
 
 - Marketplace público compatible con Claude Code, Codex y ChatGPT.
 - Skills `best-prompting`, `microcopy` y `ousterhout-software-design`.
-- Validación local, CI, política de seguridad y guía de contribución.
+- Validación local, política de seguridad y guía de contribución.
