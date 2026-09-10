@@ -7,6 +7,7 @@ Marketplace público de skills mantenidas por [BipBop Labs](https://bipbop.cl) p
 | Skill | Uso |
 | --- | --- |
 | [`best-prompting`](skills/best-prompting/) | Diseñar y revisar prompts claros, delimitados, verificables y seguros. |
+| [`create-skills`](skills/create-skills/) | Crear, revisar, validar y empaquetar skills portables siguiendo las mejores prácticas de Claude, Codex y ChatGPT. |
 | [`microcopy`](skills/microcopy/) | Escribir botones, errores, vacíos, confirmaciones y otros textos breves de interfaz. |
 | [`ousterhout-software-design`](skills/ousterhout-software-design/) | Diseñar y revisar software con foco en complejidad, módulos profundos e información oculta. |
 | [`simple-writing`](skills/simple-writing/) | Reescribir textos para que se entiendan a la primera, en lenguaje simple o lectura fácil. |
@@ -49,7 +50,7 @@ codex plugin list
 Para fijar una versión reproducible, usa un tag:
 
 ```bash
-codex plugin marketplace add BipBop-Labs/bipbop-skills --ref v0.1.0
+codex plugin marketplace add BipBop-Labs/bipbop-skills --ref v0.2.0
 ```
 
 ### ChatGPT administrado
