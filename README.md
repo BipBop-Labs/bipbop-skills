@@ -7,9 +7,11 @@ Marketplace público de skills mantenidas por [BipBop Labs](https://bipbop.cl) p
 | Skill | Uso |
 | --- | --- |
 | [`best-prompting`](skills/best-prompting/) | Diseñar y revisar prompts claros, delimitados, verificables y seguros. |
+| [`commit`](skills/commit/) | Crear commits atómicos, bien redactados y respetuosos de los hooks del repositorio. |
 | [`create-skills`](skills/create-skills/) | Crear, revisar, validar y empaquetar skills portables siguiendo las mejores prácticas de Claude, Codex y ChatGPT. |
 | [`microcopy`](skills/microcopy/) | Escribir botones, errores, vacíos, confirmaciones y otros textos breves de interfaz. |
 | [`ousterhout-software-design`](skills/ousterhout-software-design/) | Diseñar y revisar software con foco en complejidad, módulos profundos e información oculta. |
+| [`pr`](skills/pr/) | Abrir pull requests con resumen técnico, plan de pruebas y resumen para el cliente. |
 | [`simple-writing`](skills/simple-writing/) | Reescribir textos para que se entiendan a la primera, en lenguaje simple o lectura fácil. |
 
 ## Instalar
