@@ -24,9 +24,13 @@ Guía para que un agente cree commits que otra persona pueda leer, revisar y rev
    - `git status` para ver qué está modificado, staged y sin trackear.
    - `git diff` y `git diff --staged` para revisar el contenido, no solo los nombres.
    - `git log --oneline -10` para copiar formato, idioma y convenciones del repositorio.
-2. **Decidir el alcance**
-   - Un commit por unidad lógica. Si el árbol mezcla temas, haz varios commits.
-   - Deja fuera lo que no pertenece al cambio: experimentos, prints de depuración, archivos de scratch, configuración local.
+2. **Decidir el alcance y dividir si hace falta**
+   - Un commit por unidad lógica: lo que se revierte junto, va junto.
+   - Divide cuando el árbol mezcla temas: refactor y feature, formateo masivo y lógica, backend y frontend sin relación, o dependencias nuevas y su uso.
+   - No dividas lo que no compila ni pasa tests por separado. Ante la duda entre dos commits acoplados, deja uno.
+   - Para dividir, repite el ciclo stagear → commitear por tema, en orden de dependencia: primero lo que el resto necesita (renombres, utilidades, migraciones), después lo que lo usa.
+   - Si un mismo archivo tiene cambios de dos temas, usa `git add -p` para stagear solo los hunks de uno.
+   - Deja fuera lo que no pertenece a ningún commit: experimentos, prints de depuración, archivos de scratch, configuración local.
 3. **Stagear explícitamente**
    - `git add <ruta>` archivo por archivo o por directorio acotado.
    - Evita `git add -A`, `git add .` y `git commit -a`: arrastran archivos que nadie revisó.
