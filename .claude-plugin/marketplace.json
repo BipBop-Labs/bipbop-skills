@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "bipbop",
+  "description": "Public agent skills maintained by BipBop Labs.",
+  "owner": {
+    "name": "BipBop Labs",
+    "url": "https://github.com/BipBop-Labs"
+  },
+  "plugins": [
+    {
+      "name": "bipbop-skills",
+      "source": "./",
+      "description": "Public skills for software, prompts, and product writing.",
+      "category": "development",
+      "tags": ["skills", "software", "writing"]
+    }
+  ]
+}

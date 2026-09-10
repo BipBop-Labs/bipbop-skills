@@ -1,0 +1,15 @@
+{
+  "name": "bipbop",
+  "interface": {
+    "displayName": "BipBop Labs"
+  },
+  "plugins": [
+    {
+      "name": "bipbop-skills",
+      "source": {
+        "source": "local",
+        "path": "./"
+      }
+    }
+  ]
+}

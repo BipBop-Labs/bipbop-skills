@@ -1,0 +1,14 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "bipbop-skills",
+  "version": "0.1.0",
+  "description": "Public skills for building clear, reliable software and interfaces.",
+  "author": {
+    "name": "BipBop Labs",
+    "url": "https://github.com/BipBop-Labs"
+  },
+  "homepage": "https://github.com/BipBop-Labs/bipbop-skills",
+  "repository": "https://github.com/BipBop-Labs/bipbop-skills",
+  "license": "MIT",
+  "keywords": ["agent-skills", "claude-code", "codex", "chatgpt"]
+}
