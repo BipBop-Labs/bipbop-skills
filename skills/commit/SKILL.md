@@ -1,59 +1,59 @@
 ---
 name: commit
-description: Crear commits atómicos y bien redactados desde un agente: revisar el diff real, elegir qué se stagea, seguir el estilo del repositorio y respetar los hooks. Úsala cuando la persona pide commitear, "haz un commit" o entrega un mensaje como guía.
+description: Create atomic, well-written commits as an agent - read the real diff, stage explicitly, split when the tree mixes topics, follow the repository's message conventions and respect its hooks. Use when asked to commit, "make a commit", or when given a message to use as a guide.
 ---
 
 # Commit
 
-Guía para que un agente cree commits que otra persona pueda leer, revisar y revertir sin sorpresas.
+How an agent creates commits another person can read, review and revert without surprises.
 
 ## When to use
 
-- La persona pide commitear los cambios en curso.
-- La persona entrega un mensaje o contexto para usar como base.
-- No usar para push, PR, rebase, amend de commits ya empujados ni reescritura de historia.
+- The person asks to commit the current changes.
+- The person gives a message or context to base the commit on.
+- Not for pushing, opening PRs, rebasing, amending published commits or rewriting history.
 
-## Precondiciones
+## Preconditions
 
-- La persona pidió commitear. Un agente no commitea por iniciativa propia.
-- La rama no es la principal. Si `git branch --show-current` devuelve `main` o `master`, crea una rama antes de commitear.
+- The person asked for a commit. An agent does not commit on its own initiative.
+- The branch is not the main one. If `git branch --show-current` returns `main` or `master`, create a branch first.
 
 ## Procedure
 
-1. **Leer el estado real, no la memoria de la sesión**
-   - `git status` para ver qué está modificado, staged y sin trackear.
-   - `git diff` y `git diff --staged` para revisar el contenido, no solo los nombres.
-   - `git log --oneline -10` para copiar formato, idioma y convenciones del repositorio.
-2. **Decidir el alcance y dividir si hace falta**
-   - Un commit por unidad lógica: lo que se revierte junto, va junto.
-   - Divide cuando el árbol mezcla temas: refactor y feature, formateo masivo y lógica, backend y frontend sin relación, o dependencias nuevas y su uso.
-   - No dividas lo que no compila ni pasa tests por separado. Ante la duda entre dos commits acoplados, deja uno.
-   - Para dividir, repite el ciclo stagear → commitear por tema, en orden de dependencia: primero lo que el resto necesita (renombres, utilidades, migraciones), después lo que lo usa.
-   - Si un mismo archivo mezcla dos temas y no tienes terminal interactiva (`git add -p` la necesita), guarda los hunks de un tema en un parche con `git diff` y aplícalo con `git apply --cached`. Si no es viable, commitea el archivo completo y dilo en la respuesta.
-   - Deja fuera lo que no pertenece a ningún commit: experimentos, prints de depuración, archivos de scratch, configuración local.
-3. **Stagear explícitamente**
-   - `git add <ruta>` archivo por archivo o por directorio acotado.
-   - Evita `git add -A`, `git add .` y `git commit -a`: arrastran archivos que nadie revisó.
-   - Antes de commitear, relee `git diff --staged`. Es lo único que va a quedar en la historia.
-4. **Escribir el mensaje**
-   - Formato del repositorio. Si usa conventional commits: `type(scope): descripción`, con tipos `feat`, `fix`, `refactor`, `test`, `docs`, `style`, `chore`.
-   - Primera línea bajo 72 caracteres, en imperativo y en el idioma que ya usa el repositorio.
-   - El cuerpo explica el porqué y las decisiones no obvias. El qué ya está en el diff.
-   - Viñetas solo si hay varios cambios significativos.
-   - Sin atribución de agente ni coautoría, salvo que el repositorio o la persona lo pidan.
-5. **Commitear**
-   - `git commit` con el mensaje generado.
+1. **Read the real state, not the session's memory**
+   - `git status` for modified, staged and untracked files.
+   - `git diff` and `git diff --staged` for the actual content, not just filenames.
+   - `git log --oneline -10` to copy the repository's format, language and conventions.
+2. **Decide the scope, and split when needed**
+   - One commit per logical unit: what gets reverted together belongs together.
+   - Split when the tree mixes topics: a refactor and a feature, bulk formatting and logic, unrelated backend and frontend work, a new dependency and its usage.
+   - Do not split what cannot build or pass tests on its own. When two changes are genuinely coupled, leave them in one commit.
+   - To split, repeat stage → commit per topic, in dependency order: what the rest needs first (renames, helpers, migrations), then what uses it.
+   - If one file mixes two topics and there is no interactive terminal (`git add -p` needs one), save one topic's hunks to a patch with `git diff` and apply it with `git apply --cached`. If that is not workable, commit the whole file and say so in the response.
+   - Leave out what belongs in no commit: experiments, debug prints, scratch files, local configuration.
+3. **Stage explicitly**
+   - `git add <path>` file by file or by narrow directory.
+   - Avoid `git add -A`, `git add .` and `git commit -a`: they drag in files nobody reviewed.
+   - Re-read `git diff --staged` before committing. It is the only thing that lands in history.
+4. **Write the message**
+   - Use the repository's format. For conventional commits: `type(scope): description`, with types `feat`, `fix`, `refactor`, `test`, `docs`, `style`, `chore`.
+   - First line under 72 characters, imperative mood, in the language the repository already uses.
+   - The body explains why and any non-obvious decision. The what is already in the diff.
+   - Bullets only when there are several significant changes.
+   - No agent attribution or co-authorship unless the repository or the person asks for it.
+5. **Commit**
+   - `git commit` with the generated message.
 
 ## Pitfalls
 
-- **Hooks.** Si un hook falla, el commit no se creó. Corrige la causa, vuelve a stagear lo que el hook modificó y commitea de nuevo. Nunca `--no-verify`.
-- **Secretos y ruido.** No commitees `.env`, credenciales, tokens, dumps, artefactos de build, logs ni archivos temporales del agente. Ante la duda, revisa si el archivo debería estar en `.gitignore`.
-- **Comandos destructivos.** No uses `git reset --hard`, `git checkout .`, `git clean -fd` ni `git stash drop` para "ordenar" antes de commitear: borran trabajo que no es tuyo.
-- **Historia publicada.** No hagas `--amend` ni force push sobre commits que ya están en el remoto, salvo instrucción explícita.
-- **Mensaje inflado.** No describas intención, impacto ni motivación que el diff no respalde.
-- **Reporte honesto.** Si algo quedó sin commitear, si un test falla o si un hook cambió archivos, dilo en la respuesta.
+- **Hooks.** If a hook fails, no commit was created. Fix the cause, re-stage whatever the hook rewrote and commit again. Never `--no-verify`.
+- **Secrets and noise.** Do not commit `.env`, credentials, tokens, dumps, build artifacts, logs or the agent's temporary files. When unsure, check whether the file belongs in `.gitignore`.
+- **Destructive commands.** Do not run `git reset --hard`, `git checkout .`, `git clean -fd` or `git stash drop` to "tidy up" before committing: they delete work that is not yours.
+- **Published history.** No `--amend` and no force push on commits already on the remote, unless explicitly instructed.
+- **Inflated messages.** Do not describe intent, impact or motivation the diff does not support.
+- **Honest reporting.** Say in the response what was left uncommitted, which test fails, and which files a hook changed.
 
 ## Verification
 
-- `git log -1 --stat` muestra el commit con el mensaje esperado y solo los archivos previstos.
-- `git status` no deja residuos que se pretendía incluir.
+- `git log -1 --stat` shows the commit with the expected message and only the intended files.
+- `git status` leaves behind nothing that was meant to be included.
