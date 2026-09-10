@@ -4,6 +4,10 @@ Todos los cambios relevantes de este proyecto se documentan aquí. El formato si
 
 ## [Unreleased]
 
+### Added
+
+- Skills `commit` y `pr` para que un agente cree commits atómicos y abra pull requests con secciones para quien revisa y para el cliente.
+
 ## [0.2.0] - 2026-09-10
 
 ### Added
