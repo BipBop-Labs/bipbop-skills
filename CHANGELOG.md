@@ -4,6 +4,10 @@ Todos los cambios relevantes de este proyecto se documentan aquí. El formato si
 
 ## [Unreleased]
 
+### Added
+
+- Skill `simple-writing`, migrada desde el repositorio de skills de Revi.
+
 ## [0.1.0] - 2026-09-10
 
 ### Added

@@ -9,6 +9,7 @@ Marketplace público de skills mantenidas por [BipBop Labs](https://bipbop.cl) p
 | [`best-prompting`](skills/best-prompting/) | Diseñar y revisar prompts claros, delimitados, verificables y seguros. |
 | [`microcopy`](skills/microcopy/) | Escribir botones, errores, vacíos, confirmaciones y otros textos breves de interfaz. |
 | [`ousterhout-software-design`](skills/ousterhout-software-design/) | Diseñar y revisar software con foco en complejidad, módulos profundos e información oculta. |
+| [`simple-writing`](skills/simple-writing/) | Reescribir textos para que se entiendan a la primera, en lenguaje simple o lectura fácil. |
 
 ## Instalar
 
