@@ -8,6 +8,10 @@ Todos los cambios relevantes de este proyecto se documentan aquí. El formato si
 
 - Skills `commit` y `pr` para que un agente cree commits atómicos y abra pull requests con secciones para quien revisa y para el cliente.
 
+### Changed
+
+- `ousterhout-software-design`: en review, reportar solo red flags con acción; sin elogios ni ítems sin recomendación.
+
 ## [0.2.0] - 2026-09-10
 
 ### Added

@@ -11,7 +11,7 @@ description: "Knowledge base from \"A Philosophy of Software Design\" by John Ou
 ## How to Use This Skill
 
 - **While writing code** — apply the red flags below as stop-and-redesign signals; consult [cheatsheet.md](cheatsheet.md) for the decision rules.
-- **While reviewing code** — the red flag table is the review checklist. Ousterhout designed the book for exactly this use.
+- **While reviewing code** — the red flag table is the review checklist. Ousterhout designed the book for exactly this use. Report only red flags the diff introduces or worsens, each with `file:line`, the flag, and a concrete fix. Never report praise ("improves information hiding"), "no recommendation" items, or speculative redesigns with no named cost. Read the full file before claiming something is missing. No red flags → say so in one line.
 - **With a topic** — ask about `deep modules`, `information hiding`, `exceptions`, `naming`, `comments`, `performance`; I read the relevant chapter first.
 - **With a chapter** — ask for `ch10`; I load that file.
 
