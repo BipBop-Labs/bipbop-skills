@@ -10,6 +10,20 @@
         "source": "local",
         "path": "./"
       }
+    },
+    {
+      "name": "adr",
+      "source": {
+        "source": "local",
+        "path": "./plugins/adr"
+      }
+    },
+    {
+      "name": "bipflow",
+      "source": {
+        "source": "local",
+        "path": "./plugins/bipflow"
+      }
     }
   ]
 }

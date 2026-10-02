@@ -7,13 +7,18 @@ Marketplace público de skills mantenidas por [BipBop Labs](https://bipbop.cl) p
 | Skill | Uso |
 | --- | --- |
 | [`best-prompting`](skills/best-prompting/) | Diseñar y revisar prompts claros, delimitados, verificables y seguros. |
-| [`commit`](skills/commit/) | Crear commits atómicos, bien redactados y respetuosos de los hooks del repositorio. |
 | [`create-skills`](skills/create-skills/) | Crear, revisar, validar y empaquetar skills portables siguiendo las mejores prácticas de Claude, Codex y ChatGPT. |
 | [`krug-usability-testing`](skills/krug-usability-testing/) | Planear, ejecutar y revisar tests de usabilidad y validación temprana de conceptos, y priorizar arreglos mínimos. |
 | [`microcopy`](skills/microcopy/) | Escribir botones, errores, vacíos, confirmaciones y otros textos breves de interfaz. |
 | [`ousterhout-software-design`](skills/ousterhout-software-design/) | Diseñar y revisar software con foco en complejidad, módulos profundos e información oculta. |
-| [`pr`](skills/pr/) | Abrir pull requests con resumen técnico, plan de pruebas y resumen para el cliente. |
 | [`simple-writing`](skills/simple-writing/) | Reescribir textos para que se entiendan a la primera, en lenguaje simple o lectura fácil. |
+
+## Plugins adicionales
+
+| Plugin | Uso |
+| --- | --- |
+| [`adr`](plugins/adr/) | Architecture Decision Records para cualquier repositorio: `/adr:init`, `/adr:distill`, `/adr:new`, `/adr:review` y un validador sin dependencias. Instalar con `/plugin install adr@bipbop`. |
+| [`bipflow`](plugins/bipflow/) | Flujo de Git para agentes: `/bipflow:commit` crea commits atómicos que respetan los hooks y `/bipflow:pr` abre pull requests con resumen técnico, plan de pruebas y resumen para el cliente. Instalar con `/plugin install bipflow@bipbop`. |
 
 ## Instalar
 
@@ -74,6 +79,11 @@ Un administrador puede importar `https://github.com/BipBop-Labs/bipbop-skills` d
 │   ├── references/                    # Material detallado opcional
 │   ├── scripts/                       # Automatización determinista opcional
 │   └── assets/                        # Recursos opcionales
+├── plugins/<nombre>/                  # Plugins adicionales con su propio manifest
+│   ├── plugin.json
+│   ├── .claude-plugin/plugin.json
+│   ├── skills/<nombre>/SKILL.md
+│   └── scripts/
 └── scripts/validate.py
 ```
 
@@ -147,7 +157,7 @@ Para validar la distribución Git, repite la prueba con `BipBop-Labs/bipbop-skil
 
 ## Versiones y actualizaciones
 
-El plugin completo usa SemVer y mantiene la misma versión en `plugin.json` y `.claude-plugin/plugin.json`. Los catálogos no repiten la versión para evitar drift.
+El plugin completo usa SemVer y mantiene la misma versión en `plugin.json` y `.claude-plugin/plugin.json`. Cada plugin adicional en `plugins/<nombre>/` tiene su propia versión, sincronizada entre sus dos manifests. Los catálogos no repiten la versión para evitar drift.
 
 - **PATCH:** correcciones y ajustes compatibles.
 - **MINOR:** una skill nueva o una capacidad compatible.

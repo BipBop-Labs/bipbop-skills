@@ -1,0 +1,20 @@
+{
+  "name": "bipflow",
+  "version": "0.1.0",
+  "description": "Git workflow skills: atomic commits and pull requests with sections for reviewers and clients.",
+  "author": {
+    "name": "BipBop Labs",
+    "url": "https://github.com/BipBop-Labs"
+  },
+  "homepage": "https://github.com/BipBop-Labs/bipbop-skills/tree/main/plugins/bipflow",
+  "repository": "https://github.com/BipBop-Labs/bipbop-skills",
+  "license": "MIT",
+  "keywords": [
+    "git",
+    "commit",
+    "pull-request",
+    "claude-code",
+    "codex"
+  ],
+  "skills": "./skills/"
+}
