@@ -125,25 +125,55 @@ def main() -> int:
         fail(".claude-plugin/plugin.json", "skills must point to ./skills/")
 
     claude_plugins = claude_market.get("plugins", [])
-    if len(claude_plugins) != 1 or claude_plugins[0].get("name") != "bipbop-skills":
-        fail(".claude-plugin/marketplace.json", "must expose exactly bipbop-skills")
-    elif claude_plugins[0].get("source") not in {".", "./"}:
-        fail(".claude-plugin/marketplace.json", "plugin source must be the repository root")
-    elif "version" in claude_plugins[0]:
-        fail(".claude-plugin/marketplace.json", "do not duplicate plugin version in the catalog")
+    claude_by_name = {entry.get("name"): entry for entry in claude_plugins}
+    if "bipbop-skills" not in claude_by_name:
+        fail(".claude-plugin/marketplace.json", "must expose bipbop-skills")
+    elif claude_by_name["bipbop-skills"].get("source") not in {".", "./"}:
+        fail(".claude-plugin/marketplace.json", "bipbop-skills source must be the repository root")
+    for entry in claude_plugins:
+        if "version" in entry:
+            fail(".claude-plugin/marketplace.json", f"do not duplicate plugin version in the catalog ({entry.get('name')})")
+        if entry.get("name") != "bipbop-skills" and entry.get("source") != f"./plugins/{entry.get('name')}":
+            fail(".claude-plugin/marketplace.json", f"plugin {entry.get('name')!r} source must be ./plugins/{entry.get('name')}")
 
     codex_plugins = codex_market.get("plugins", [])
-    if len(codex_plugins) != 1 or codex_plugins[0].get("name") != "bipbop-skills":
-        fail(".agents/plugins/marketplace.json", "must expose exactly bipbop-skills")
-    else:
-        source = codex_plugins[0].get("source", {})
-        if source.get("source") != "local" or source.get("path") not in {".", "./"}:
-            fail(".agents/plugins/marketplace.json", "plugin source must be local repository root")
+    codex_by_name = {entry.get("name"): entry for entry in codex_plugins}
+    if "bipbop-skills" not in codex_by_name:
+        fail(".agents/plugins/marketplace.json", "must expose bipbop-skills")
+    for entry in codex_plugins:
+        source = entry.get("source", {})
+        expected = {".", "./"} if entry.get("name") == "bipbop-skills" else {f"./plugins/{entry.get('name')}"}
+        if source.get("source") != "local" or source.get("path") not in expected:
+            fail(".agents/plugins/marketplace.json", f"plugin {entry.get('name')!r} source must be local path {sorted(expected)[0]}")
+    if set(claude_by_name) != set(codex_by_name):
+        fail(".agents/plugins/marketplace.json", "plugin names must match .claude-plugin/marketplace.json")
+
+    # Additional plugins live in plugins/<name>/ with their own synchronized manifests.
+    plugin_dirs = sorted(p for p in (ROOT / "plugins").glob("*") if p.is_dir()) if (ROOT / "plugins").is_dir() else []
+    for plugin_dir in plugin_dirs:
+        name = plugin_dir.name
+        if name not in claude_by_name:
+            fail(plugin_dir, "plugin folder is not registered in .claude-plugin/marketplace.json")
+        sub_portable = load_json(f"plugins/{name}/plugin.json")
+        sub_claude = load_json(f"plugins/{name}/.claude-plugin/plugin.json")
+        if sub_portable.get("name") != name:
+            fail(plugin_dir / "plugin.json", f"plugin name must be {name}")
+        if sub_claude.get("name") != name:
+            fail(plugin_dir / ".claude-plugin/plugin.json", f"name must be {name}")
+        if sub_claude.get("version") != sub_portable.get("version"):
+            fail(plugin_dir / ".claude-plugin/plugin.json", "version must match plugin.json")
+        if sub_claude.get("skills") != "./skills/":
+            fail(plugin_dir / ".claude-plugin/plugin.json", "skills must point to ./skills/")
 
     skills_root = ROOT / "skills"
     skill_files = sorted(skills_root.glob("*/SKILL.md"))
     if not skill_files:
         fail(skills_root, "at least one skill is required")
+    for plugin_dir in plugin_dirs:
+        plugin_skills = sorted((plugin_dir / "skills").glob("*/SKILL.md"))
+        if not plugin_skills:
+            fail(plugin_dir / "skills", "at least one skill is required")
+        skill_files.extend(plugin_skills)
 
     names: dict[str, Path] = {}
     for path in skill_files:
@@ -154,9 +184,11 @@ def main() -> int:
             fail(path, "frontmatter name must use kebab-case")
         if name != path.parent.name:
             fail(path, f"frontmatter name {name!r} must match folder {path.parent.name!r}")
-        if name in names:
-            fail(path, f"duplicate skill name; first declared in {names[name].relative_to(ROOT)}")
-        names[name] = path
+        scope = path.parents[2].name if path.parents[3].name == "plugins" else ""
+        key = f"{scope}:{name}"
+        if key in names:
+            fail(path, f"duplicate skill name; first declared in {names[key].relative_to(ROOT)}")
+        names[key] = path
         if not description:
             fail(path, "frontmatter description is required")
         elif len(description) > 1024:
@@ -183,7 +215,7 @@ def main() -> int:
             print(f"- {error}", file=sys.stderr)
         return 1
 
-    print(f"Validated {len(JSON_FILES)} manifests and {len(skill_files)} skills.")
+    print(f"Validated {len(JSON_FILES) + 2 * len(plugin_dirs)} manifests and {len(skill_files)} skills.")
     return 0
 
 

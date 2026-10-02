@@ -6,7 +6,8 @@ Todos los cambios relevantes de este proyecto se documentan aquí. El formato si
 
 ### Added
 
-- Skills `commit` y `pr` para que un agente cree commits atómicos y abra pull requests con secciones para quien revisa y para el cliente.
+- Plugin `adr` (0.1.0) en `plugins/adr/`: Architecture Decision Records para cualquier repositorio, con `/adr:init`, `/adr:distill`, `/adr:new`, `/adr:review`, validador `validate-adrs.py` sin dependencias y hook Stop opcional desactivado por defecto. El marketplace ahora admite plugins adicionales en `plugins/<nombre>/`.
+- Plugin `bipflow` (0.1.0) en `plugins/bipflow/` con las skills `commit` y `pr`, para que un agente cree commits atómicos y abra pull requests con secciones para quien revisa y para el cliente. Se invocan como `/bipflow:commit` y `/bipflow:pr`.
 - Skill `krug-usability-testing`, basada en "Rocket Surgery Made Easy" de Steve Krug, para planear, ejecutar y revisar tests de usabilidad y validación temprana de conceptos.
 
 ### Changed

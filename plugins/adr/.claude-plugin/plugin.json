@@ -1,0 +1,14 @@
+{
+  "name": "adr",
+  "version": "0.1.0",
+  "description": "Architecture Decision Records for any repository: init, distill from existing code, record new decisions, review diffs against decisions, and validate structure. Stack-agnostic.",
+  "author": {
+    "name": "BipBop Labs",
+    "url": "https://github.com/BipBop-Labs"
+  },
+  "homepage": "https://github.com/BipBop-Labs/bipbop-skills/tree/main/plugins/adr",
+  "repository": "https://github.com/BipBop-Labs/bipbop-skills",
+  "license": "MIT",
+  "keywords": ["adr", "architecture-decision-records", "claude-code", "codex"],
+  "skills": "./skills/"
+}
