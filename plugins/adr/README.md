@@ -33,6 +33,20 @@ codex plugin marketplace add BipBop-Labs/bipbop-skills --ref main
 codex plugin add adr@bipbop
 ```
 
+## Update
+
+```text
+/plugin marketplace update bipbop
+/plugin update adr@bipbop
+/reload-plugins
+```
+
+Codex CLI:
+
+```bash
+codex plugin marketplace upgrade bipbop
+```
+
 ## Typical workflow
 
 1. `/adr:init` in the target repository. It creates `docs/adr/` with
