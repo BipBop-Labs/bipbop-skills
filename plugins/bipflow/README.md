@@ -21,3 +21,17 @@ Codex CLI:
 codex plugin marketplace add BipBop-Labs/bipbop-skills --ref main
 codex plugin add bipflow@bipbop
 ```
+
+## Update
+
+```text
+/plugin marketplace update bipbop
+/plugin update bipflow@bipbop
+/reload-plugins
+```
+
+Codex CLI:
+
+```bash
+codex plugin marketplace upgrade bipbop
+```

@@ -1,8 +1,10 @@
 # BipBop Skills
 
-Marketplace público de skills mantenidas por [BipBop Labs](https://bipbop.cl) para Claude Code, Codex y ChatGPT. Un solo árbol `skills/` es la fuente canónica para todos los clientes.
+Marketplace público de skills mantenidas por [BipBop Labs](https://bipbop.cl) para Claude Code, Codex y ChatGPT. El marketplace `bipbop` publica tres plugins: `bipbop-skills`, con las skills generales del árbol `skills/`, y los plugins `adr` y `bipflow`, que viven en `plugins/`. Cada árbol es la fuente canónica para todos los clientes.
 
 ## Skills disponibles
+
+Incluidas en el plugin `bipbop-skills`.
 
 | Skill | Uso |
 | --- | --- |
@@ -15,39 +17,69 @@ Marketplace público de skills mantenidas por [BipBop Labs](https://bipbop.cl) p
 
 ## Plugins adicionales
 
+Se instalan por separado y sus skills llevan su propio namespace.
+
 | Plugin | Uso |
 | --- | --- |
 | [`adr`](plugins/adr/) | Architecture Decision Records para cualquier repositorio: `/adr:init`, `/adr:distill`, `/adr:new`, `/adr:review` y un validador sin dependencias. Instalar con `/plugin install adr@bipbop`. |
 | [`bipflow`](plugins/bipflow/) | Flujo de Git para agentes: `/bipflow:commit` crea commits atómicos que respetan los hooks y `/bipflow:pr` abre pull requests con resumen técnico, plan de pruebas y resumen para el cliente. Instalar con `/plugin install bipflow@bipbop`. |
 
-## Instalar
+## Instalar y mantener al día
+
+El marketplace se llama `bipbop` y se agrega una sola vez. Después instalas solo los plugins que necesites:
+
+| Plugin | Qué trae | Ejemplo de uso |
+| --- | --- | --- |
+| `bipbop-skills` | Las skills generales de la tabla de arriba. | `/bipbop-skills:microcopy` |
+| `adr` | Architecture Decision Records. | `/adr:new` |
+| `bipflow` | Commits y pull requests. | `/bipflow:commit` |
 
 ### Claude Code
 
-Dentro de Claude Code:
+Instalar, dentro de Claude Code:
 
 ```text
 /plugin marketplace add BipBop-Labs/bipbop-skills
 /plugin install bipbop-skills@bipbop
+/plugin install adr@bipbop
+/plugin install bipflow@bipbop
 ```
 
-Claude Code actualiza los marketplaces en segundo plano. Para forzar una actualización:
+Actualizar:
 
 ```text
 /plugin marketplace update bipbop
 /plugin update bipbop-skills@bipbop
+/plugin update adr@bipbop
+/plugin update bipflow@bipbop
+/reload-plugins
 ```
 
-Las skills instaladas llevan el namespace del plugin, por ejemplo `/bipbop-skills:microcopy`.
+El primer comando descarga el catálogo nuevo; los siguientes actualizan cada plugin instalado, y `/reload-plugins` aplica los cambios sin reiniciar la sesión. Un plugin solo se actualiza cuando sube su versión, así que revisa el [CHANGELOG](CHANGELOG.md) para saber qué cambió.
+
+Para no hacerlo a mano, activa la actualización automática: `/plugin` > **Marketplaces** > `bipbop` > **Enable auto-update**. Claude Code revisa el marketplace al iniciar y actualiza los plugins instalados. En marketplaces de terceros como este viene desactivada por defecto.
+
+Revisar lo instalado o quitar un plugin:
+
+```text
+/plugin list
+/plugin uninstall bipflow@bipbop
+```
+
+Las skills `commit` y `pr` vivían antes en `bipbop-skills`. Si las usabas desde ahí, instala `bipflow` e invócalas como `/bipflow:commit` y `/bipflow:pr`.
 
 ### Codex CLI
+
+Instalar:
 
 ```bash
 codex plugin marketplace add BipBop-Labs/bipbop-skills --ref main
 codex plugin add bipbop-skills@bipbop
+codex plugin add adr@bipbop
+codex plugin add bipflow@bipbop
 ```
 
-Codex conserva un snapshot local del marketplace. Para descargar cambios nuevos e inspeccionar lo instalado:
+Actualizar. Codex conserva un snapshot local del marketplace, así que hay que pedir los cambios nuevos:
 
 ```bash
 codex plugin marketplace upgrade bipbop
@@ -55,7 +87,7 @@ codex plugin marketplace list
 codex plugin list
 ```
 
-Para fijar una versión reproducible, usa un tag:
+Para fijar una versión reproducible, usa un tag en vez de `main`:
 
 ```bash
 codex plugin marketplace add BipBop-Labs/bipbop-skills --ref v0.2.0
@@ -87,7 +119,7 @@ Un administrador puede importar `https://github.com/BipBop-Labs/bipbop-skills` d
 └── scripts/validate.py
 ```
 
-El marketplace y el plugin viven en la raíz. Así Claude y Codex resuelven el mismo árbol sin copias ni enlaces simbólicos que puedan divergir.
+El marketplace y el plugin `bipbop-skills` viven en la raíz; los plugins adicionales, en `plugins/<nombre>/`. Así Claude y Codex resuelven el mismo árbol sin copias ni enlaces simbólicos que puedan divergir.
 
 ## Buenas prácticas para escribir skills
 
@@ -137,7 +169,7 @@ claude plugin validate .
 
 El validador local revisa JSON, coherencia entre manifests, frontmatter, nombres únicos, enlaces relativos, symlinks e identificadores sensibles. Claude agrega su validación oficial. Codex no expone un comando `plugin validate`; por eso el chequeo final usa una instalación aislada desde el marketplace.
 
-Antes de abrir una PR, prueba ambos clientes en directorios aislados:
+Antes de abrir una PR, prueba ambos clientes en directorios aislados. Si cambiaste un plugin adicional, reemplaza `bipbop-skills` por su nombre (`adr` o `bipflow`):
 
 ```bash
 CODEX_TEST_HOME="$(mktemp -d)"
@@ -157,13 +189,13 @@ Para validar la distribución Git, repite la prueba con `BipBop-Labs/bipbop-skil
 
 ## Versiones y actualizaciones
 
-El plugin completo usa SemVer y mantiene la misma versión en `plugin.json` y `.claude-plugin/plugin.json`. Cada plugin adicional en `plugins/<nombre>/` tiene su propia versión, sincronizada entre sus dos manifests. Los catálogos no repiten la versión para evitar drift.
+El plugin `bipbop-skills` usa SemVer y mantiene la misma versión en `plugin.json` y `.claude-plugin/plugin.json`. Cada plugin adicional en `plugins/<nombre>/` tiene su propia versión, sincronizada entre sus dos manifests. Los catálogos no repiten la versión para evitar drift.
 
 - **PATCH:** correcciones y ajustes compatibles.
 - **MINOR:** una skill nueva o una capacidad compatible.
 - **MAJOR:** renombrar o eliminar skills, cambiar comportamiento de forma incompatible, o exigir permisos/herramientas nuevas.
 
-Cada release lleva tag `vMAJOR.MINOR.PATCH` y una entrada en [CHANGELOG.md](CHANGELOG.md).
+Cada release lleva tag `vMAJOR.MINOR.PATCH` y una entrada en [CHANGELOG.md](CHANGELOG.md). Los clientes detectan una actualización por el cambio de versión: si cambias un plugin sin subir su versión, quienes ya lo instalaron no reciben el cambio.
 
 ## Seguridad, privacidad y licencias
 
