@@ -13,6 +13,7 @@ Todos los cambios relevantes de este proyecto se documentan aquí. El formato si
 
 ### Changed
 
+- `bipflow` 0.2.0: `/bipflow:pr` elige la rama base según la rama actual. Desde una rama de trabajo apunta a `stg` (o `staging`) si existe en el remoto y a la rama por defecto si no. Desde `stg` distingue por contexto entre abrir una rama nueva con PR hacia `stg` y promover `stg` a la rama por defecto, y pregunta cuando no queda claro. Antes usaba siempre la rama por defecto de GitHub.
 - `ousterhout-software-design`: en review, reportar solo red flags con acción; sin elogios ni ítems sin recomendación.
 
 ### Fixed
