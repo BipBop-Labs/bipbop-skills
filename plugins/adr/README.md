@@ -93,22 +93,26 @@ may fix those.
 ## Validation script
 
 ```bash
-python3 "$CLAUDE_PLUGIN_ROOT/scripts/validate-adrs.py" [--root .] [--adr-dir docs/adr] [--strict] [--json] [--no-code-scan]
+python3 "$CLAUDE_PLUGIN_ROOT/scripts/validate-adrs.py" [--root .] [--adr-dir docs/adr] [--strict] [--fail-on-proposed] [--json] [--no-code-scan]
 python3 "$CLAUDE_PLUGIN_ROOT/scripts/validate-adrs.py" --print-setup   # pre-commit and CI snippets
 ```
 
 Checks: required frontmatter and allowed statuses; unique, sequential
 numbers matching filenames; index in sync with the folder; supersede links
 resolving both ways; referenced paths still existing (warning); `@decision`
-tags pointing to existing, non-superseded ADRs. Exit codes: `0` clean, `1`
-errors (or warnings with `--strict`), `2` no ADR folder or bad usage.
+tags pointing to existing, non-superseded ADRs. With `--fail-on-proposed`,
+an ADR still `proposed` is an error. Exit codes: `0` clean, `1` errors (or
+warnings with `--strict`), `2` no ADR folder or bad usage.
 
 It does not judge whether code complies with a decision. That is
 `/adr:review` and per-decision checks from
 [skills/adr/references/enforcement-by-stack.md](skills/adr/references/enforcement-by-stack.md).
 
 For CI, copy the script into the repository (`/adr:init` offers to) so the
-job does not depend on a plugin cache path.
+job does not depend on a plugin cache path, and run it with
+`--strict --fail-on-proposed` so an ADR nobody has accepted or rejected does
+not merge. Leave `--fail-on-proposed` out of pre-commit hooks: drafting a
+`proposed` ADR locally is normal.
 
 ## Design notes
 

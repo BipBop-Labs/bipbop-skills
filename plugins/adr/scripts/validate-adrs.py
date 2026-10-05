@@ -10,12 +10,14 @@ Checks:
   4. supersedes / superseded_by links resolve in both directions.
   5. File paths referenced by ADRs still exist (staleness alarm).
   6. `@decision ADR-NNNN` comments in code point to existing, non-superseded ADRs.
+  7. With --fail-on-proposed: no ADR is still `proposed`.
 
 Out of scope: judging whether code complies with a decision.
 
 Exit codes:
   0  no errors (warnings may be present)
-  1  one or more errors (or warnings with --strict)
+  1  one or more errors (or warnings with --strict, or `proposed` ADRs with
+     --fail-on-proposed)
   2  usage or configuration problem (e.g. no ADR directory found)
 """
 
@@ -162,7 +164,9 @@ def iter_code_files(root: Path, adr_dir: Path):
 
 # --------------------------------------------------------------------------- checks
 
-def validate(root: Path, adr_dir: Path, scan_code: bool, report: Report) -> Dict[str, object]:
+def validate(
+    root: Path, adr_dir: Path, scan_code: bool, report: Report, fail_on_proposed: bool = False
+) -> Dict[str, object]:
     rel = lambda p: str(Path(p).resolve().relative_to(root.resolve())) if _inside(root, p) else str(p)  # noqa: E731
 
     adrs: Dict[int, Dict[str, object]] = {}
@@ -201,6 +205,8 @@ def validate(root: Path, adr_dir: Path, scan_code: bool, report: Report) -> Dict
         status = str(fields.get("status", "")).lower()
         if status and status not in ALLOWED_STATUSES:
             report.error(where, f"status '{status}' not in {', '.join(ALLOWED_STATUSES)}")
+        if fail_on_proposed and status == "proposed":
+            report.error(where, "status is 'proposed'; a person must accept or reject it before it merges")
         id_value = str(fields.get("id", ""))
         id_match = ADR_ID_RE.match(id_value)
         if id_value and not id_match:
@@ -333,7 +339,11 @@ def _inside(root: Path, path: Path) -> bool:
 
 
 def _path_pattern_matches(root: Path, pattern: str) -> bool:
-    pattern = pattern.strip().lstrip("./")
+    # Drop a leading "/" or "./" only. Not lstrip("./"): that strips characters,
+    # not a prefix, and eats the dot of .github.
+    pattern = pattern.strip().lstrip("/")
+    while pattern.startswith("./"):
+        pattern = pattern[2:].lstrip("/")
     if not pattern:
         return False
     if any(ch in pattern for ch in "*?["):
@@ -371,10 +381,15 @@ python3 scripts/validate-adrs.py || exit 1
 
 # --- Option C: GitHub Actions step -----------------------------------------
       - name: Validate ADRs
-        run: python3 scripts/validate-adrs.py --strict
+        run: python3 scripts/validate-adrs.py --strict --fail-on-proposed
 
 # --- Option D: any other CI ------------------------------------------------
-# Run `python3 scripts/validate-adrs.py --strict` and fail the job on exit 1.
+# Run `python3 scripts/validate-adrs.py --strict --fail-on-proposed` and fail
+# the job on exit 1.
+#
+# --fail-on-proposed keeps ADRs that nobody has accepted or rejected from
+# merging. Leave it out of the pre-commit options: drafting a `proposed` ADR
+# locally is normal.
 """
 
 
@@ -386,6 +401,11 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser.add_argument("--adr-dir", help="ADR folder relative to root (default: auto-detect docs/adr and friends)")
     parser.add_argument("--no-code-scan", action="store_true", help="skip scanning code for @decision tags")
     parser.add_argument("--strict", action="store_true", help="treat warnings as errors")
+    parser.add_argument(
+        "--fail-on-proposed",
+        action="store_true",
+        help="error on ADRs still 'proposed' (use in CI so undecided ADRs do not merge)",
+    )
     parser.add_argument("--json", action="store_true", help="machine-readable output")
     parser.add_argument("--print-setup", action="store_true", help="print pre-commit and CI snippets and exit")
     args = parser.parse_args(argv)
@@ -405,7 +425,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         return 2
 
     report = Report()
-    summary = validate(root, adr_dir, not args.no_code_scan, report)
+    summary = validate(root, adr_dir, not args.no_code_scan, report, args.fail_on_proposed)
     failed = bool(report.errors) or (args.strict and bool(report.warnings))
 
     if args.json:

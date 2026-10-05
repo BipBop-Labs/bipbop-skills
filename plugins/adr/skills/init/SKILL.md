@@ -52,7 +52,10 @@ skips the CLAUDE.md/AGENTS.md edit.
      (or the folder where the repository keeps scripts; ask if unclear);
    - add the snippet printed by
      `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/validate-adrs.py" --print-setup`
-     to the chosen place, following existing config style.
+     to the chosen place, following existing config style. The CI snippets
+     run `--strict --fail-on-proposed`, so a pull request with an ADR still
+     `proposed` fails until a person accepts or rejects it; keep that flag
+     out of pre-commit hooks. Tell the user.
    Never write into `.git/hooks` without explicit approval.
 7. **Report.** List created files, adopted conventions, skipped steps, and the
    next command: `/adr:distill` for an existing codebase, `/adr:new` for a

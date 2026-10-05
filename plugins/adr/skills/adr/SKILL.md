@@ -122,7 +122,8 @@ approval.
 
 `${CLAUDE_PLUGIN_ROOT}/scripts/validate-adrs.py` checks structure only:
 frontmatter, numbering, index sync, supersede links both ways, stale paths,
-and `@decision` tags. Exit 0 clean, 1 errors, 2 no ADR folder. It never judges
+and `@decision` tags. With `--fail-on-proposed` (meant for CI) an ADR still
+`proposed` is an error. Exit 0 clean, 1 errors, 2 no ADR folder. It never judges
 whether code complies with a decision; that is `/adr:review` and per-decision
 checks.
 

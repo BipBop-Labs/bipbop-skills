@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "adr",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Architecture Decision Records for any repository: init, distill from existing code, record new decisions, review diffs against decisions, and validate structure. Stack-agnostic.",
   "author": {
     "name": "BipBop Labs",
