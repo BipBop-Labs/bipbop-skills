@@ -14,6 +14,7 @@ Incluidas en el plugin `bipbop-skills`.
 | [`microcopy`](skills/microcopy/) | Escribir botones, errores, vacíos, confirmaciones y otros textos breves de interfaz. |
 | [`ousterhout-software-design`](skills/ousterhout-software-design/) | Diseñar y revisar software con foco en complejidad, módulos profundos e información oculta. |
 | [`simple-writing`](skills/simple-writing/) | Reescribir textos para que se entiendan a la primera, en lenguaje simple o lectura fácil. |
+| [`test-audit`](skills/test-audit/) | Filtrar tests nuevos al escribirlos y auditar tests de bajo valor, acoplados a la implementación o duplicados. Adaptada de [OpenClaw](https://github.com/openclaw/openclaw) (MIT). |
 
 ## Plugins adicionales
 
