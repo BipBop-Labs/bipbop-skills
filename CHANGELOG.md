@@ -15,6 +15,7 @@ Todos los cambios relevantes de este proyecto se documentan aquí. El formato si
 ### Changed
 
 - `bipflow` 0.2.0: `/bipflow:pr` elige la rama base según la rama actual. Desde una rama de trabajo apunta a `stg` (o `staging`) si existe en el remoto y a la rama por defecto si no. Desde `stg` distingue por contexto entre abrir una rama nueva con PR hacia `stg` y promover `stg` a la rama por defecto, y pregunta cuando no queda claro. Antes usaba siempre la rama por defecto de GitHub.
+- `best-prompting`: reescrita para ser agnóstica al modelo. Antes describía el estilo del system prompt de un vendor; ahora reúne las prácticas en que coinciden las guías actuales de Anthropic y OpenAI, contrastadas con estudios independientes. Agrega un triage previo a editar un prompt, una tabla de comportamientos que cambian entre modelos y un checklist de revisión, y mueve el detalle a `references/`: prompts de agentes y tools, pruebas e iteración, y fuentes con la fuerza de la evidencia de cada recomendación. Se retiran consejos que las guías actuales revierten, como pedir el razonamiento en tags, los recordatorios de verificación por defecto y los bloques anti-markdown.
 - `ousterhout-software-design`: en review, reportar solo red flags con acción; sin elogios ni ítems sin recomendación.
 
 ### Fixed

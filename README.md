@@ -8,7 +8,7 @@ Incluidas en el plugin `bipbop-skills`.
 
 | Skill | Uso |
 | --- | --- |
-| [`best-prompting`](skills/best-prompting/) | Diseñar y revisar prompts claros, delimitados, verificables y seguros. |
+| [`best-prompting`](skills/best-prompting/) | Escribir y revisar prompts, descripciones de tools y briefs para agentes, con prácticas agnósticas al modelo y la evidencia detrás de cada una. |
 | [`create-skills`](skills/create-skills/) | Crear, revisar, validar y empaquetar skills portables siguiendo las mejores prácticas de Claude, Codex y ChatGPT. |
 | [`krug-usability-testing`](skills/krug-usability-testing/) | Planear, ejecutar y revisar tests de usabilidad y validación temprana de conceptos, y priorizar arreglos mínimos. |
 | [`microcopy`](skills/microcopy/) | Escribir botones, errores, vacíos, confirmaciones y otros textos breves de interfaz. |
