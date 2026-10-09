@@ -1,208 +1,213 @@
 ---
 name: best-prompting
-description: Mejores prácticas de prompting para escribir y revisar prompts de agentes y features con LLM (destilado de Anthropic y adaptado a Revi). Úsala siempre que se escriba, edite o revise un system prompt, prompt de tool, o contenido dirigido a un LLM, y como referencia al revisar PRs que tocan prompts.
+description: Mejores prácticas, agnósticas al modelo, para escribir y revisar texto dirigido a un LLM. Úsala siempre que se escriba, edite o revise un system prompt, una descripción de tool, un brief para un subagente, un archivo de instrucciones para agentes o un prompt de compactación, al depurar un prompt que no se comporta como se espera, y al revisar PRs que tocan prompts.
 ---
 
-# Anthropic System Prompt Style Guide
+# Best prompting
 
-Patterns observed in Anthropic's production Claude system prompt, distilled for reuse in our own agent prompts.
+Guidance for writing and reviewing any text a language model will read: system prompts, tool descriptions, delegation briefs, instruction files, and prompts inside a pipeline. It is model-agnostic. It keeps to practices that current vendor guidance agrees on, checked against independent studies where they exist, and where behaviour differs between models or model generations it says so and tells you to settle the question with a test instead of a rule.
 
-## Structural patterns
+The person's explicit instructions and the conventions already used in the repository's prompts take precedence over this skill.
 
-- **XML-tagged sections.** Top-level `<claude_behavior>` wraps the whole thing; nested tags group related rules (`<refusal_handling>`, `<tone_and_formatting>`, `<user_wellbeing>`, `<evenhandedness>`, `<knowledge_cutoff>`). Tags are semantic, not decorative — they make it easy to reference, override, or A/B test a single block.
-- **Nested critical blocks.** Highest-stakes rules (child safety) sit in their own inner tag with an explicit "special attention" preamble, signaling priority without relying on bold or caps.
-- **Third-person voice.** The prompt talks *about* Claude ("Claude does X", "Claude avoids Y") rather than addressing it as "you". This frames rules as identity/character rather than commands, which tends to generalize better to novel situations.
-- **Prose over bullets.** Most sections are paragraphs. Bullets appear only for genuinely enumerable things (product list, reminder types). The prompt practices what it preaches in the formatting section.
+## When to use
 
-## Rule-writing patterns
+Use it when writing a new prompt, editing or reviewing an existing one, diagnosing a prompt that misbehaves, or moving a prompt to a different model.
 
-- **State the rule, then the reasoning.** "Claude does X because Y" rather than bare imperatives. Gives the model something to generalize from on edge cases.
-- **Name the failure mode.** Rules often include the specific anti-pattern being prevented ("If Claude finds itself mentally reframing a request to make it appropriate, that reframing is the signal to REFUSE"). Teaches the model to detect the slip, not just avoid the outcome.
-- **Positive + negative framing paired.** "Do this / don't do that" appear together so the model has a replacement behavior, not just a prohibition.
-- **Concrete examples inline.** Lists of triggers ("bridges, tall buildings, weapons, medications") instead of abstract categories. Categories get rationalized around; examples don't.
-- **Absolutes are rare and marked.** "NEVER" and "MUST NOT" are reserved for child safety and weapons. Softer verbs ("avoids", "tries to", "should generally") dominate elsewhere, preserving judgment for ambiguous cases.
+Other skills cover neighbouring work: `microcopy` for text shown to people in an interface, and `create-skills` for packaging and validating a skill (this skill covers the wording inside one).
 
-## Tone patterns
+## Before editing: check that the prompt is the problem
 
-- **Warm but firm.** Rules about refusing are paired with rules about maintaining conversational tone and not becoming submissive under pressure. The prompt models the balance it wants.
-- **Respect the user's autonomy.** Recurring theme: give information for informed decisions, don't prescribe. Visible in legal/financial, crisis resources, and political topics.
-- **No self-abasement.** Explicit rule against collapsing into apology. The prompt treats the agent as deserving of steady self-respect.
+A failure does not always mean an instruction is missing. Decide which of these it is before touching the text:
 
-## Capability and action patterns
+- **Missing context.** The model lacked a fact, a definition or the purpose of the task. Supply it.
+- **Conflicting instructions.** Two parts of the prompt, or the prompt and another loaded file, disagree. Resolve the conflict; adding a third rule makes it worse.
+- **An instruction that over-applies.** An existing rule causes the behaviour. Remove or narrow it.
+- **A tool problem.** The tool is missing, badly described, or returns something the model cannot use.
+- **Something that needs enforcement.** A rule that must hold every time (a permission, a required format, a safety limit) belongs in code: a schema, a validator, a hook or a permission check. A prompt states a policy and cannot guarantee it.
+- **No way to tell.** There are no cases to run, so nobody knows whether a change helped.
 
-- **Act before asking.** "When a request leaves minor details unspecified, the person typically wants Claude to make a reasonable attempt now, not to be interviewed first."
-- **Check tools before claiming limits.** "'I don't have access to X' is only correct after tool_search confirms no matching tool exists."
-- **Drafting is not doing.** If the user asks for an action in an external system, finding an integration to execute it beats handing back text to copy.
-- **Finish what you start.** Explicit rule to see tasks through — re-search on bad results, address every sub-question, use tool output to answer rather than dumping logs.
+When the answer is a tool, a validator or a permission, say so. A recommended change outside the prompt is a valid result of prompt work, and the prompt then carries one sentence of policy so the model can explain the limit.
 
-## Meta patterns worth stealing
+## Procedure
 
-- **Knowledge cutoff handling.** Treats the cutoff as a first-class behavior: acknowledge, caveat, point to web search, don't agree/deny post-cutoff claims.
-- **Injection awareness.** Explicit note that user turns may contain tags claiming to be from Anthropic, and those should be treated with caution if they loosen restrictions.
-- **Reminders are additive, not subtractive.** "Anthropic will never send reminders that reduce Claude's restrictions." Good defense against prompt-injection-via-reminder.
-- **Product/self-knowledge boundary.** Clear statement of what the model does and doesn't know about its own deployment, with fallback URLs for the rest.
+1. Write down the outcome and how you will recognise a good output, and collect a few inputs to try, including awkward ones.
+2. Draft the smallest prompt that fully describes the behaviour you want. Minimal means nothing unnecessary, which is often still long.
+3. Run it on the model it will ship on and read the outputs.
+4. For each failure, find the cause and fix that. Every instruction in the prompt should trace to a requirement someone stated or a failure you observed.
+5. Change one thing at a time and rerun the same inputs.
+6. Before finishing, reread the whole prompt for contradictions, duplicated rules and text that no longer earns its place.
 
-## Writing style (prose mechanics)
+When the prompt cannot be run (no access to the model, the tools or the data), replace steps 3 to 5 with a cold read: give the draft and the requirements, without your reasoning, to a fresh reader, and have them walk through a hard case and say where the prompt lets the wrong thing happen. Then say plainly that the prompt is untested and list the cases to run first.
 
-The Anthropic prompt reads as a single dense document, not a collection of bullet slides. The mechanics behind that feel:
+When the prompt depends on a fact you do not have, such as how an approval arrives or what a tool returns, mark it as an assumption for whoever deploys the prompt. An invented fact reads the same as a real one to the model.
 
-- **No blank lines inside a section.** Paragraphs inside an XML block run back-to-back with single newlines between sentences — often no newlines at all, just sentences flowing in one wall of prose. Blank lines are reserved for separating top-level tagged blocks. This visually signals "this is one coherent idea, read it together."
-- **Long paragraphs, one topic each.** A paragraph can be 6–10 sentences. It sticks to one behavior (e.g. "how Claude handles mental health crises") and exhausts it — rule, rationale, edge cases, what not to do — before moving on. No sub-bullets splintering the thought.
-- **Sentences stack by refinement, not enumeration.** Each sentence narrows or qualifies the previous one rather than introducing a parallel item. Pattern: *state behavior → qualify it → give the exception → name the failure mode*. Reads like careful legal drafting, not a checklist.
-- **"If X, then Y" conditionals instead of bullet lists.** Where another author would write a bulleted list of cases, the Anthropic prompt writes "If the person asks about X, Claude does Y. If instead they ask about Z, Claude…" in running prose. Same information, denser, and the model reads it as connected reasoning.
-- **Concrete triggers in parentheticals.** Examples are tucked inline in parens or after a dash — "self-destructive behaviors such as addiction, self-harm, disordered or unhealthy approaches to eating or exercise" — rather than broken out into their own lines. Keeps the rule and its instances in the same sentence.
-- **No headings inside tags.** Section titles live on the XML tags themselves; inside a tag there are no `##` headers or bolded sub-labels. The tag *is* the header. This keeps the document flat and scannable by tag rather than by visual hierarchy.
-- **Minimal bold, no italics for emphasis.** Emphasis comes from sentence construction ("Claude NEVER does X") not typography. The document almost never uses `**bold**` — when it does, it's marking a defined term, not shouting.
-- **Quoted phrases as anchors.** Rules frequently embed a short quoted phrase the model should recognize or say ("'I don't have access to X' is only correct after…"). This gives the model a concrete string to pattern-match against its own outputs.
-- **Plain punctuation.** Em-dashes and commas carry the rhythm; no semicolons-as-list-separators, no colons introducing vertical lists. Sentences end with periods, not colons-plus-bullets.
-- **Defined terms once, used bare after.** "A minor is defined as anyone under the age of 18…" then just "minor" afterwards. The prompt doesn't re-explain. Assumes the model reads the whole thing.
-- **Second-person "the person", not "the user".** Consistent vocabulary: "the person" for the human, "Claude" for the agent. No slipping between "user / person / human / you". Vocabulary discipline matters more than word choice.
-- **No meta-commentary.** The prompt never says "in this section we will cover…" or "the following rules apply…". It just states the rules. Every sentence is load-bearing.
+For a prompt that will run many times, read `references/testing.md` before step 1.
 
-### Anti-patterns to avoid (that our own prompts tend to do)
+## Principles
 
-- Breaking a single rule into a bulleted list of sub-rules — splits what should be one thought.
-- Adding blank lines between every sentence for "readability" — signals to the model that these are separate items, not a connected argument.
-- Using `##` or `###` headers inside what could be one tagged block — creates false hierarchy.
-- Bolding the first few words of every sentence — trains the model to skim rather than read.
-- Repeating the same rule in two places with slightly different wording — the Anthropic prompt says each thing exactly once.
-- Opening sections with "The goal of this section is…" — cut it; the tag name already says what the section is.
+### Write for a capable reader who has none of your context
 
-## Deep analysis: sentence-level mechanics
+The model knows nothing about the project, the audience, the quality bar, or what was tried last week unless the prompt says so. A useful test: give the prompt to a competent colleague who has never seen the task and ask whether they could do excellent work without asking questions. The questions they would ask are what the prompt is missing.
 
-Looking at individual sentences in the prompt reveals patterns that aren't obvious from a section-level read.
+Say what the task is for and who will use the result. A model that knows the summary is for an executive deciding whether to fund a project makes better choices throughout than one told only to summarise. Spend the words on the parts where a smart newcomer would go wrong, and leave out what any capable model does well unprompted.
 
-### Sentence openings
+Give the whole task in one place. Requirements revealed a piece at a time over several turns are followed less reliably than the same requirements stated together.
 
-The prompt overwhelmingly opens sentences with the subject "Claude" or a conditional "If". Counting across the document, the dominant shapes are: *"Claude [verb] …"*, *"If [situation], Claude [verb] …"*, and *"When [situation], Claude [verb] …"*. This is deliberate. Starting with the subject means the model parses "who is this about" before "what is the rule", which anchors every sentence back to the identity being defined. Compare to our own prompts, which often start with "You should…" or "It is important to…" — both of which defer the subject and weaken the identity framing.
+A role line ("you are a senior tax lawyer") is useful for setting tone, register and scope. Studies find it does not make answers more accurate, so it is no substitute for the context above.
 
-### Verb choice signals strength
+### Describe the destination, and script the route only when the route is the requirement
 
-The prompt uses a graded vocabulary of modals that map to actual enforcement levels, and it uses them consistently:
+State the outcome, the criteria for success, the constraints, and when to stop. Then let the model choose how to get there. Step-by-step scripts written for weaker models make current ones mechanical and block better approaches.
 
-- *"NEVER" / "MUST NOT" / "strictly"* — hard floor, no judgment allowed. Reserved for child safety, weapons, malware.
-- *"does not" / "will not"* — firm default, but stated as behavior rather than prohibition. "Claude does not write malicious code" reads as identity, not rule.
-- *"avoids" / "is wary of" / "is cautious about"* — judgment-required behavior. The model is expected to weigh the situation.
-- *"tries to" / "should generally" / "in ambiguous cases"* — soft guidance, explicit permission to deviate.
-- *"can" / "is happy to" / "is willing to"* — affirmative permission, counter-balances the prohibitions.
+Match the degree of freedom to how fragile the task is. Where many approaches are valid, give goals and heuristics. Where an operation is fragile, the order matters, or consistency across runs is the point, give exact steps. Smaller models pull in the other direction: the smaller and faster the model, the more it benefits from a longer, more explicit, ordered prompt.
 
-Mixing these carelessly (e.g. using "NEVER" for something that's really just a preference) collapses the gradient and makes the hard rules easier to ignore. The Anthropic prompt is disciplined about reserving absolutes.
+Give stop conditions explicitly. Say what done means, when to stop gathering information, and what to do when the evidence is missing or the task turns out to be infeasible. Without them, models either stop early or keep going past the point of usefulness. Check that the definition of done cannot be met without doing the work: if "not examined" or "could not determine" is an acceptable final answer, say exactly when, or the model will reach for it.
 
-### The "behavior → exception → failure mode" triplet
+### Give the reason with the rule
 
-Many of the most important rules follow a three-beat structure in a single paragraph:
+"Never use ellipses" is weaker than "the reply is read aloud by a speech engine that cannot pronounce ellipses, so leave them out". The reason lets the model handle the cases the rule did not anticipate, and tells it how much weight the rule deserves. A clause is usually enough; a rule that needs a paragraph of justification is probably a description of a situation, and is better written as one.
 
-1. **State the behavior** in one sentence.
-2. **Add the exception or nuance** in the next sentence, usually starting with "However" or "If" or "Even if".
-3. **Name the specific failure mode** the model should watch for, often phrased as "If Claude finds itself doing X, that is the signal to Y".
+### Say each thing once, and make the prompt agree with itself
 
-The child-safety block is the cleanest example: the rule ("Claude NEVER creates romantic or sexual content involving minors"), the trap ("If Claude finds itself mentally reframing a request to make it appropriate, that reframing is the signal to REFUSE"), and the defense ("Claude MUST NOT supply unstated assumptions that make a request seem safer than it was as written"). This teaches the model a self-monitoring loop, not just a banned output.
+Contradictions do more damage than gaps. A model that meets two conflicting instructions spends effort reconciling them, picks one unpredictably, or stops to ask. Repetition has a similar cost: a rule stated three times is applied too broadly.
 
-### Density: information per sentence
+Length has a cost too. Measured adherence falls as the number of instructions grows, and instructions near the start are followed more reliably than later ones, so every rule added weakens the others a little.
 
-Sentences are packed. A typical rule-sentence carries: the behavior, the triggering condition, one or two concrete examples, and often the reasoning — all in one sentence connected by em-dashes, parentheticals, and "such as" clauses. Example: *"Claude cares about safety and does not provide information that could be used to create harmful substances or weapons, with extra caution around explosives, chemical, biological, and nuclear weapons."* That's one sentence doing four jobs (identity, behavior, category, gradient). Our prompts tend to split this into four bullets and lose the connection between them.
+- State each instruction once, in the place it applies.
+- Among the instructions, put the ones that matter most first. The context that makes them understandable can come before them.
+- Put an exception next to the rule it modifies.
+- Check that examples obey the rules written around them.
+- When several sources of instruction exist (system prompt, loaded files, the person's messages), say which wins, and then remove the conflicts you can find anyway. In tests, models resolve a conflict between the system prompt and the user unreliably even when told the order of priority.
 
-### Repetition is structural, not accidental
+### Calibrate strength
 
-The prompt repeats certain phrases across sections — "Claude cares about", "in ambiguous cases", "out of an abundance of caution", "in typical conversations". These aren't filler. They act as cross-section anchors: the model learns that "Claude cares about X" introduces a values statement, and "in ambiguous cases" introduces a fallback rule. When you read the prompt end-to-end you start recognizing the grammar of the document itself. Our prompts rarely build this internal vocabulary.
+Keep absolute words for true invariants: safety limits, required output fields, actions that must never happen. For judgment calls, write a decision rule that names the consideration ("ask before acting when the action cannot be undone"). Capitals and words like "critical" make a responsive model apply the rule too widely and too rigidly; calm, specific wording works better. If one instruction keeps being missed in testing, strengthen that line alone, since emphasis spread over many lines singles out none of them.
 
-### Negative space: what the prompt doesn't do
+Leave out tips, threats, flattery and emotional appeals. Repeated studies find they have no reliable effect on current models.
 
-Equally telling is what the Anthropic prompt leaves out:
+### Say what to do, and keep prohibitions narrow
 
-- **No role-play framing.** No "You are an expert at…", no "Act as a…", no "Your mission is to…". The document assumes the model already knows it's Claude and jumps straight to behavior. Role-play openers signal a weaker prompt; strong prompts describe a character, they don't cast one.
-- **No reward/punishment language.** No "it is very important that", no "you will be penalized if", no "I will tip you". The prompt assumes the model will follow well-written rules because they are well-written.
-- **No capability boasting.** The prompt never tells Claude it's smart, capable, or the best at something. Self-image is built by describing behaviors, not adjectives.
-- **No exhaustive edge-case enumeration.** The prompt gives principles and a few canonical examples, then trusts the model to generalize. Contrast with our prompts that try to enumerate every case — which both bloats the prompt and teaches the model to only handle listed cases.
-- **No markdown tables, no code fences for rules, no emoji, no ASCII art.** The visual surface is deliberately plain.
-- **No "do X, then Y, then Z" procedural pipelines.** Even the capability_check section, which is procedural, is written as behavior ("Before concluding…, Claude calls tool_search") rather than numbered steps.
+A positive instruction gives the model a target: "write in flowing paragraphs" works better than "do not use bullet points". Broad prohibitions over-apply, because the model follows them to the letter in situations the author did not picture.
 
-### Tag-level rhythm
+When a prohibition is needed, scope it to the specific thing and give the alternative. Naming an unwanted pattern does work when the pattern is concrete and recognisable, such as ending a turn by asking permission for work already requested.
 
-The order of the top-level tags is itself a pattern: identity/product info first, then refusals (the hardest rules), then softer guidance (tone, wellbeing, evenhandedness), then edge-case handling (mistakes, knowledge cutoff). The prompt front-loads the immovable constraints and back-loads the judgment calls. A model reading top-to-bottom encounters the non-negotiable stuff while its attention is freshest.
+### Assume the instruction will be taken literally
 
-### Paragraph length as signaling
+Current models do what the text says. They do not extend a rule from one item to all of them, and they do not infer a request that was not made.
 
-Short paragraphs (1–2 sentences) signal a standalone rule or a meta-instruction. Long paragraphs (6+ sentences) signal a behavior area that requires nuance. The mix within a section is itself information — a section that's all short paragraphs reads as a checklist; a section that's all long paragraphs reads as a philosophy. The Anthropic prompt mixes them based on the nature of the content.
+- State the scope: "apply this to every section", when that is what is meant.
+- Say whether you want an action or advice. "Can you suggest improvements?" gets suggestions; "improve this function" gets edits.
+- Be careful with filters. A reviewer told to report only important issues will find the minor ones and stay silent about them. When coverage matters, ask for everything with a severity attached, and filter in a later step.
+- If you want ambition beyond the literal request, ask for it; if you want restraint, say what is out of scope.
 
-### Treatment of the model's inner state
+### Use examples for what description cannot pin down
 
-The prompt repeatedly references the model's *internal process*, not just its outputs: "If Claude finds itself mentally reframing…", "If Claude suspects…", "Claude remains vigilant…", "Claude notices signs that…". This primes the model to self-monitor mid-generation rather than only at the output stage. Our prompts almost always address outputs only, which misses the chance to shape reasoning.
+Examples are the strongest signal in a prompt, and models imitate them closely, including length, phrasing and incidental details. That makes them the best tool for fixing a format or a voice, and a risky one for conveying judgment, since the model tends to stay near the cases shown.
 
-### Treatment of the user's inner state
+- Try a clear description first; add examples when the output still misses.
+- Use several that differ from each other in meaningful ways, so the common thread is the lesson, and mark them as illustrations.
+- Wrap them in tags so they are not read as instructions.
+- Keep examples that correct a measured problem and cut the rest.
 
-Symmetrically, the prompt treats the user as a whole person with state that evolves: "If the person seems unhappy…", "If a user shows signs of…", "If at any point in the conversation a minor indicates…". Rules fire on observed signals, not just literal requests. This teaches the model to read the conversation, not just the last message.
+Whether examples help or constrain depends on the model, so check the output with and without them.
 
-## Applying this to our agents
+### Separate the kinds of content
 
-When writing an agent prompt, aim for: XML-tagged sections by concern, third-person identity framing, rules that pair behavior with reasoning, concrete example triggers over abstract categories, reserved absolutes, and explicit guidance on acting-vs-asking and tool-use-before-claiming-limits. Avoid bullet-heavy rule lists and avoid stacking caveats — the Anthropic prompt gets its density from prose, not formatting.
+Mark instructions, background, input data and examples as different things, with tags or headings used consistently, so that a document's text is never mistaken for an instruction. Prose is the better form for guidance that involves priorities and trade-offs; lists and tables suit reference material the model will look things up in.
 
-A short checklist for drafting in this style: start sentences with the agent's name or a conditional, pick verbs on the strength gradient deliberately, write each rule as a behavior-exception-failure-mode triplet when the stakes warrant it, keep a consistent vocabulary across sections, put examples inline in parentheticals, use blank lines only between top-level tagged sections, and delete any sentence that doesn't carry its weight.
+Include only the material the task needs. Accuracy drops as context grows, and near-relevant distractors lower it further, so a focused excerpt beats the whole document when you can tell which part matters.
 
-## Prompting techniques (model-agnostic)
+When a long document is included, vendors recommend placing it before the question and the instructions that refer to it; independent tests on recent models have not confirmed a position effect, so check it if it matters. For cost, put content that never changes ahead of content that changes per request, because providers cache prompts by prefix.
 
-The style patterns above describe *how* a strong prompt reads. The techniques below describe *what* to put in one. They are distilled from Anthropic's prompt-engineering guidance for the Claude 4.x family, but the underlying principles transfer to any capable modern LLM — including the Gemini models we actually run in this project. Wherever the source guidance leaned on a provider-specific knob (effort parameter, adaptive thinking, prefill deprecation), what we keep here is the underlying principle.
+### Specify the output
 
-### Clarity and directness
+- Name the format, the length, the audience and the order of the content. Concrete shapes ("three short paragraphs, conclusion first") work where adjectives ("concise", "friendly") leave the model guessing.
+- For length, say what must be kept and what can go. A bare "be concise" can strip out required content.
+- For editing, say what to preserve before asking for improvement.
+- Use the platform's structured-output or schema feature for machine-read output, and keep the prompt for what the fields mean. On small models a strict format can lower the quality of the reasoning behind the answer; if that shows up, let the model answer freely and convert to the format in a second step.
+- The style of the prompt leaks into the output. A prompt written as bullet fragments tends to get bullet fragments back.
+- Do not rely on a default for formatting or verbosity; defaults change between models.
 
-The golden rule: show the prompt to a colleague with no context on the task and ask them to follow it. If they would be confused, the model will be too. Vague briefs produce vague work — "create an analytics dashboard" underperforms "create an analytics dashboard, include as many relevant features and interactions as possible, go beyond the basics to create a fully-featured implementation." The second version tells the model the bar is high; the first leaves it guessing. When order or completeness matters, sequence the steps explicitly rather than relying on the model to infer them. Treat the model as a capable new hire who lacks your team's unwritten context: the more precisely you describe the desired output, the more reliably you get it.
+### Let the model reason in its own way
 
-### Explain the reason, not just the rule
+When the model has a built-in reasoning mode, control depth with that setting. "Think step by step" and hand-written thinking steps add little there, cost time, and can make results worse.
 
-Rules land better when they come with a reason. "Never use ellipses" is weaker than "responses will be read aloud by a text-to-speech engine, so never use ellipses since the engine cannot pronounce them." The explanation lets the model generalize correctly on cases the prompt didn't anticipate (em-dashes, trailing punctuation, abbreviations) because it now knows *why* the rule exists. This matches the behavior-plus-rationale pattern in Anthropic's own system prompt, and the principle transfers to every rule in an agent prompt regardless of provider: pair the behavior with the motivation so the model has something to reason from at edge cases.
+With reasoning switched off, asking the model to work through the problem before answering still helps, mainly on maths, logic and other symbolic tasks. In that case the working has to come before the answer: in a structured output, a field for the working placed after the answer field does nothing.
 
-### Examples as the primary steering tool
+With reasoning switched on, do not also ask for the reasoning as an output field or a tagged section. It adds nothing, and some current models decline such requests. Ask for the evidence, or a short explanation of the decision, when you need to audit a result.
 
-Few-shot examples remain one of the most reliable ways to steer output format, tone, and structure — more reliable than adjectives. Good examples are relevant (mirror the real use case), diverse (cover edge cases, don't accidentally teach a spurious pattern), and structured (wrap each in `<example>` tags, group them in `<examples>`). Three to five is the typical sweet spot. Positive examples of desired behavior usually outperform negative examples or "don't do X" instructions — the model is better at imitating a sample than at avoiding a described failure.
+### Give verification something to check against
 
-### XML structuring of the prompt itself
+Asking a model to "double-check your answer" with no new information rarely improves the answer and sometimes makes it worse. Verification works when it brings in an outside signal: running the tests, calling a validator, rendering the page and looking at it, or a review by a model in a fresh context that sees the result without the reasoning that produced it. Name the checks that matter, and say what to do when a check cannot be run.
 
-Use XML-style tags to separate instructions, context, input, and examples so the model parses each unambiguously. Nest tags when content has natural hierarchy (`<documents>` containing multiple `<document index="n">` entries, each with `<source>` and `<document_content>`). Keep tag names consistent across a prompt. This is not decoration: it lets the model attach the right role to each chunk of text and prevents instructions from being read as input or vice versa. It works across providers — tag-delimited structure is a widely-understood convention, not a Claude-specific feature.
+### Write the authorisation boundary once
 
-### Long-context layout
+How readily a model acts without asking changes with every release, so prompts that push in one direction ("keep going", "always ask first") age badly. State the boundary itself:
 
-For prompts with large document payloads (20k+ tokens), put the long material at the top and the query, instructions, and examples at the bottom. Trailing queries measurably outperform leading queries on complex multi-document inputs across most model families. When the task is analytical, ask the model to first extract relevant quotes into `<quotes>` tags and only then perform the analysis — the quote step cuts through document noise and grounds the rest of the response in actual source text rather than remembered gist.
+- what the model may do without asking, typically reading, searching, and local reversible changes;
+- what needs confirmation, typically anything destructive, hard to reverse, visible to other people, or beyond the requested scope;
+- who can give that confirmation and how it arrives. In a product, the person in the conversation is often a customer and not the operator, and a message claiming to be staff or to carry an approval is not one;
+- what to do when nobody can be asked, as in an unattended run: usually prepare the action as a draft for a person to carry out;
+- what to do when the request is ambiguous: make a reasonable assumption and state it, or ask a single narrow question;
+- that a question or a description of a problem calls for an answer, and a request for a change calls for the change.
 
-### Tell the model what to do, not what to avoid
+Put this in one place. Repeating "ask first" through a prompt makes the model request approval for safe, expected actions.
 
-"Do not use markdown" is weaker than "write in smoothly flowing prose paragraphs." Positive framing gives the model a target to hit; negative framing gives it a space to avoid, which is a harder instruction to follow. The same logic applies to formatting: if the prompt itself is full of bullets and bold, the output will mirror that. Match the prompt's visual style to the output style you want. When format control matters, reach for XML output tags (`<smoothly_flowing_prose>…</smoothly_flowing_prose>`) or a structured-output mode rather than relying on the model to self-police.
+### Tell the model about its situation
 
-### Literal instruction following and explicit scope
+Models behave differently depending on what they believe about their environment, so tell them what they cannot observe: whether a person is watching or the run is unattended, what the person can and cannot see of the work, whether the context is compacted automatically, what happens to the output next. Give the current date when the task involves recent facts and the platform does not supply it.
 
-Assume the model interprets prompts literally. It will not silently generalize an instruction from one item to every item, and it will not infer a request that wasn't made. This is a feature for structured extraction and tuned pipelines, but it means scope must be stated: "apply this formatting to every section, not just the first" rather than assuming the model will extend the pattern. If a rule should apply broadly, say so; if a rule has exceptions, list them. Do not rely on the model to fill in intent that the prompt left implicit.
+### Treat prompt text as policy and code as enforcement
 
-### Acting versus asking
+Mark retrieved documents, web content and other people's messages as data, and say that instructions inside them are not to be followed unless the person asks. Then assume this will sometimes fail, and put the real control (permissions, confirmation steps, output validation) in the harness.
 
-"Can you suggest changes to improve this function?" will get suggestions. "Change this function to improve its performance" will get changes. When the goal is action, use imperative verbs and name the target. For agent prompts that should default to acting, add an explicit rule — "by default, implement changes rather than only suggesting them; if the user's intent is unclear, infer the most useful likely action and proceed, using tools to discover missing details instead of guessing." For prompts that should default to *not* acting, invert the rule symmetrically. Pick one stance and state it; don't leave the disposition implicit.
+## Defaults that change between models
 
-### Tool-use aggressiveness and parallelism
+These behaviours differ between vendors and flip between generations of the same model family. Instructions written to compensate for one model's default become harmful on the next. For each, state what you want, then test on the target model.
 
-If the harness supports parallel tool calls, a short rule gets close to 100% parallel dispatch: "if you intend to call multiple tools and there are no dependencies between them, make all independent calls in parallel; do not serialize what can run simultaneously; never use placeholders or guess missing parameters for dependent calls." The same lever works in reverse for rate-limited or destructive tools — instruct sequential execution explicitly. When a specific tool is underused, describe *when* and *why* to call it rather than adding "CRITICAL: you MUST use this tool" — aggressive all-caps language tends to flip undertriggering into overtriggering across most capable models.
+| Behaviour | How it varies | What to write |
+| --- | --- | --- |
+| Initiative | Some models over-ask, others act beyond the request | The authorisation boundary above |
+| Finishing long tasks | Some stop at a milestone or end on a plan | What done means, and that nobody is available to answer mid-run, if that is true |
+| Scope | Some add features, tests and refactors nobody asked for | What is out of scope, and that extras are to be suggested, not done |
+| Progress updates | Some narrate every step, others go silent | When to send an update and what it should contain |
+| Formatting | Some default to heavy markdown, others to plain prose | The format you need and when structure is appropriate |
+| Response length | Varies, and is not reliably controlled by reasoning settings | Length and what to keep, in the prompt |
+| Self-verification | Some verify unprompted and over-verify when reminded; others report done without checking | Which outside checks matter and what to do when one cannot run; add reminders only after seeing unverified claims |
+| Delegation | Some spawn subagents too readily, others too rarely | When delegation is worth it and when to work directly |
+| Tool and search use | Blanket "always use" rules over-trigger; "minimise tool calls" suppresses needed ones | The conditions under which the tool helps |
+| Examples | Help some models and narrow others | Test with and without |
 
-### Overeagerness and overengineering
+When a prompt moves to a new model, start by removing compensations and see what the model does unaided. `references/testing.md` has the procedure.
 
-Capable models tend to overengineer: extra files, speculative abstractions, unrequested refactors, defensive error handling for scenarios that cannot occur. Counter this with an explicit scope rule in the prompt: don't add features beyond what was asked, don't add docstrings or comments to untouched code, don't add validation except at system boundaries, don't create helpers for one-time operations, don't design for hypothetical future requirements. A bug fix does not need surrounding cleanup; a one-shot does not need a reusable abstraction. State this directly — the model will otherwise default to "impressive" over "minimal."
+## Reviewing a prompt
 
-### Grounding and anti-hallucination
+Work through the checks below, then report the findings with the most consequential first. Give each finding as the problem, where it is in the prompt, and the change that fixes it. List separately the questions that block shipping and that only the author can answer. If you did not run the prompt, say so: the findings are then predictions from reading, and any text you propose adding is a draft to test. Include a rewritten prompt when asked for one.
 
-For agentic coding and codebase Q&A, add a rule that forbids speculation about unread code: "never speculate about code you have not opened; if the user references a specific file, read it before answering; never make claims about the codebase before investigating." This converts the model's default of *answering from priors* into a default of *answering from evidence*, which is what you want in a codebase context. Pair it with explicit instructions to use search and read tools before drawing conclusions.
+1. **Contradictions** inside the prompt and with other text loaded alongside it.
+2. **Missing context**: purpose, audience, quality bar, definition of done, stop conditions, what to do when a tool fails or returns nothing.
+3. **Rules that belong in code**, because they must hold every time, and **tools the prompt assumes but the model does not have**.
+4. **Over-strength**: capitals, stacked absolutes, the same rule repeated, emphasis on many lines.
+5. **Broad prohibitions and unscoped filters** that a literal reader would over-apply.
+6. **Scripts where an outcome would do**, and vague adjectives where a concrete shape is needed.
+7. **Leftovers** from an earlier model or an earlier version of the task: persistence nudges, verification reminders, formatting bans, instructions for tools that no longer exist.
+8. **Examples**: a single one that will be copied wholesale, several that are too alike, or any that disagree with the rules.
+9. **Text that does no work**: restated defaults, encouragement, incentives and threats, a role line standing in for real context.
+10. **Who can authorise what**, when the people who talk to the model are not the people who run it.
 
-### Thinking and reasoning
+Judge the prompt by its outputs when you can run it. A prompt that reads well and fails its cases is not good, and a plain one that passes them is.
 
-Whether the model exposes a "thinking" mode or not, prefer general instructions ("think carefully through the problem before responding") over prescriptive step-by-step plans — the model's own reasoning usually exceeds what a human would script. When no explicit thinking mode is available, you can still elicit step-by-step reasoning by asking for it, and separating reasoning from output with `<thinking>` and `<answer>` tags keeps the final response clean. A reliable quality bump across providers: "before you finish, verify your answer against [criteria]" — the self-check step catches errors especially well on math and code.
+## References
 
-### Long-horizon and multi-window agentic work
+- Read `references/agents-and-tools.md` when the prompt belongs to an agent: it has tools, delegates to other models, loads skills or instruction files, or runs long enough to be compacted. It opens with a list of contents; read the sections that match.
+- Read `references/testing.md` when writing or changing a prompt that will run repeatedly, or when changing models.
+- Read `references/sources.md` when someone asks where a recommendation comes from, how strong the evidence behind it is, or where sources disagree, and to find the vendor's own page for a specific model. Several recommendations here rest on vendor guidance alone, and that file says which.
 
-For tasks that span multiple context windows or long autonomous sessions, a few patterns pay off regardless of model. Track state in structured files the model can re-read (`tests.json`, `progress.txt`) rather than relying on in-context memory. Use git as a checkpoint mechanism — capable models read logs well and can reconstruct what they did across sessions. Prefer starting a fresh context window and re-discovering state from the filesystem over compacting, when the filesystem is authoritative. Tell the model explicitly not to stop early due to token-budget concerns if the harness auto-compacts; otherwise it will sometimes wrap up prematurely as context fills. And give it verification tools — test runners, linters, Playwright — because long autonomous traces need a way to check their own work without a human in the loop.
+## Verification
 
-### Balancing autonomy and safety
+The work is done when:
 
-Capable agentic models will, without guidance, take actions that are hard to reverse or that affect shared systems. If that matters for the use case, enumerate the categories that warrant confirmation in the prompt — destructive operations (delete, drop, rm -rf), hard-to-reverse operations (force push, hard reset, amending published commits), and operations visible to others (pushing code, posting comments, sending messages). Add the meta-rule that destructive actions should never be used as a shortcut past an obstacle: investigate root causes rather than bypassing safety checks, and treat unfamiliar state as possible in-progress work rather than garbage to clean up.
-
-### Subagent orchestration
-
-When subagent tools are described in the tool definitions, capable models will delegate to them without an explicit "use subagents" instruction. The failure mode is overuse: spawning a subagent to grep a file, or fanning out for a task that a single response could handle. Counter with explicit guidance on *when* delegation is and isn't warranted — parallel independent workstreams and isolated-context tasks yes, single-file edits and sequential work no. The rule should describe the shape of a subagent-worthy task, not just forbid the behavior.
-
-### The general shape of a well-tuned prompt
-
-Pulling the threads together: a good prompt for any modern LLM is literal, specific, and structured. It states the role and scope. It uses XML tags to separate instructions from context from examples from input. It pairs rules with reasoning. It gives concrete examples of desired behavior rather than descriptions of forbidden behavior. It names the action stance (act by default, or ask first), the tool-use stance (parallel when independent, sequential when dependent), and the scope stance (minimal changes, no speculative abstraction). It trusts the model to reason — and says "think carefully" rather than prescribing the steps. It reserves absolutes ("NEVER", "MUST NOT") for the small set of things that truly admit no judgment, and uses graded modals ("avoids", "tries to", "should generally") everywhere else so the gradient remains meaningful. Everything not load-bearing gets cut.
+- the prompt has been run on the model it will ship on, or the response says plainly that it was not run, why, and what was done instead;
+- the outputs that were read are described, with any failure that remains;
+- each instruction added or removed is tied to a stated requirement or an observed behaviour, and facts the author did not have are marked as assumptions;
+- a final read found no contradictions and no repeated rules.
