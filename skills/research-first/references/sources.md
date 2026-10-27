@@ -20,3 +20,10 @@ De dónde sale cada parte de la skill. Sirve para revisar o actualizar la skill,
 | Ejemplos de regulación en comunicaciones | FTC, [CAN-SPAM compliance guide](https://www.ftc.gov/business-guidance/resources/can-spam-act-compliance-guide-business); ICO, [direct marketing and PECR](https://ico.org.uk/for-organisations/direct-marketing-and-privacy-and-electronic-communications/) |
 | Lenguaje claro | [ISO 24495-1](https://www.iso.org/standard/78907.html) |
 | Seguridad en software | [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org) |
+| Buscar código con regex en GitHub público, también como MCP | Vercel, [Grep a million GitHub repositories via MCP](https://vercel.com/blog/grep-a-million-github-repositories-via-mcp) (2025) |
+| Límites de `gh search code` (motor legacy, sin regex) | GitHub CLI, [gh search code](https://cli.github.com/manual/gh_search_code) |
+| Tratar el contenido de repos ajenos como no confiable, no correr su setup | Mozilla 0DIN vía Help Net Security, [indirect prompt injection in AI coding agents](https://www.helpnetsecurity.com/2026/06/29/mozilla-warns-of-indirect-prompt-injection-risk-in-ai-coding-agents/) (2026) |
+| Juzgar si un proyecto está mantenido | OpenSSF, [Scorecard](https://openssf.org/blog/2024/03/05/openssf-scorecard-evaluating-and-improving-the-health-of-critical-oss-projects/) |
+| Resúmenes de repos y docs por versión como pistas | Devin, [DeepWiki MCP](https://docs.devin.ai/work-with-devin/deepwiki-mcp); Upstash, [Context7](https://github.com/upstash/context7) |
+| Buscar código literal y no palabras clave; ejemplos de la versión vigente | ArabelaTso, [reference-searcher](https://github.com/ArabelaTso/Skills-4-SE/blob/main/skills/reference-searcher/SKILL.md) |
+| Contar usos en código público como señal de consenso | dotnet/runtime, [api-proposal skill](https://github.com/dotnet/runtime/blob/main/.github/skills/api-proposal/SKILL.md) |
