@@ -35,6 +35,25 @@ Revi coinciden en casi todo; donde difieren, manda la voz de Revi.
    usuario, sin celebraciones ("Expediente enviado", no "¡Excelente!").
 8. **Crisis: cero personalidad.** Si el sistema está caído o hay pérdida de
    datos, el tono es directo, serio e informativo.
+9. **No describir lo que se describe solo.** Antes de agregar una ayuda, un
+   subtítulo o un eyebrow, pregúntate qué dice que el nombre no diga. "+ Nueva
+   carpeta" ya dice qué hace; "Tus chats" ya dice qué hay ahí, y no necesita
+   "Los chats que no compartes". Si el título es suficientemente descriptivo,
+   va solo: un subtítulo que lo repite con otras palabras es ruido y le quita
+   peso al título.
+
+## Botones y etiquetas no son descripciones
+
+Un botón, un título o una etiqueta se escriben como fragmento: verbo + objeto
+("Subir expediente") o sustantivo ("Tus chats"). Una descripción, en cambio, es
+prosa: el cuerpo de una card, un tooltip, una ayuda, el texto de un estado
+vacío. Ahí aplican otras reglas:
+
+- **Oraciones completas, con sujeto y verbo.** No partir una idea en una
+  etiqueta y una frase sin sujeto ("El plazo del permiso. Vence a los 30
+  días."); escribirla como una oración ("El permiso vence a los 30 días.").
+- **Sin remates.** Nada de contrastes armados ni cierres que buscan efecto
+  ("…y nunca más pierdes un plazo", "no es un trámite, es una decisión").
 
 ## Voz de Revi (esto nos diferencia; contrastado con lo anterior)
 
@@ -72,6 +91,8 @@ Revi coinciden en casi todo; donde difieren, manda la voz de Revi.
 | Toast de éxito | Confirmación breve, cerca de la acción | "Informe enviado a la DIDP." |
 | Carga | Qué está pasando + duración estimada si > 300ms | "Analizando 12 documentos…" |
 | Tooltip | Máx 2 frases, valor extra (nunca info esencial) | — |
+| Eyebrow / subtítulo | Solo si dice algo que el título no dice; si no, se omite | "Tus chats", sin subtítulo |
+| Descripción en card | Oraciones completas, sin remates | "Revisa los antecedentes antes de enviar el informe." |
 
 ## Checklist al escribir o revisar microcopy
 
@@ -82,6 +103,8 @@ Revi coinciden en casi todo; donde difieren, manda la voz de Revi.
 - [ ] ¿El copy funciona en estado de crisis (sin chistes ni personalidad)?
 - [ ] ¿Los placeholders no reemplazan labels ni contienen info esencial?
 - [ ] ¿Las confirmaciones destructivas repiten la acción en el botón?
+- [ ] ¿Cada ayuda, subtítulo o eyebrow dice algo que su título no dice?
+- [ ] ¿Las descripciones son oraciones completas y terminan sin remate?
 
 ## Referencias externas
 
