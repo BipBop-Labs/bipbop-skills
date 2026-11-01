@@ -41,12 +41,13 @@ Revi coinciden en casi todo; donde difieren, manda la voz de Revi.
    "Los chats que no compartes". Si el título es suficientemente descriptivo,
    va solo: un subtítulo que lo repite con otras palabras es ruido y le quita
    peso al título.
-10. **Evitar puntito.** No uses `·` para separar datos. En una interfaz, cada
-   dato va en su propio elemento (tag, etiqueta, columna) y el componente los
-   separa con espacio o borde: la separación no depende del texto. En prosa,
-   escribe una oración ("El permiso vence el 3 de marzo", no "Permiso · 3 mar").
-11. **Evitar comillas angulares.** Para citar, usa comillas normales
-   ("Borrador").
+10. **Evitar el punto medio (`·`).** No lo uses para separar datos. En una
+   interfaz, cada dato va en su propio elemento (tag, etiqueta, columna) y el
+   componente los separa con espacio o borde: la separación no depende del
+   texto. En prosa, escribe una oración ("El permiso vence el 3 de marzo", no
+   "Permiso · 3 mar").
+11. **Evitar las comillas angulares (`«` `»`).** Para citar, usa comillas
+   normales (`"Borrador"`, no `«Borrador»`).
 
 ## Botones y etiquetas no son descripciones
 
