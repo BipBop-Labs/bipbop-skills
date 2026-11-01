@@ -41,10 +41,11 @@ Revi coinciden en casi todo; donde difieren, manda la voz de Revi.
    "Los chats que no compartes". Si el título es suficientemente descriptivo,
    va solo: un subtítulo que lo repite con otras palabras es ruido y le quita
    peso al título.
-10. **Sin punto medio ni comillas angulares.** No uses `·` para separar datos:
-   escribe una oración, usa coma o pasa a otra línea ("Vence el 3 de marzo",
-   no "Permiso · 3 mar"). Para citar, usa comillas normales ("Borrador"), no
-   comillas angulares.
+10. **La separación es del componente, no del texto.** No uses `·` para
+   separar datos. En una interfaz, cada dato va en su propio elemento (tag,
+   etiqueta, columna) y el componente los separa con espacio o borde. En prosa,
+   escribe una oración ("El permiso vence el 3 de marzo", no "Permiso · 3 mar").
+   Para citar, usa comillas normales ("Borrador"), no comillas angulares.
 
 ## Botones y etiquetas no son descripciones
 
