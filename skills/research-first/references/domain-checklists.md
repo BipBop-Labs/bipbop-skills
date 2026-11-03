@@ -1,6 +1,6 @@
 # Qué buscar según el tipo de tarea
 
-Listas para el paso 3 de la skill. No hay que cubrir cada ítem: elige los que aplican al contexto del paso 1. Si la tarea no calza en ninguna sección, usa los cinco ejes del paso 3 tal cual.
+Listas para el paso 3 de la skill. No hay que cubrir cada ítem: elige los que aplican al contexto del paso 1. Si la tarea no calza en ninguna sección, usa los seis ejes del paso 3 tal cual.
 
 ## Comunicaciones (correos, avisos, comunicados, mensajes a clientes)
 
@@ -45,7 +45,8 @@ Listas para el paso 3 de la skill. No hay que cubrir cada ítem: elige los que a
 - La documentación oficial y el changelog de la versión que usa el proyecto, no de la última versión.
 - OWASP (Cheat Sheets y ASVS) para todo lo que toca autenticación, entrada de usuarios, secretos o permisos.
 - Si existe una librería mantenida que ya resuelve el problema: actividad reciente, licencia y adopción.
-- Implementaciones de referencia en proyectos conocidos.
+- Implementaciones de referencia en proyectos conocidos: el código, sus tests y los PRs que lo cambiaron.
+- Código open source que resuelve lo mismo, buscado por nombres de API, mensajes de error o archivos de configuración en GitHub code search, grep.app o Sourcegraph.
 - Lo que el propio repositorio ya hace en casos parecidos, que se busca antes que en internet.
 
 **Errores comunes:**
@@ -53,6 +54,7 @@ Listas para el paso 3 de la skill. No hay que cubrir cada ítem: elige los que a
 - Issues abiertos y CVEs de las librerías candidatas.
 - Postmortems públicos sobre el mismo tipo de sistema.
 - Las razones por las que la gente abandonó un enfoque popular.
+- Issues cerrados y reverts en proyectos que implementaron lo mismo: muestran los casos borde que costó descubrir.
 
 ## Procesos y políticas (onboarding, vacaciones, gestión de incidentes, aprobaciones)
 
@@ -66,7 +68,7 @@ Listas para el paso 3 de la skill. No hay que cubrir cada ítem: elige los que a
 **Guías y práctica:**
 
 - Marcos reconocidos: ISO, NIST, ITIL, o el estándar del sector.
-- Handbooks públicos de organizaciones comparables, como los de empresas que publican sus procesos o los manuales de servicios de gobierno.
+- Handbooks públicos de organizaciones comparables, incluidos los que viven en repositorios abiertos, como los de empresas que publican sus procesos o los manuales de servicios de gobierno.
 - Las políticas, ADRs y procesos que la organización ya tiene. Un proceso nuevo debe calzar con los existentes.
 
 **Errores comunes:**
