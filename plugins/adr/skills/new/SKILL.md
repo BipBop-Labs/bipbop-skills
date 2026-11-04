@@ -20,8 +20,9 @@ Arguments: `$ARGUMENTS`. Optional title and `--supersedes ADR-NNNN`.
    whether statuses live in frontmatter or inline. Next number = highest
    existing + 1.
 2. **Check for overlap.** Grep ADR titles, tags, and `paths` for the topic.
-   If an accepted ADR already covers it, show it and ask: supersede, extend
-   with evidence only, or abort. Do not write a duplicate.
+   If an accepted ADR already covers it, show it and ask: edit it and add a
+   `## History` line, supersede it if a different decision replaces it whole,
+   extend with evidence only, or abort. Do not write a duplicate.
 3. **Draft from evidence, not memory.** Sources, in order: the conversation
    so far, `git diff` / `git diff --staged`, the files touched. Fill:
    - Context: the forcing situation, with `file:line` or commit evidence.

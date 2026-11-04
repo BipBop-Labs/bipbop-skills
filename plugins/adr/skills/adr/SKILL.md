@@ -43,10 +43,13 @@ proposed -> rejected
 ```
 
 - `proposed`: drafted, not yet binding. Only a human moves it to `accepted`.
-- `accepted`: binding. Never edit its Decision. To change it, write a new ADR
-  with `supersedes: [ADR-NNNN]`, set the old one to `superseded` with
-  `superseded_by: [ADR-MMMM]`, and update the index. Typo fixes and added
-  evidence are fine; changing meaning is not.
+- `accepted`: binding. To change the decision, read its `## History`, edit the
+  ADR so it says what holds today, and add a line to `## History` with the date,
+  what changed and why. Do not bring back a discarded option without new
+  evidence. Typos and added evidence need no line. Git keeps the old text.
+- When a different decision replaces the whole ADR, write a new one with
+  `supersedes: [ADR-NNNN]`, set the old one to `superseded` with
+  `superseded_by: [ADR-MMMM]`, and update the index.
 - `deprecated`: no longer applies and nothing replaces it. Say why in the body.
 - `rejected`: considered and turned down. Keep it; it stops the idea from
   being re-proposed every quarter.
@@ -91,7 +94,7 @@ one decision.
    editing that spot. The comment form is language-agnostic:
    `# @decision ADR-0007: queue writes go through the outbox`.
 4. If your change conflicts with an accepted ADR, say so to the user before
-   proceeding. Offer `/adr:new` to supersede. Do not silently comply or
+   proceeding. Offer to edit the ADR. Do not silently comply or
    silently ignore.
 5. An ADR whose `paths` no longer exist is a staleness signal. Mention it; do
    not delete the ADR.
@@ -131,6 +134,7 @@ checks.
 
 - Writing ADRs for everything. Over-documentation is the top complaint in
   practice; stick to the trigger list.
-- Editing an accepted ADR to "update" it. Supersede instead.
+- Editing an accepted ADR without a `## History` line. The next agent cannot
+  see that the decision changed or why.
 - Loading the whole folder into context. Use the index and `paths`.
 - Inventing history. If the repository is silent, say "unknown".
