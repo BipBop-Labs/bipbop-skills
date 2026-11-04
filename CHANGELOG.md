@@ -15,6 +15,7 @@ Todos los cambios relevantes de este proyecto se documentan aquí. El formato si
 
 ### Changed
 
+- `adr` 0.3.0: un ADR aceptado se edita directo y cada cambio de decisión agrega una línea a `## History` con la fecha, qué cambió y por qué. `supersedes` queda solo para cuando otra decisión reemplaza el ADR completo.
 - `microcopy` (`bipbop-skills` 0.4.2): prohíbe el punto medio como separador y las comillas angulares. En una interfaz, cada dato va en su propio elemento y el componente los separa; en prosa se escribe una oración, y las citas van con comillas normales.
 - `microcopy` (`bipbop-skills` 0.4.1): distingue botones y etiquetas, que van como fragmento, de las descripciones (cards, tooltips, ayudas), que van en oraciones completas y sin remates. Agrega no describir lo que se describe solo: un subtítulo o eyebrow va solo si dice algo que el título no dice.
 - `bipflow` 0.2.0: `/bipflow:pr` elige la rama base según la rama actual. Desde una rama de trabajo apunta a `stg` (o `staging`) si existe en el remoto y a la rama por defecto si no. Desde `stg` distingue por contexto entre abrir una rama nueva con PR hacia `stg` y promover `stg` a la rama por defecto, y pregunta cuando no queda claro. Antes usaba siempre la rama por defecto de GitHub.

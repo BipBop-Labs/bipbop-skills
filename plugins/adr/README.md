@@ -85,7 +85,8 @@ Sections: Context, Decision, Options considered, Consequences, Rationale
 status (`confirmed` or `unknown`), Evidence. Full template in
 [skills/adr/templates/adr-template.md](skills/adr/templates/adr-template.md).
 
-Rules: an accepted ADR's Decision is never edited; supersede it. A
+Rules: to change an accepted ADR, edit it and add a line to its `## History`.
+A new ADR supersedes it only when a different decision replaces it whole. A
 `@decision ADR-NNNN` comment in code means read that ADR before touching the
 spot. `known-debt.md` lists things that look deliberate but are not; agents
 may fix those.

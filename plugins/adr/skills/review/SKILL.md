@@ -55,7 +55,7 @@ Relevant ADRs: ADR-0003 (paths), ADR-0007 (@decision tag in src/x.py)
 
 Likely violations
 - [high] ADR-0003: src/net/client.py adds `import requests`; Decision says
-  "all outbound HTTP goes through httpx". Supersede with /adr:new or revert.
+  "all outbound HTTP goes through httpx". Edit the ADR or revert.
 
 Changes that need an ADR
 - services/billing/ moved into packages/billing/ (trigger 2). Suggest

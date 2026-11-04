@@ -43,3 +43,9 @@ history without confirmation; treat the Decision as binding but the why as a gue
 
 - `path/to/file.ext:line` – what it shows.
 - commit `abc1234` – message or diff that shows the decision.
+
+## History
+
+One line per change to the decision, added when the ADR is edited.
+
+- YYYY-MM-DD: what changed and why.
