@@ -7,9 +7,9 @@ Checks:
   1. Every ADR has the required frontmatter fields and an allowed status.
   2. ADR numbers are unique and sequential, and match the filename.
   3. The index (README.md) lists every ADR and links only to existing ones.
-  4. supersedes / superseded_by links resolve in both directions.
+  4. Obsolete supersession metadata is absent.
   5. File paths referenced by ADRs still exist (staleness alarm).
-  6. `@decision ADR-NNNN` comments in code point to existing, non-superseded ADRs.
+  6. `@decision ADR-NNNN` comments in code point to existing ADRs.
   7. With --fail-on-proposed: no ADR is still `proposed`.
 
 Out of scope: judging whether code complies with a decision.
@@ -43,8 +43,7 @@ DEFAULT_ADR_DIRS = (
     "adrs",
     ".adr",
 )
-ALLOWED_STATUSES = ("proposed", "accepted", "superseded", "deprecated", "rejected")
-CLOSED_STATUSES = ("superseded", "deprecated", "rejected")
+ALLOWED_STATUSES = ("proposed", "accepted")
 REQUIRED_FIELDS = ("id", "title", "status", "date")
 INDEX_NAMES = ("README.md", "index.md", "INDEX.md")
 NON_ADR_FILES = {"known-debt.md", "template.md"}
@@ -206,7 +205,7 @@ def validate(
         if status and status not in ALLOWED_STATUSES:
             report.error(where, f"status '{status}' not in {', '.join(ALLOWED_STATUSES)}")
         if fail_on_proposed and status == "proposed":
-            report.error(where, "status is 'proposed'; a person must accept or reject it before it merges")
+            report.error(where, "status is 'proposed'; a person must accept it or remove the rejected draft before it merges")
         id_value = str(fields.get("id", ""))
         id_match = ADR_ID_RE.match(id_value)
         if id_value and not id_match:
@@ -250,42 +249,17 @@ def validate(
             if adr["path"].name not in linked:  # type: ignore[union-attr]
                 report.error(rel(index_path), f"does not list {adr['path'].name}")  # type: ignore[union-attr]
 
-    # 4. supersede links both ways
-    by_id = {f"ADR-{num:04d}": adr for num, adr in adrs.items()}
-    for num, adr in adrs.items():
-        where = rel(adr["path"])
-        me = f"ADR-{num:04d}"
-        fields = adr["fields"]  # type: ignore[assignment]
-        status = str(fields.get("status", "")).lower()
-        for target in as_list(fields.get("supersedes")):
-            other = by_id.get(target)
-            if other is None:
-                report.error(where, f"supersedes {target}, which does not exist")
-                continue
-            back = as_list(other["fields"].get("superseded_by"))  # type: ignore[union-attr]
-            if me not in back:
-                report.error(rel(other["path"]), f"must declare superseded_by: {me} (because {me} supersedes it)")
-            if str(other["fields"].get("status", "")).lower() != "superseded":  # type: ignore[union-attr]
-                report.error(rel(other["path"]), f"status must be 'superseded' because {me} supersedes it")
-        for target in as_list(fields.get("superseded_by")):
-            other = by_id.get(target)
-            if other is None:
-                report.error(where, f"superseded_by {target}, which does not exist")
-                continue
-            if me not in as_list(other["fields"].get("supersedes")):  # type: ignore[union-attr]
-                report.error(rel(other["path"]), f"must declare supersedes: {me} (because {me} is superseded_by it)")
-        if status == "superseded" and not as_list(fields.get("superseded_by")):
-            report.error(where, "status is 'superseded' but superseded_by is empty")
-        if status != "superseded" and as_list(fields.get("superseded_by")):
-            report.error(where, "has superseded_by but status is not 'superseded'")
+    # 4. current records do not form supersession archives
+    for adr in adrs.values():
+        fields = adr["fields"]
+        for key in ("supersedes", "superseded_by"):
+            if key in fields:
+                report.error(rel(adr["path"]), f"remove obsolete '{key}' metadata; rewrite current ADRs and repair references")
 
     # 5. referenced paths still exist
     for num, adr in adrs.items():
         where = rel(adr["path"])
         fields = adr["fields"]  # type: ignore[assignment]
-        status = str(fields.get("status", "")).lower()
-        if status in CLOSED_STATUSES:
-            continue  # closed decisions are allowed to go stale
         for pattern in as_list(fields.get("paths")):
             if not _path_pattern_matches(root, pattern):
                 report.warn(where, f"frontmatter path '{pattern}' matches nothing in the repository (stale?)")
@@ -320,12 +294,6 @@ def validate(
                     if adr is None:
                         report.error(where, f"@decision ADR-{num:04d} points to an ADR that does not exist")
                         continue
-                    status = str(adr["fields"].get("status", "")).lower()  # type: ignore[union-attr]
-                    if status == "superseded":
-                        by = ", ".join(as_list(adr["fields"].get("superseded_by"))) or "?"  # type: ignore[union-attr]
-                        report.error(where, f"@decision ADR-{num:04d} is superseded by {by}; update the tag")
-                    elif status in ("deprecated", "rejected"):
-                        report.warn(where, f"@decision ADR-{num:04d} has status '{status}'")
 
     return {"adr_dir": rel(adr_dir), "adrs": len(adrs), "decision_tags": tag_count}
 
@@ -387,7 +355,7 @@ python3 scripts/validate-adrs.py || exit 1
 # Run `python3 scripts/validate-adrs.py --strict --fail-on-proposed` and fail
 # the job on exit 1.
 #
-# --fail-on-proposed keeps ADRs that nobody has accepted or rejected from
+# --fail-on-proposed keeps undecided ADR drafts from
 # merging. Leave it out of the pre-commit options: drafting a `proposed` ADR
 # locally is normal.
 """

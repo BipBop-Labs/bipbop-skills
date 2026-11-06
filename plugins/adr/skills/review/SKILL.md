@@ -32,13 +32,15 @@ branch, else `HEAD`) or `--staged`.
    Decision paragraph to what the diff does. Report a finding only when the
    diff plausibly contradicts the Decision; cite the ADR, the file and hunk,
    and quote the sentence of the Decision at stake. Rate confidence
-   high / medium / low. Superseded or deprecated ADRs are not violations;
-   mention them only if the diff still references them in a tag.
-4. **Check for missing ADRs.** Run the trigger list from `../adr/SKILL.md`
-   against the diff: new or removed runtime dependency, new or moved module or
-   service, schema or migration change, public interface change, cross-cutting
-   convention change. For each hit without a covering ADR, report it and
-   suggest `/adr:new` with a one-line proposed title.
+   high / medium / low. Legacy superseded, deprecated, or rejected documents are not binding.
+   Report them as collection-maintenance issues; do not treat them as current
+   constraints or silently delete them.
+4. **Check unrecorded design intent.** Apply "When an ADR is warranted" and
+   "Keep the collection compact and current" in `../adr/SKILL.md`. Cite the
+   evidence and essential missing context for each candidate; suggest updating
+   related ADRs first. A technical change alone is not a finding. Report
+   uncertain intent or unavailable evidence as such, not as a missing ADR.
+   Also flag contradictory records and references left behind by consolidation.
 5. **Check known debt.** For each changed file, grep `known-debt.md` for its
    path or the item's keywords. If the diff touches a listed item, say that
    changing it is allowed, and if the diff appears to fix it, suggest removing
@@ -57,9 +59,9 @@ Likely violations
 - [high] ADR-0003: src/net/client.py adds `import requests`; Decision says
   "all outbound HTTP goes through httpx". Edit the ADR or revert.
 
-Changes that need an ADR
-- services/billing/ moved into packages/billing/ (trigger 2). Suggest
-  /adr:new "billing is a separate package".
+Qualifying ADR candidates
+- <evidence of the intended constraint, missing architectural context, and
+  affected existing ADRs or a justified new record; omit when none qualify>
 
 Known debt touched
 - src/legacy/parser.py is listed; change allowed. Looks fixed: remove entry.
@@ -67,8 +69,8 @@ Known debt touched
 Nothing else found.
 ```
 
-Omit empty sections. Never edit files, never fail a command, never add
-`@decision` tags from this skill.
+Omit empty sections. Never edit files or add `@decision` tags from this
+skill. Report validator failures without turning this review into a merge gate.
 
 ## Pitfalls
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Optional Stop hook: suggest /adr:new when a session looks like it made a decision.
+"""Optional Stop hook: suggest checking ADRs after possible design-related edits.
 
 Suggest-only. Never writes ADRs, never blocks. No LLM, no network, stdlib only.
 Opt-in: this file is NOT wired in hooks/hooks.json. See hooks/README.md.
@@ -107,7 +107,7 @@ def main() -> int:
         reasons.append("said \"" + decision_text[0] + "\"")
     print(json.dumps({
         "systemMessage": "ADR hint: this session " + " and ".join(reasons)
-        + ". If that was a deliberate architectural decision, run /adr:new to record it. (Suggestion only.)"
+        + ". Check applicable existing ADRs. Before suggesting a new one, apply the eligibility filter in the adr skill; file changes and decision wording alone do not qualify. No new ADR may be warranted. (Suggestion only.)"
     }))
     return 0
 

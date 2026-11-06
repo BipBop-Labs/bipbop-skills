@@ -22,30 +22,26 @@ Candidates:
   Compact, but hard to attach metadata and paths to.
 
 Chosen: MADR's shape with Nygard's length. YAML frontmatter with `id`,
-`title`, `status`, `date`, `deciders`, `tags`, `paths`, `supersedes`,
-`superseded_by`; body sections Context, Decision, Options considered,
+`title`, `status`, `date`, `deciders`, `tags`, `paths`; body sections Context, Decision, Options considered,
 Consequences, Rationale status, Evidence. Why:
 
-- Agents need fields they can grep and match (`paths`, `supersedes`), which
-  Nygard lacks and MADR has only partly (its `superseded by ADR-XXXX` is a
-  status string, not a list).
-- Both-ways supersede links are what lets a validator catch dangling
-  references without parsing prose.
+- `paths` lets agents select the relevant current constraints without loading
+  every document. The standing skill defines admission and maintenance policy.
 - Short bodies matter because agents read several ADRs per task, and
   arXiv 2609.07375 (~550 OSS repos) found real ADRs rarely fill MADR's
   optional sections anyway.
 - `Rationale status: unknown` is new. Every tool evaluated in Phase 0.5
-  invented rationale when the history was silent; the field makes the
-  guess explicit.
+  invented rationale when the history was silent; the field marks missing
+  rationale without turning speculation into evidence.
 - Sequential `NNNN-slug.md` numbering (adr-tools convention) rather than
-  date stamps, because it gives stable IDs for `@decision` tags.
+  date stamps, with reference updates whenever consolidation renumbers records.
 
 ## 2. Existing tooling
 
 From [adr.github.io/adr-tooling](https://adr.github.io/adr-tooling/):
 
-- **adr-tools** (bash, Nygard): the `NNNN-slug.md` and `supersede` CLI
-  conventions this plugin follows. Low activity, widely cloned.
+- **adr-tools** (bash, Nygard): the `NNNN-slug.md` naming
+  convention used by this plugin. Low activity, widely cloned.
 - **log4brains** (Node, MADR 2.1.2): CLI plus static site. Slow maintenance.
 - **adr-log**: index generator, listed as unmaintained. Replaced here by the
   marker-delimited index in `README.md`.
