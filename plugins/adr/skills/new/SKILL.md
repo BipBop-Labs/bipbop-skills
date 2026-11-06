@@ -1,6 +1,6 @@
 ---
 name: new
-description: Record a new Architecture Decision Record from the current conversation or diff, with context, options, decision, and consequences confirmed by the user, including superseding an older ADR. Use when the user runs /adr:new, says "write an ADR for this", or confirms a decision that matches an ADR trigger.
+description: Record a new Architecture Decision Record from the current conversation or diff, with context, options, decision, and consequences confirmed by the user, including superseding an older ADR. Use when the user runs /adr:new, says "write an ADR for this", or asks to record a lasting architectural constraint. Apply the standing eligibility filter before drafting.
 disable-model-invocation: true
 argument-hint: "[title or decision summary] [--supersedes ADR-NNNN]"
 allowed-tools: Read, Glob, Grep, Bash(git *), Bash(ls *), Bash(python3 *), Write, Edit, AskUserQuestion
@@ -15,6 +15,13 @@ Arguments: `$ARGUMENTS`. Optional title and `--supersedes ADR-NNNN`.
 
 ## Procedure
 
+0. **Check eligibility before creating files.** Apply "When to write an ADR"
+   and "Keep one source of truth" in `../adr/SKILL.md`. Identify the constraint,
+   essential missing information, and concrete future design risk. If it fails,
+   briefly explain "No ADR warranted" and stop without creating an ADR, folder,
+   or replacement Markdown. A request to record an implementation choice does
+   not by itself make the choice qualify.
+
 1. **Locate the ADR folder and conventions.** Read the index. If there is no
    ADR folder, say so and offer `/adr:init`; stop. Note the numbering and
    whether statuses live in frontmatter or inline. Next number = highest
@@ -26,7 +33,8 @@ Arguments: `$ARGUMENTS`. Optional title and `--supersedes ADR-NNNN`.
 3. **Draft from evidence, not memory.** Sources, in order: the conversation
    so far, `git diff` / `git diff --staged`, the files touched. Fill:
    - Context: the forcing situation, with `file:line` or commit evidence.
-   - Decision: one paragraph, active voice, the rule agents must follow.
+   - Decision: the qualifying design constraint and its scope. Link to code,
+     tests, or configuration for implementation details; do not copy them.
    - Options considered: the chosen one plus alternatives that were actually
      discussed or that an informed reviewer would raise. No strawmen.
    - Consequences: good, bad, watch.
@@ -72,4 +80,5 @@ Arguments: `$ARGUMENTS`. Optional title and `--supersedes ADR-NNNN`.
   first.
 - The user describes an intention, not a made decision: write it as
   `proposed`, not `accepted`.
-- Do not touch an accepted ADR's Decision section, even to "clarify".
+- Changes to an accepted decision require the user's confirmation and a
+  `## History` entry, following the standing lifecycle.

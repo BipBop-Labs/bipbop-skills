@@ -19,8 +19,10 @@ What situation forces a decision. Two to five sentences. Facts only, with eviden
 
 ## Decision
 
-One paragraph in the active voice: "We use X for Y." State the rule an agent
-must follow when touching the code listed in `paths`.
+State the lasting design constraint, its scope, and the essential intent or
+tradeoff missing from other authoritative sources. Explain what future changes
+it governs. Link to implementation and enforcement; do not copy algorithm
+steps, schemas, signatures, thresholds, or configuration values.
 
 ## Options considered
 
@@ -36,8 +38,9 @@ must follow when touching the code listed in `paths`.
 
 ## Rationale status
 
-`confirmed` (the decider stated the why) or `unknown` (recovered from code or
-history without confirmation; treat the Decision as binding but the why as a guess).
+`confirmed` (the decider stated the why) or `unknown` (the qualifying
+constraint was confirmed, but its rationale is unavailable). Observed behavior
+alone does not establish a binding decision. Omit speculative reasons.
 
 ## Evidence
 

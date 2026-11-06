@@ -1,6 +1,6 @@
 ---
 name: adr
-description: Standing rules for Architecture Decision Records (ADRs) in any repository, independent of language or framework. Use when about to make or change an architectural decision (new dependency, module or service boundary, data model, hard-to-reverse choice), when code contains a `@decision ADR-NNNN` comment, or when the user mentions ADRs, design decisions, or why code is the way it is.
+description: Rules for reading existing ADRs and deciding whether a new ADR is warranted. Use when working under an existing ADR, evaluating an important lasting design constraint, or discussing ADRs. A dependency, schema, interface, or implementation change alone does not warrant a new ADR.
 user-invocable: false
 ---
 
@@ -56,34 +56,73 @@ proposed -> rejected
 
 ## When to write an ADR
 
-Write one when a change does any of the following. Each is checkable from the
-diff:
+An ADR preserves important, lasting architectural intent that would otherwise
+be lost. It must not become a second source of truth for implementation behavior.
 
-1. Adds, removes, or swaps a runtime dependency, framework, database, queue,
-   or external service.
-2. Creates, merges, or moves a module, package, service, or deployable unit, or
-   changes who may import whom.
-3. Changes a persisted data model, schema, storage format, or migration
-   strategy.
-4. Changes a public interface: API contract, CLI flags, file format, event
-   shape, environment variables.
-5. Is hard to reverse: affects more than one team, needs a migration, or
-   locks in a vendor.
-6. Is a choice a reasonable reviewer would question ("why not the obvious
-   option?"), including choosing *not* to do something common.
-7. Sets a cross-cutting convention: error handling, logging, auth, i18n,
-   concurrency model, testing strategy.
+Create an ADR only when ALL of these conditions hold:
 
-Do **not** write an ADR for:
+1. It establishes a consequential design constraint that should guide future
+   changes beyond the current implementation.
+2. It adds essential information that cannot be reliably recovered from code,
+   tests, configuration, or an existing authoritative document: intended
+   boundaries, scope, rationale, or an accepted tradeoff.
+3. Losing that information creates a concrete risk of future changes violating
+   the intended architecture. Ordinary maintenance difficulty or a hypothetical
+   need to explain the code is insufficient.
 
-- a bug fix, refactor, or rename that keeps behaviour and boundaries;
-- formatting, lint, or dependency version bumps without API change;
-- anything already covered by an accepted ADR (link to it instead);
-- a decision the user has not confirmed (propose, do not record);
-- a local implementation detail nobody outside the file would question.
+Before proposing an ADR, identify the constraint, the missing information, and
+the future design mistake the record would help prevent. If these cannot be
+stated specifically, do not propose one. One ADR per qualifying decision.
 
-One ADR per decision. If a change hits several triggers, it is usually still
-one decision.
+## Keep one source of truth
+
+Code, tests, and configuration remain authoritative for algorithms, conditions,
+thresholds, schemas, interfaces, and execution behavior. Do not reproduce those
+details in an ADR. Link to their sources when needed to explain a qualifying
+architectural decision.
+
+If an architectural rule is already explicit in an automated check or another
+authoritative source, an ADR must contribute essential missing intent or
+context. Restating the rule does not qualify. If an accepted ADR covers the
+information, link to it instead of creating a duplicate.
+
+Do not manufacture architectural significance by reframing an implementation
+detail as a principle. "We must use algorithm X" does not qualify merely
+because it is written as a lasting rule.
+
+## Examples and boundaries
+
+These examples illustrate the filter; they are not automatic triggers.
+
+| May warrant an ADR when the filter is satisfied | Keep in its authoritative source |
+| --- | --- |
+| Which domain owns a business capability, and why other applications must access it through that boundary | Module locations, imports, endpoint signatures |
+| A requirement to support overlapping application versions during deployments, and its accepted constraints | Migration sequence, compatibility branches, rollback commands |
+| Treating a search index as disposable derived data, including which source remains authoritative | Index schema, rebuild algorithm, scheduling |
+| A deliberate isolation boundary for untrusted execution, with its accepted operational cost | Worker configuration, queue names, resource limits |
+| A project-specific division of responsibility between routers and application services, including why it must persist | Individual handlers, method signatures, existing lint rules |
+| A portability requirement that constrains future infrastructure choices, with its accepted limitations | Current provider, SDK version, adapter implementation |
+
+A new library, a difficult migration, repeated code, or a familiar design
+pattern is not sufficient evidence. Repetition does not establish intent.
+Generic advice such as "follow SOLID" does not qualify.
+
+Important business policies, legal requirements, and operational procedures
+belong in their respective authoritative sources. Importance and longevity
+alone do not make something an architectural decision.
+
+## When no ADR is warranted
+
+"No ADR warranted" is a valid outcome. Leave implementation details in code,
+tests, or configuration. Do not create another Markdown document as a fallback
+for a rejected ADR. If only a local explanation is missing, prefer a focused
+code comment.
+
+If design intent is uncertain, ask rather than inventing a constraint or
+rationale to make a candidate qualify. Confirm the decision before recording it.
+
+Apply this filter to new records. Existing accepted ADRs retain their status
+until explicitly changed through their lifecycle.
 
 ## How agents read ADRs
 
@@ -108,10 +147,11 @@ without an ADR. When fixing one, remove its entry in the same change.
 
 ## Rationale honesty
 
-Never write a reason the user did not confirm. When recovering decisions from
-code or history, set `Rationale status: unknown` and label guesses as guesses
-("Likely because…, not confirmed"). The Decision is still binding; the why is
-not evidence.
+Never write a reason the user did not confirm. Code and history show behavior;
+they do not establish a binding architectural intention. Confirm the intended
+constraint with the user before recording it. A confirmed qualifying constraint
+may have `Rationale status: unknown`; omit speculative reasons from the record.
+An unknown rationale does not waive the eligibility filter.
 
 ## Enforcement
 
@@ -123,6 +163,10 @@ approval.
 
 ## Validation
 
+When changing this policy or its command workflows, run the synthetic scenarios
+in [references/eligibility-cases.md](references/eligibility-cases.md) on a
+supported host. Distinguish policy execution from automatic skill discovery.
+
 `${CLAUDE_PLUGIN_ROOT}/scripts/validate-adrs.py` checks structure only:
 frontmatter, numbering, index sync, supersede links both ways, stale paths,
 and `@decision` tags. With `--fail-on-proposed` (meant for CI) an ADR still
@@ -133,7 +177,7 @@ checks.
 ## Pitfalls
 
 - Writing ADRs for everything. Over-documentation is the top complaint in
-  practice; stick to the trigger list.
+  practice; apply the eligibility filter before drafting.
 - Editing an accepted ADR without a `## History` line. The next agent cannot
   see that the decision changed or why.
 - Loading the whole folder into context. Use the index and `paths`.

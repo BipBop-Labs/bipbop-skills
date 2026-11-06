@@ -3,7 +3,7 @@
 This plugin ships **no active hooks**. `hooks/hooks.json` does not exist on
 purpose, so installing the plugin changes nothing about your sessions.
 
-## Optional: Stop hook that suggests `/adr:new`
+## Optional: Stop hook that suggests checking ADRs
 
 `scripts/stop-suggest.py` is an adrchive-style Stop hook reduced to a
 suggestion. It never writes an ADR and never blocks. It reads only the part of
@@ -11,7 +11,9 @@ the transcript it has not inspected yet, and prints a one-line system message
 when the session edited a dependency manifest, lockfile, migration, schema,
 CI file, or Dockerfile, or when assistant text contains decision language
 ("switched to", "instead of", "we decided", "migrate to"). It stays quiet when
-the session already wrote into an ADR folder.
+the session already wrote into an ADR folder. The message asks the agent to
+check applicable ADRs and apply the standing eligibility filter before suggesting
+a new one. These heuristics cannot establish whether a new ADR qualifies.
 
 Why it is off by default: Claude Code loads every hook in `hooks/hooks.json`
 whenever the plugin is enabled, with no per-hook opt-out, and keyword

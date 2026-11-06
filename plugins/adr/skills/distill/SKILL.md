@@ -1,6 +1,6 @@
 ---
 name: distill
-description: Recover implicit architecture decisions from an existing codebase and git history, rank them, and triage each with the user as accept (write ADR), accident (known debt), reject, or skip, with resumable state. Use when the user runs /adr:distill or asks to bootstrap, extract, or derive ADRs from existing code.
+description: Find qualifying lasting design constraints in code and history, filter out implementation-only or already documented choices, rank remaining candidates, and triage each with the user as accept (write ADR), accident (known debt), reject, or skip, with resumable state. Use when the user runs /adr:distill or asks to bootstrap, extract, or derive ADRs from existing code.
 disable-model-invocation: true
 argument-hint: "[--since <ref>] [--batch 5] [--reset]"
 allowed-tools: Read, Glob, Grep, Bash(git *), Bash(ls *), Bash(find *), Bash(wc *), Bash(python3 *), Write, Edit, AskUserQuestion
@@ -8,8 +8,10 @@ allowed-tools: Read, Glob, Grep, Bash(git *), Bash(ls *), Bash(find *), Bash(wc 
 
 # /adr:distill
 
-Turn what the code already decided into ADRs the user confirms. You find and
-rank candidates; the user decides. Standing rules: `../adr/SKILL.md`.
+Inspect code and history for evidence of lasting architectural intent missing
+from authoritative sources. Apply the eligibility filter before ranking; do not
+turn an implementation inventory into ADRs. The user confirms intent. Standing
+rules: `../adr/SKILL.md`.
 
 Arguments: `$ARGUMENTS`. `--since <ref>` limits history scanning to commits
 after a ref (incremental runs). `--batch N` sets candidates per round
@@ -62,7 +64,11 @@ enforcement suggestion at the end.
 
 ### 3. Collect candidates
 
-Work from evidence you can cite. Sources, all of them:
+Work from evidence you can cite. The sources below are investigation signals,
+not automatic candidates. Apply the eligibility filter in `../adr/SKILL.md`
+before retaining a candidate. Repetition alone does not establish a norm.
+Record uncertain intent as a question to resolve before promoting a candidate.
+Sources:
 
 - **Dependencies:** each runtime dependency that has a well-known alternative
   (ORM, HTTP client, queue, framework, state manager, test runner). Note
@@ -92,7 +98,8 @@ anything already covered by an ADR.
 
 ### 4. Rank
 
-Score each candidate 0 to 3 on each axis, sum, sort descending:
+Score only candidates that passed the eligibility filter, 0 to 3 on each
+axis, sum, sort descending:
 
 - **Hard to reverse:** migration needed, vendor lock-in, public contract.
 - **Easy for an agent to break:** an obvious "improvement" would undo it
@@ -100,20 +107,23 @@ Score each candidate 0 to 3 on each axis, sum, sort descending:
   deliberately avoided).
 - **Cross-cutting:** touches many files, teams, or layers.
 
-Drop candidates scoring 2 or less unless there are fewer than five in total.
+Drop candidates scoring 2 or less. Never retain a weak candidate to fill a
+batch. Zero qualifying candidates is a successful outcome; report that no ADR
+is warranted without creating ADR or replacement documentation files. Skip
+triage and enforcement; finish with the scan-state update and report in steps
+7 and 9.
 Keep a "Left out as too thin" list for the final report.
 
 ### 5. Present in batches of at most 5
 
 For each candidate show, in this order:
 
-1. **What the code does**, with evidence: `path:line` and commit SHAs. Do not
-   cite line numbers you have not opened.
-2. **Guess at why**, prefixed exactly `Guess (unconfirmed):`. One or two
-   sentences. If you have no plausible guess, write `No guess.`
-3. **Alternatives apparently avoided**, only when evidence suggests they were
-   considered (a removed dependency, a commit message, a comment). Otherwise
-   `None visible.`
+1. **Design constraint and evidence**, with inspected `path:line` and commit
+   SHAs. Distinguish observed behavior from confirmed intent.
+2. **Missing information and future design risk**: what an ADR would add
+   beyond code, tests, configuration, and existing documentation.
+3. **Confirmed rationale and alternatives**, only when supported. Otherwise
+   state `Unknown`; ask rather than filling the gap with a plausible story.
 4. Scores and rank.
 
 Then ask for a verdict. Use AskUserQuestion if available, one question per
@@ -123,11 +133,12 @@ candidates and ask the user to reply with a verdict per number.
 
 ### 6. Act on each verdict
 
-- **Accept:** ask for the rationale in one line (or confirm your guess, or
+- **Accept:** confirm the constraint and ask for the rationale in one line (or
   "unknown"). Write the ADR as `accepted` via the `/adr:new` procedure
   (template, numbering, index, optional `@decision` tag offer). If the user
-  gave no reason, `Rationale status: unknown` and keep the guess out of the
-  Decision section. Record `verdict: accepted`, `adr: ADR-NNNN`.
+  gave no reason, `Rationale status: unknown` and omit speculative reasons
+  from the record. Acceptance does not waive the eligibility filter. Record
+  `verdict: accepted`, `adr: ADR-NNNN`.
 - **Accident / tech debt:** add an entry to `known-debt.md` between its
   markers: what, why it exists (as told by the user, or "unknown"), fix when,
   date. Record `verdict: debt`.
@@ -149,8 +160,8 @@ advisory using `../adr/references/enforcement-by-stack.md` and the detected
 stack. Format:
 
 ```text
-ADR-0003 only-httpx-for-outbound-http: enforceable (banned alternative).
-  Suggested: import-linter contract forbidding `requests`, `urllib3`.
+ADR-0003 isolated-extension-execution: enforceable (boundary rule).
+  Suggested: dependency check preventing application imports of extension code.
 ADR-0004 single-writer-journal: advisory. Rely on @decision tag + /adr:review.
 ```
 
@@ -165,8 +176,8 @@ skipped, left out as too thin, checks added, and the validator result from
 
 ## Pitfalls
 
-- Writing rationale the user did not give. The guess label is not optional.
-- Proposing conventions ("we use 4-space indent") as decisions. Not a trigger.
+- Inventing architectural intent or rationale from observed implementation.
+- Proposing conventions ("we use 4-space indent") as decisions. Does not qualify.
 - More than five per batch. The user's attention is the bottleneck.
 - Forgetting the state file; the next run must not re-ask.
 - A huge repository: scope by `--since`, or by top-level directory, and say

@@ -15,6 +15,8 @@ Todos los cambios relevantes de este proyecto se documentan aquí. El formato si
 
 ### Changed
 
+- `adr` 0.4.0: restringe la creación a restricciones de diseño importantes y duraderas que aporten intención o contexto esencial ausente de las fuentes existentes. Algoritmos y reglas de ejecución permanecen en código, tests o configuración. `new`, `review`, `distill`, el template y el hook opcional usan el mismo filtro; encontrar cero candidatos es válido. Los ADRs aceptados existentes mantienen su vigencia.
+
 - `adr` 0.3.0: un ADR aceptado se edita directo y cada cambio de decisión agrega una línea a `## History` con la fecha, qué cambió y por qué. `supersedes` queda solo para cuando otra decisión reemplaza el ADR completo.
 - `microcopy` (`bipbop-skills` 0.4.2): prohíbe el punto medio como separador y las comillas angulares. En una interfaz, cada dato va en su propio elemento y el componente los separa; en prosa se escribe una oración, y las citas van con comillas normales.
 - `microcopy` (`bipbop-skills` 0.4.1): distingue botones y etiquetas, que van como fragmento, de las descripciones (cards, tooltips, ayudas), que van en oraciones completas y sin remates. Agrega no describir lo que se describe solo: un subtítulo o eyebrow va solo si dice algo que el título no dice.

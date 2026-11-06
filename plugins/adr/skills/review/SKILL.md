@@ -34,11 +34,13 @@ branch, else `HEAD`) or `--staged`.
    and quote the sentence of the Decision at stake. Rate confidence
    high / medium / low. Superseded or deprecated ADRs are not violations;
    mention them only if the diff still references them in a tag.
-4. **Check for missing ADRs.** Run the trigger list from `../adr/SKILL.md`
-   against the diff: new or removed runtime dependency, new or moved module or
-   service, schema or migration change, public interface change, cross-cutting
-   convention change. For each hit without a covering ADR, report it and
-   suggest `/adr:new` with a one-line proposed title.
+4. **Check for qualifying unrecorded constraints.** Apply the eligibility
+   filter in `../adr/SKILL.md`. Report a candidate only with evidence of its
+   intended constraint, essential missing information, and concrete future
+   design risk. Dependency, module, schema, or interface changes alone are
+   not findings. Do not infer intent from a diff alone. If intent is uncertain,
+   mark it as a question, not a missing-ADR finding. No new ADR warranted is
+   a valid outcome.
 5. **Check known debt.** For each changed file, grep `known-debt.md` for its
    path or the item's keywords. If the diff touches a listed item, say that
    changing it is allowed, and if the diff appears to fix it, suggest removing
@@ -57,9 +59,12 @@ Likely violations
 - [high] ADR-0003: src/net/client.py adds `import requests`; Decision says
   "all outbound HTTP goes through httpx". Edit the ADR or revert.
 
-Changes that need an ADR
-- services/billing/ moved into packages/billing/ (trigger 2). Suggest
-  /adr:new "billing is a separate package".
+Qualifying ADR candidates
+- The confirmed design brief assigns billing authority to one domain across
+  applications, but the durable scope and accepted consistency tradeoff are
+  absent from authoritative sources. Independent writes could break that
+  boundary. Suggest /adr:new "Billing domain authority". Cite the brief and
+  the inspected sources that establish this gap.
 
 Known debt touched
 - src/legacy/parser.py is listed; change allowed. Looks fixed: remove entry.

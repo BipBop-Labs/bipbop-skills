@@ -17,7 +17,7 @@ Nothing in it assumes a language or framework.
 
 Plus `scripts/validate-adrs.py`, a dependency-free Python script for
 structural validation, and an optional, off-by-default Stop hook that
-suggests `/adr:new` (see [hooks/README.md](hooks/README.md)).
+suggests checking applicable ADRs and the eligibility filter (see [hooks/README.md](hooks/README.md)).
 
 ## Install
 
@@ -53,13 +53,16 @@ codex plugin marketplace upgrade bipbop
    `README.md` (index), `template.md`, `known-debt.md`, adds a short block to
    `CLAUDE.md` or `AGENTS.md`, and offers to wire the validator into
    pre-commit or CI. If ADRs already exist elsewhere, it adopts them.
-2. `/adr:distill` on an existing codebase. Candidates arrive five at a time
-   with evidence, a clearly labelled guess at the rationale, and the
-   alternatives apparently avoided. You accept, mark as debt, reject, or
+2. `/adr:distill` on an existing codebase. Only qualifying candidates arrive,
+   at most five at a time,
+   with evidence, missing architectural intent, and future design risk.
+   Zero candidates is a valid outcome. You accept, mark as debt, reject, or
    skip. State lives in `docs/adr/.distill-state.json`, so later runs do not
    re-ask and new code can be distilled incrementally.
-3. `/adr:new` whenever a change hits a trigger (new dependency, boundary,
-   data model, public interface, hard-to-reverse or questionable choice).
+3. `/adr:new` only when the [eligibility filter](skills/adr/SKILL.md#when-to-write-an-adr)
+   identifies important, lasting architectural intent missing from authoritative
+   sources. Implementation changes alone do not qualify; keep their rules in
+   code, tests, or configuration.
 4. `/adr:review` before merging, to see which accepted decisions a diff
    touches, which changes need an ADR, and which known-debt items it fixes.
 
