@@ -65,37 +65,13 @@ enforcement suggestion at the end.
 
 ### 3. Collect candidates
 
-Work from evidence you can cite. The sources below are investigation signals,
-not automatic candidates. Apply the eligibility filter in `../adr/SKILL.md`
-before retaining a candidate. Repetition alone does not establish a norm.
-Record uncertain intent as a question to resolve before promoting a candidate.
-Sources:
+Inspect implementation, checks and configuration, existing documentation, and
+relevant Git history for evidence of design intent. Cite files and commits you
+actually read. These sources are evidence, not automatic candidates.
 
-- **Dependencies:** each runtime dependency that has a well-known alternative
-  (ORM, HTTP client, queue, framework, state manager, test runner). Note
-  pinned or vendored versions and `patches/` directories.
-- **Boundaries:** top-level modules, packages, services; explicit import rules
-  (lint config, `tsconfig` paths, `__init__` re-exports, visibility
-  modifiers); shared libraries; the "do not import X from Y" comments.
-- **Data:** schemas, migrations, storage formats, serialisation choices, ID
-  strategies, soft-delete versus hard-delete, time zones.
-- **Interfaces:** API style, versioning, error shape, CLI conventions, config
-  sources and precedence, environment variables.
-- **Cross-cutting conventions:** error handling, logging, auth, retries,
-  concurrency model, feature flags, i18n.
-- **Git history:** run `git log --format='%h %ad %s' --date=short` (bounded by
-  `--since`). Look for messages with `migrate`, `switch`, `replace`, `adopt`,
-  `drop`, `remove`, `revert`, `instead of`, `because`, `BREAKING`. Read the
-  bodies of those commits. Reverts and revert-of-revert pairs are strong
-  signals. For odd code (a hand-rolled thing where a library exists, a
-  disabled feature, an unusual flag), run `git log -L` or `git blame` on that
-  spot and read the commit.
-- **Comments:** `HACK`, `WORKAROUND`, `FIXME`, `TODO: remove`, `temporary`,
-  `do not` and `don't` in comments. These are often known-debt candidates,
-  not decisions.
-
-Skip: version bumps, formatting commits, test-only or docs-only changes,
-anything already fully covered by an ADR.
+Apply "When an ADR is warranted" in `../adr/SKILL.md` before retaining a
+candidate. Resolve uncertain intent with the user. Drop information already
+fully documented; propose updating related ADRs when new context fits there.
 
 ### 4. Rank
 
@@ -104,8 +80,7 @@ axis, sum, sort descending:
 
 - **Hard to reverse:** migration needed, vendor lock-in, public contract.
 - **Easy for an agent to break:** an obvious "improvement" would undo it
-  (e.g. replacing a hand-rolled client with the popular library the team
-  deliberately avoided).
+  by violating a confirmed constraint.
 - **Cross-cutting:** touches many files, teams, or layers.
 
 Drop candidates scoring 2 or less. Never retain a weak candidate to fill a
@@ -163,9 +138,8 @@ advisory using `../adr/references/enforcement-by-stack.md` and the detected
 stack. Format:
 
 ```text
-ADR-0003 isolated-extension-execution: enforceable (boundary rule).
-  Suggested: dependency check preventing application imports of extension code.
-ADR-0004 single-writer-journal: advisory. Rely on @decision tag + /adr:review.
+ADR-NNNN <current constraint>: enforceable or advisory.
+  Suggested: <check that protects the constraint, if appropriate>.
 ```
 
 Offer to add each check. Add nothing without a yes; when adding, follow the

@@ -35,15 +35,12 @@ branch, else `HEAD`) or `--staged`.
    high / medium / low. Legacy superseded, deprecated, or rejected documents are not binding.
    Report them as collection-maintenance issues; do not treat them as current
    constraints or silently delete them.
-4. **Check for qualifying unrecorded constraints.** Apply the eligibility
-   filter in `../adr/SKILL.md`. Report a candidate only with evidence of its
-   intended constraint, essential missing information, and concrete future
-   design risk. Dependency, module, schema, or interface changes alone are
-   not findings. Do not infer intent from a diff alone. If intent is uncertain,
-   mark it as a question, not a missing-ADR finding. No new ADR warranted is
-   a valid outcome. Prefer changes to related ADRs over a new record; report
-   conflicting current text, unnecessary replacement records, and references
-   left behind by consolidation or deletion.
+4. **Check unrecorded design intent.** Apply "When an ADR is warranted" and
+   "Keep the collection compact and current" in `../adr/SKILL.md`. Cite the
+   evidence and essential missing context for each candidate; suggest updating
+   related ADRs first. A technical change alone is not a finding. Report
+   uncertain intent or unavailable evidence as such, not as a missing ADR.
+   Also flag contradictory records and references left behind by consolidation.
 5. **Check known debt.** For each changed file, grep `known-debt.md` for its
    path or the item's keywords. If the diff touches a listed item, say that
    changing it is allowed, and if the diff appears to fix it, suggest removing
@@ -63,11 +60,8 @@ Likely violations
   "all outbound HTTP goes through httpx". Edit the ADR or revert.
 
 Qualifying ADR candidates
-- The confirmed design brief assigns billing authority to one domain across
-  applications, but the durable scope and accepted consistency tradeoff are
-  absent from authoritative sources. Independent writes could break that
-  boundary. Suggest /adr:new "Billing domain authority". Cite the brief and
-  the inspected sources that establish this gap.
+- <evidence of the intended constraint, missing architectural context, and
+  affected existing ADRs or a justified new record; omit when none qualify>
 
 Known debt touched
 - src/legacy/parser.py is listed; change allowed. Looks fixed: remove entry.
@@ -75,8 +69,8 @@ Known debt touched
 Nothing else found.
 ```
 
-Omit empty sections. Never edit files, never fail a command, never add
-`@decision` tags from this skill.
+Omit empty sections. Never edit files or add `@decision` tags from this
+skill. Report validator failures without turning this review into a merge gate.
 
 ## Pitfalls
 

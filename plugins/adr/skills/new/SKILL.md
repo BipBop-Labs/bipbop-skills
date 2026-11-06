@@ -18,43 +18,32 @@ replacement chain.
 
 ## Procedure
 
-0. **Check eligibility before creating files.** Apply "When to write an ADR"
-   and "Keep one source of truth" in `../adr/SKILL.md`. Identify the constraint,
-   essential missing information, and concrete future design risk. If it fails,
-   briefly explain "No ADR warranted" and stop without creating an ADR, folder,
-   or replacement Markdown. A request to record an implementation choice does
-   not by itself make the choice qualify.
+0. **Check eligibility.** Apply "When an ADR is warranted" in
+   `../adr/SKILL.md` before creating files. If it does not qualify, explain
+   briefly and stop. Invoking this command does not establish eligibility.
 
 1. **Locate the ADR folder and conventions.** Read the index. If there is no
    ADR folder, say so and offer `/adr:init`; stop. Note the numbering and
    whether statuses live in frontmatter or inline. Next number = highest
    existing + 1.
-2. **Prefer an existing home.** Read related ADRs by title, tags, and `paths`.
-   If the concern belongs to their scope, draft updates or a consolidation of
-   all affected records. Create a new ADR only for an independently qualifying
-   concern that would dilute their scope. If already fully covered, link and
-   stop. List proposed deletions and reference repairs for user review.
+2. **Find its home.** Read related ADRs by title, tags, and `paths`. Apply
+   "Keep the collection compact and current" in `../adr/SKILL.md`: update or
+   consolidate existing records first; create only for a separate concern.
+   If fully covered already, link and stop.
 3. **Draft from evidence, not memory.** Sources, in order: the conversation
    so far, `git diff` / `git diff --staged`, the files touched. Fill:
    - Context: the forcing situation, with `file:line` or commit evidence.
    - Decision: the qualifying design constraint and its scope. Link to code,
      tests, or configuration for implementation details; do not copy them.
    - Options considered: the chosen one plus alternatives that were actually
-     discussed or that an informed reviewer would raise. No strawmen.
+     discussed. Label any new alternatives as proposals, not past decisions.
    - Consequences: good, bad, watch.
    - `paths`: the globs the decision governs. Tight, not the whole repo.
    - `tags`: two to four.
-4. **Confirm with the user before writing.** Show the draft. Facts are yours,
-   decisions and reasons are theirs. Use AskUserQuestion if available:
-   - "Is this the decision?" (yes / edit)
-   - "Why?" with the main driver as options: performance, simplicity,
-     team familiarity, ecosystem or tooling, specific feature, constraint
-     inherited from elsewhere, other. Put your inferred reason first, marked
-     "[inferred] … confirm?".
-   - "Status now?" accepted (default when the user is the decider) or
-     proposed (needs someone else's sign-off).
-   If the user gives no reason, write `Rationale status: unknown` and keep
-   the Options section to what the evidence shows. Never invent a reason.
+4. **Confirm missing intent before writing.** Show the draft and ask only
+   about decisions, rationale, or status not already confirmed in the session.
+   Do not infer a reason to fill the template. If the qualifying decision is
+   confirmed but its reason is unavailable, use `Rationale status: unknown`.
 5. **Write the confirmed current text.** Update existing ADRs in place or
    create `NNNN-slug.md` only if step 2 justified a new file. Use the repository
    template or `${CLAUDE_PLUGIN_ROOT}/skills/adr/templates/adr-template.md`,
@@ -68,7 +57,6 @@ replacement chain.
    files when a retired ID is reused. Update filenames, frontmatter IDs, titles,
    saved distillation-state IDs, and `@decision` references throughout the
    repository; remove references when no applicable constraint remains.
-   Never create superseding records, archive copies, or tombstones.
 7. **Update the index** to list only the remaining documents and their current
    titles, scope, date, status, and consecutive IDs.
 8. **Offer `@decision` tags.** List one to three code locations where an agent

@@ -59,7 +59,7 @@ codex plugin marketplace upgrade bipbop
    Zero candidates is a valid outcome. You accept, mark as debt, reject, or
    skip. State lives in `docs/adr/.distill-state.json`, so later runs do not
    re-ask and new code can be distilled incrementally.
-3. `/adr:new` only when the [eligibility filter](skills/adr/SKILL.md#when-to-write-an-adr)
+3. `/adr:new` only when the [eligibility filter](skills/adr/SKILL.md#when-an-adr-is-warranted)
    identifies important, lasting architectural intent missing from authoritative
    sources. Implementation changes alone do not qualify; keep their rules in
    code, tests, or configuration.
