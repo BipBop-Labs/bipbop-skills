@@ -32,15 +32,18 @@ branch, else `HEAD`) or `--staged`.
    Decision paragraph to what the diff does. Report a finding only when the
    diff plausibly contradicts the Decision; cite the ADR, the file and hunk,
    and quote the sentence of the Decision at stake. Rate confidence
-   high / medium / low. Superseded or deprecated ADRs are not violations;
-   mention them only if the diff still references them in a tag.
+   high / medium / low. Legacy superseded, deprecated, or rejected documents are not binding.
+   Report them as collection-maintenance issues; do not treat them as current
+   constraints or silently delete them.
 4. **Check for qualifying unrecorded constraints.** Apply the eligibility
    filter in `../adr/SKILL.md`. Report a candidate only with evidence of its
    intended constraint, essential missing information, and concrete future
    design risk. Dependency, module, schema, or interface changes alone are
    not findings. Do not infer intent from a diff alone. If intent is uncertain,
    mark it as a question, not a missing-ADR finding. No new ADR warranted is
-   a valid outcome.
+   a valid outcome. Prefer changes to related ADRs over a new record; report
+   conflicting current text, unnecessary replacement records, and references
+   left behind by consolidation or deletion.
 5. **Check known debt.** For each changed file, grep `known-debt.md` for its
    path or the item's keywords. If the diff touches a listed item, say that
    changing it is allowed, and if the diff appears to fix it, suggest removing

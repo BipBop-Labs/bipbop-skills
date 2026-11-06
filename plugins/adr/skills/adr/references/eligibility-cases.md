@@ -21,6 +21,17 @@ These cases exercise policy execution, not automatic skill discovery.
 | 11 | Confirm a lasting overlapping-version deployment policy and accepted compatibility overhead absent from authoritative sources. Future migrations could break that guarantee. | ADR candidate about the guarantee and scope, not migration steps. |
 | 12 | Record a statutory retention deadline as an architectural decision. | Keep the requirement in its authoritative policy source. Importance and longevity alone are insufficient. |
 
+Additional lifecycle cases:
+
+| Case | Scenario | Expected behavior |
+| --- | --- | --- |
+| 13 | A new qualifying constraint refines the scope already governed by an ADR. | Rewrite the affected current record after confirmation; no replacement ADR or History section. |
+| 14 | Two overlapping records become one coherent constraint. | Consolidate into the best-fitting existing record, delete the redundant record, and repair all index and code references. |
+| 15 | A proposal is rejected or a constraint no longer applies. | Remove the document and references. No rejected/deprecated tombstone or archival copy. |
+| 16 | Removing obsolete ADRs leaves IDs 0003 and 0007. | Renumber to consecutive IDs and update filenames, frontmatter, titles, index, code tags, and other repository references together. |
+| 17 | A separate, independently qualifying concern would dilute existing ADR scopes. | A concise new record is appropriate. Small count does not require combining unrelated concerns. |
+| 18 | Initialization finds legacy superseded records and History sections. | Report the conflict and propose a scoped migration; do not rewrite or delete an existing collection merely upon adoption. |
+
 Also inspect workflow consistency: existing accepted decisions follow the
 standing lifecycle; zero-candidate runs skip triage but still finish reporting.
 

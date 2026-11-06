@@ -6,8 +6,6 @@ date: YYYY-MM-DD
 deciders: []
 tags: []
 paths: []
-supersedes: []
-superseded_by: []
 ---
 
 # ADR-NNNN: Short noun phrase stating the decision
@@ -46,9 +44,3 @@ alone does not establish a binding decision. Omit speculative reasons.
 
 - `path/to/file.ext:line` – what it shows.
 - commit `abc1234` – message or diff that shows the decision.
-
-## History
-
-One line per change to the decision, added when the ADR is edited.
-
-- YYYY-MM-DD: what changed and why.

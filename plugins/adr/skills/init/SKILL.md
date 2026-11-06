@@ -21,7 +21,9 @@ skips the CLAUDE.md/AGENTS.md edit.
    folder the README links as ADRs or decisions. If one exists with files
    matching `NNNN-*.md`, adopt it: keep its folder, numbering, and format
    (frontmatter `status:` or inline `**Status:**`). Report what you found and
-   which convention you will follow. Do not rewrite existing ADRs.
+   which convention you will follow. Do not rewrite existing ADRs. Report legacy
+   terminal statuses, replacement chains, or mandatory history sections as
+   incompatible with the current policy; propose a separate scoped cleanup.
 2. **Create what is missing, nothing else.** Target folder is the adopted one,
    `--dir`, or `docs/adr`. For each file, create it only if absent:
    - `README.md` from `${CLAUDE_PLUGIN_ROOT}/skills/adr/templates/readme-index.md`.
@@ -54,7 +56,7 @@ skips the CLAUDE.md/AGENTS.md edit.
      `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/validate-adrs.py" --print-setup`
      to the chosen place, following existing config style. The CI snippets
      run `--strict --fail-on-proposed`, so a pull request with an ADR still
-     `proposed` fails until a person accepts or rejects it; keep that flag
+     `proposed` fails until a person accepts it or removes the rejected draft; keep that flag
      out of pre-commit hooks. Tell the user.
    Never write into `.git/hooks` without explicit approval.
 7. **Report.** List created files, adopted conventions, skipped steps, and the

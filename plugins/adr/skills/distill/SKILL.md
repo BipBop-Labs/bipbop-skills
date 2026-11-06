@@ -49,8 +49,9 @@ skipped") or when their evidence changed since `updated`.
 ### 1. Prepare
 
 - Require an ADR folder; otherwise offer `/adr:init` and stop.
-- Read the index. Existing ADRs are not candidates; a candidate that overlaps
-  one becomes "already covered" and is dropped.
+- Read the index. Drop information already covered. If new qualifying intent
+  belongs to an existing ADR, propose updating or consolidating affected ADRs
+  instead of creating another record.
 - Load the state file if present and tell the user how many candidates are
   already decided and how many are pending or skipped.
 
@@ -94,7 +95,7 @@ Sources:
   not decisions.
 
 Skip: version bumps, formatting commits, test-only or docs-only changes,
-anything already covered by an ADR.
+anything already fully covered by an ADR.
 
 ### 4. Rank
 
@@ -134,8 +135,10 @@ candidates and ask the user to reply with a verdict per number.
 ### 6. Act on each verdict
 
 - **Accept:** confirm the constraint and ask for the rationale in one line (or
-  "unknown"). Write the ADR as `accepted` via the `/adr:new` procedure
-  (template, numbering, index, optional `@decision` tag offer). If the user
+  "unknown"). Record the confirmed current constraint as `accepted` via `/adr:new`,
+  preferring an existing ADR where its scope fits
+  (template, numbering, index, optional `@decision` tag offer). Never create
+  replacement chains or preserve obsolete records for history. If the user
   gave no reason, `Rationale status: unknown` and omit speculative reasons
   from the record. Acceptance does not waive the eligibility filter. Record
   `verdict: accepted`, `adr: ADR-NNNN`.

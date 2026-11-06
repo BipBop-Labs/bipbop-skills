@@ -21,7 +21,7 @@ Defaults, used when the repository has no ADRs yet:
 - `docs/adr/known-debt.md` is the known-debt log.
 - Template: [templates/adr-template.md](templates/adr-template.md). Short,
   YAML frontmatter, one paragraph per section. Fields: `id`, `title`, `status`,
-  `date`, `deciders`, `tags`, `paths`, `supersedes`, `superseded_by`.
+  `date`, `deciders`, `tags`, `paths`.
 - `paths` lists globs the decision governs. `/adr:review` and the validator use
   them. Keep the list tight.
 - Pointer for agents: [templates/agents-snippet.md](templates/agents-snippet.md),
@@ -31,28 +31,47 @@ Defaults, used when the repository has no ADRs yet:
 `docs/adr`, `doc/adr`, `docs/decisions`, `docs/architecture/decisions`, `adr/`,
 or anything linked from the README), keep their folder, numbering, and format.
 Detect the status convention (frontmatter `status:` versus an inline
-`**Status:**` line) and follow it. Only add the frontmatter fields this plugin
-needs (`paths`, `supersedes`, `superseded_by`) when the existing format is
-frontmatter-based; otherwise record them as a bullet list under the status.
+`**Status:**` line) and follow it. Only add `paths` when the existing format is
+frontmatter-based; otherwise
+record it as a bullet list under the status. Adoption does not authorize bulk
+rewrites or deletion of existing documents. Report legacy lifecycle conflicts
+and propose a scoped consolidation before changing them.
+
+## Keep the collection compact and current
+
+Maintain a small set of concise ADRs describing the architecture that applies
+now. Before adding a record, inspect related ADRs. Prefer rewriting or
+consolidating the affected documents when the decision belongs to their scope.
+Create a separate ADR only for an independently qualifying concern that would
+make those documents less coherent if combined. Do not combine unrelated
+constraints merely to reduce the file count.
+
+Rewrite all affected ADRs together so they remain consistent. Preserve their
+scope when it still applies; when consolidating, keep the best-fitting
+record and remove redundant ones. Renumber remaining ADRs as needed to keep
+numbering consecutive. Update frontmatter IDs, filenames, titles, the index,
+`@decision` tags, saved distillation-state ADR IDs, and all other repository
+references in the same change.
+Remove a reference when no current constraint replaces it.
+
+Do not supersede an ADR with another, retain obsolete or rejected ADRs, or add
+`History` sections, tombstones, replacement chains, or change logs. Git provides
+history. Remove obsolete rules from otherwise current records; delete a record
+when no applicable decision remains. Keep current rationale and accepted
+tradeoffs needed to understand today's constraint, without retelling its edits.
 
 ## Status lifecycle
 
-```text
-proposed -> accepted -> superseded | deprecated
-proposed -> rejected
-```
+- `proposed`: a draft awaiting human confirmation; not binding.
+- `accepted`: the current confirmed constraint; binding until explicitly
+  changed. Obtain confirmation for substantive changes and show the proposed
+  current text, including any consolidation or deletion.
+- If a proposal is rejected or a decision ceases to apply, remove its document
+  and references. Do not preserve it under a terminal status.
 
-- `proposed`: drafted, not yet binding. Only a human moves it to `accepted`.
-- `accepted`: binding. To change the decision, read its `## History`, edit the
-  ADR so it says what holds today, and add a line to `## History` with the date,
-  what changed and why. Do not bring back a discarded option without new
-  evidence. Typos and added evidence need no line. Git keeps the old text.
-- When a different decision replaces the whole ADR, write a new one with
-  `supersedes: [ADR-NNNN]`, set the old one to `superseded` with
-  `superseded_by: [ADR-MMMM]`, and update the index.
-- `deprecated`: no longer applies and nothing replaces it. Say why in the body.
-- `rejected`: considered and turned down. Keep it; it stops the idea from
-  being re-proposed every quarter.
+Changing this skill alone does not authorize rewriting existing repositories
+or change the meaning of their accepted ADRs. When an authorized change affects
+an existing collection, follow the compact-current policy above.
 
 ## When to write an ADR
 
@@ -168,7 +187,7 @@ in [references/eligibility-cases.md](references/eligibility-cases.md) on a
 supported host. Distinguish policy execution from automatic skill discovery.
 
 `${CLAUDE_PLUGIN_ROOT}/scripts/validate-adrs.py` checks structure only:
-frontmatter, numbering, index sync, supersede links both ways, stale paths,
+frontmatter, consecutive unique IDs, index sync, obsolete lifecycle metadata, stale paths,
 and `@decision` tags. With `--fail-on-proposed` (meant for CI) an ADR still
 `proposed` is an error. Exit 0 clean, 1 errors, 2 no ADR folder. It never judges
 whether code complies with a decision; that is `/adr:review` and per-decision
@@ -178,7 +197,7 @@ checks.
 
 - Writing ADRs for everything. Over-documentation is the top complaint in
   practice; apply the eligibility filter before drafting.
-- Editing an accepted ADR without a `## History` line. The next agent cannot
-  see that the decision changed or why.
+- Appending a replacement ADR or an edit history instead of updating the
+  current rule. Rewrite the affected records; Git preserves the old text.
 - Loading the whole folder into context. Use the index and `paths`.
 - Inventing history. If the repository is silent, say "unknown".

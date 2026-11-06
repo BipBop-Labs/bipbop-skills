@@ -1,17 +1,20 @@
 ---
 name: new
-description: Record a new Architecture Decision Record from the current conversation or diff, with context, options, decision, and consequences confirmed by the user, including superseding an older ADR. Use when the user runs /adr:new, says "write an ADR for this", or asks to record a lasting architectural constraint. Apply the standing eligibility filter before drafting.
+description: Record a new Architecture Decision Record from the current conversation or diff, with context, options, decision, and consequences confirmed by the user, including updating or consolidating related ADRs. Use when the user runs /adr:new, says "write an ADR for this", or asks to record a lasting architectural constraint. Apply the standing eligibility filter before drafting.
 disable-model-invocation: true
-argument-hint: "[title or decision summary] [--supersedes ADR-NNNN]"
+argument-hint: "[title or decision summary]"
 allowed-tools: Read, Glob, Grep, Bash(git *), Bash(ls *), Bash(python3 *), Write, Edit, AskUserQuestion
 ---
 
 # /adr:new
 
-Write one ADR for one decision. The user confirms the decision and the why;
+Record one qualifying concern concisely, preferring an existing ADR with the
+same scope over a new file. The user confirms the decision and the why;
 you draft everything else from evidence. Standing rules: `../adr/SKILL.md`.
 
-Arguments: `$ARGUMENTS`. Optional title and `--supersedes ADR-NNNN`.
+Arguments: `$ARGUMENTS`. Optional title. Legacy `--supersedes` requests are handled
+as proposals to rewrite or consolidate the affected ADRs, never as a
+replacement chain.
 
 ## Procedure
 
@@ -26,10 +29,11 @@ Arguments: `$ARGUMENTS`. Optional title and `--supersedes ADR-NNNN`.
    ADR folder, say so and offer `/adr:init`; stop. Note the numbering and
    whether statuses live in frontmatter or inline. Next number = highest
    existing + 1.
-2. **Check for overlap.** Grep ADR titles, tags, and `paths` for the topic.
-   If an accepted ADR already covers it, show it and ask: edit it and add a
-   `## History` line, supersede it if a different decision replaces it whole,
-   extend with evidence only, or abort. Do not write a duplicate.
+2. **Prefer an existing home.** Read related ADRs by title, tags, and `paths`.
+   If the concern belongs to their scope, draft updates or a consolidation of
+   all affected records. Create a new ADR only for an independently qualifying
+   concern that would dilute their scope. If already fully covered, link and
+   stop. List proposed deletions and reference repairs for user review.
 3. **Draft from evidence, not memory.** Sources, in order: the conversation
    so far, `git diff` / `git diff --staged`, the files touched. Fill:
    - Context: the forcing situation, with `file:line` or commit evidence.
@@ -51,17 +55,22 @@ Arguments: `$ARGUMENTS`. Optional title and `--supersedes ADR-NNNN`.
      proposed (needs someone else's sign-off).
    If the user gives no reason, write `Rationale status: unknown` and keep
    the Options section to what the evidence shows. Never invent a reason.
-5. **Write the ADR** as `NNNN-slug.md` from the repository's template (or
-   `${CLAUDE_PLUGIN_ROOT}/skills/adr/templates/adr-template.md`). Slug: three to
-   six lowercase words. `date` is today. `deciders` is the user's name or
-   handle if known, else empty.
-6. **Supersede, if applicable.** For `--supersedes` or a choice in step 2:
-   - new ADR: `supersedes: [ADR-OLD]`;
-   - old ADR: `status: superseded`, `superseded_by: [ADR-NEW]`. Change nothing
-     else in it. In inline-status repos, edit the `**Status:**` line to
-     `Superseded by ADR-NEW` and add a `Supersedes` line to the new one.
-7. **Update the index** rows between the markers (or the repository's own
-   index convention). Keep the old ADR listed with its new status.
+5. **Write the confirmed current text.** Update existing ADRs in place or
+   create `NNNN-slug.md` only if step 2 justified a new file. Use the repository
+   template or `${CLAUDE_PLUGIN_ROOT}/skills/adr/templates/adr-template.md`,
+   without obsolete lifecycle metadata or `History` sections. For a new file,
+   use the next ID chosen in step 1.
+   `date` is the current decision date; `deciders` is the known handle or empty.
+6. **Consolidate and remove obsolete content.** Remove redundant or inapplicable
+   ADRs included in the confirmed change. Renumber remaining records as needed
+   to keep consecutive IDs. Plan one mapping from original identities to final
+   IDs before renaming; apply it without cascading replacements or overwriting
+   files when a retired ID is reused. Update filenames, frontmatter IDs, titles,
+   saved distillation-state IDs, and `@decision` references throughout the
+   repository; remove references when no applicable constraint remains.
+   Never create superseding records, archive copies, or tombstones.
+7. **Update the index** to list only the remaining documents and their current
+   titles, scope, date, status, and consecutive IDs.
 8. **Offer `@decision` tags.** List one to three code locations where an agent
    is most likely to break the decision (the entry point of the governed
    `paths`, a config block, a boundary file). Ask before adding
@@ -69,16 +78,16 @@ Arguments: `$ARGUMENTS`. Optional title and `--supersedes ADR-NNNN`.
    Do not add tags without a yes.
 9. **Validate.** Run
    `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/validate-adrs.py"`; fix structural
-   errors it reports. Then report: file written, status, superseded ADR if
-   any, tags added, and whether the decision is enforceable per
+   errors it reports. Then report: files updated, created or removed, status,
+   references repaired, tags added, and whether the decision is enforceable per
    `../adr/references/enforcement-by-stack.md` (one sentence, no code unless
    asked).
 
 ## Pitfalls
 
-- Several decisions in one conversation: one ADR each; ask which to write
-  first.
+- Several decisions in one conversation: group related constraints by scope,
+  update their existing homes, and keep unrelated concerns separate.
 - The user describes an intention, not a made decision: write it as
   `proposed`, not `accepted`.
 - Changes to an accepted decision require the user's confirmation and a
-  `## History` entry, following the standing lifecycle.
+  rewrite of all affected current records, following the standing lifecycle.
