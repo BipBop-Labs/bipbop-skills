@@ -27,8 +27,9 @@ Use it for text that a person or another agent must act on:
 
 Do not use it where voice is the point: marketing copy, blog posts, or anything persuasive.
 STE is deliberately flat.
-Do not use it for a non-technical reader or for interface text.
-Use `simple-writing` for the first and `microcopy` for the second.
+Do not use it alone for a message that a person reads, or for interface text.
+A message to a person also follows `simple-writing`. That covers Discord and Slack messages, emails, PR comments, and replies to another developer.
+Interface text follows `microcopy`.
 Also leave quoted text alone.
 If you quote a user, a log, or a document, quote it as it is.
 
