@@ -1,6 +1,6 @@
 ---
 name: simple-writing
-description: "Rewrites text so a reader with no context, no patience and no technical background gets it on the first read. Two levels: plain language (default) and easy read (maximum simplicity, for readers who struggle with text). Use when a message must land with non-technical users - client emails, release notes for non-developers, instructions for support or admin staff, in-app copy, error messages, onboarding docs - or when asked to \"make this simpler\", \"explain it like they have no idea\", \"lenguaje simple\", \"lectura fácil\", \"escríbelo para que lo entiendan\", \"hazlo más corto y claro\". Works in English and Spanish."
+description: "Writes and rewrites text so a reader with no context, no patience and no technical background gets it on the first read. Two levels: plain language (default) and easy read (maximum simplicity, for readers who struggle with text). Use when a message must land with non-technical users - client emails, release notes for non-developers, instructions for support or admin staff, in-app copy, error messages, onboarding docs - or when asked to \"make this simpler\", \"explain it like they have no idea\", \"lenguaje simple\", \"lectura fácil\", \"escríbelo para que lo entiendan\", \"hazlo más corto y claro\". Also use it every time you write a message that a person reads: Discord or Slack messages, emails, PR and issue comments, and replies to other developers. Works in English and Spanish."
 ---
 
 # Simple writing
@@ -17,6 +17,21 @@ Two levels. Pick one before writing:
 
 When unsure, ask which one. If you can't ask, write plain language and offer the easy read
 version.
+
+## Messages to people
+
+Use this skill every time you write a message that a person reads, not only when someone asks
+for a rewrite. That covers Discord and Slack messages, emails, PR and issue comments, and
+replies to another developer. Apply the rules as you write the message.
+
+- Use the plain language level.
+- Write in the language of the channel or of the person you answer.
+- When the reader is a developer, keep the technical terms they already use (file names,
+  commands, tool names, error text) and do not explain them. Every other rule still applies:
+  answer first, one idea per sentence, short sentences, concrete dates and names.
+- A technical artifact (a PR description, a commit message, a report, a prompt) follows
+  `writing-simplified-technical-english`. A message that carries technical detail follows
+  both skills.
 
 ## The rules
 
