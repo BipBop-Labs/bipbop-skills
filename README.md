@@ -16,6 +16,7 @@ Incluidas en el plugin `bipbop-skills`.
 | [`research-first`](skills/research-first/) | Investigar cómo resuelve la industria una tarea (estándares, regulaciones, guías y errores conocidos), destilarlo en un brief con fuentes y hacer la tarea apoyada en él. |
 | [`simple-writing`](skills/simple-writing/) | Reescribir textos para que se entiendan a la primera, en lenguaje simple o lectura fácil. |
 | [`test-audit`](skills/test-audit/) | Filtrar tests nuevos al escribirlos y auditar tests de bajo valor, acoplados a la implementación o duplicados. Adaptada de [OpenClaw](https://github.com/openclaw/openclaw) (MIT). |
+| [`writing-simplified-technical-english`](skills/writing-simplified-technical-english/) | Escribir prosa técnica que no se pueda malinterpretar (informes, descripciones de PR, commits, instrucciones a otros agentes, mensajes de error) con las reglas de ASD-STE100, en inglés y en español. Adaptada de la skill homónima del [plugin de PostHog](https://github.com/PostHog/ai-plugin) (MIT). |
 
 ## Plugins adicionales
 
