@@ -3,7 +3,7 @@ name: new
 description: Record a new rule doc (an ADR, a policy, or a procedure) from the current conversation or diff, confirmed by the user, including updating or consolidating related docs. Use when the user runs /adr:new, says "write an ADR for this", "write a policy" or "document these steps", or asks to record a lasting architectural constraint or team rule. Apply the routing test and the eligibility filter before drafting.
 disable-model-invocation: true
 argument-hint: "[--kind adr|policy|procedure] [title or summary]"
-allowed-tools: Read, Glob, Grep, Bash(git *), Bash(ls *), Bash(python3 *), Write, Edit, AskUserQuestion
+allowed-tools: Read, Glob, Grep, Bash(git *), Bash(ls *), Bash(python3 *), Write, Edit, AskUserQuestion, Agent
 ---
 
 # /adr:new
@@ -81,6 +81,18 @@ the steps below once per part.
    references repaired, tags added, and whether the decision is enforceable per
    `../adr/references/enforcement-by-stack.md` (one sentence, no code unless
    asked).
+10. **Test with a fresh agent.** Ask the user first: it costs one subagent
+   run. Start a subagent with no context from this session. Give it a normal
+   task in the governed `paths` that the rule must change, written as a user
+   would ask for it. Do not name the doc, its kind, its ID, or the rule, so the
+   test does not lead the agent to it. Ask for a plan only, with no edits, and
+   ask it to list the docs that constrain its plan.
+   - **Pass:** the agent finds the doc and its plan follows the rule.
+   - **Fail:** the agent misses the doc, breaks the rule, or follows an old
+     copy in another file. Fix the cause (`paths`, the index row, the title,
+     a one-line pointer in an agent file, a restated copy) and test again, at
+     most two times.
+   Report the prompt you used and the result.
 
 ## Policy or procedure
 
@@ -106,6 +118,18 @@ the steps below once per part.
 7. **Validate.** Run
    `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/validate-adrs.py"` and fix the
    errors it reports. Report the files you changed.
+8. **Test with a fresh agent.** Ask the user first: it costs one subagent
+   run. Start a subagent with no context from this session. Give it a normal
+   task in the governed `paths` that the rule must change, written as a user
+   would ask for it. Do not name the doc, its kind, its ID, or the rule, so the
+   test does not lead the agent to it. Ask for a plan only, with no edits, and
+   ask it to list the docs that constrain its plan.
+   - **Pass:** the agent finds the doc and its plan follows the rule.
+   - **Fail:** the agent misses the doc, breaks the rule, or follows an old
+     copy in another file. Fix the cause (`paths`, the index row, the title,
+     a one-line pointer in an agent file, a restated copy) and test again, at
+     most two times.
+   Report the prompt you used and the result.
 
 ## Pitfalls
 
