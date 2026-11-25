@@ -1,7 +1,7 @@
 # Research notes for the `adr` plugin
 
-Short notes that justify the design. Checked 2026-10-02. Not a literature
-review.
+Short notes that justify the design. Checked 2026-10-02; section 7 checked
+2026-11-25. Not a literature review.
 
 ## 1. Format: MADR-derived, trimmed
 
@@ -143,3 +143,52 @@ The skill picks from that table at runtime after detecting the stack.
 | Context files cost tokens | Index first, `paths`-based selection, five-line snippet |
 | Loading is not enforcing | Enforcement table, `@decision` tags, `/adr:review` as a report-only backstop |
 | Stop-hook capture is noisy | Hook shipped disabled, suggest-only, no LLM |
+
+## 7. ADR, policy, and procedure (2026-11-25)
+
+The plugin now knows three kinds of rule doc. Prior art for the split:
+
+- **Scope of an ADR.** Nygard limits ADRs to "structure, non-functional
+  characteristics, dependencies, interfaces, or construction techniques"
+  ([cognitect.com, 2011](https://www.cognitect.com/blog/2011/11/15/documenting-architecture-decisions)).
+  Joel Parker Henderson says not to write an ADR when the decision is "not
+  about architecture" or "already fully covered elsewhere such as by standards
+  or policies"
+  ([joelparkerhenderson/architecture-decision-record](https://github.com/joelparkerhenderson/architecture-decision-record)).
+  Many coding-rule ADRs (no magic numbers, comments in English, lint rules)
+  are policies with a lint behind them.
+- **One format with a kind field failed.** MADR renamed itself to "Any
+  Decision Records" in 2022 and went back to "Architectural" in 2024
+  ([adr.github.io/madr](https://adr.github.io/madr/)). The kinds have
+  different lifecycles, so they get different folders and metadata.
+- **Names.** ISO 9001 practice separates policy, procedure, work instruction,
+  and record
+  ([Advisera](https://advisera.com/9001academy/knowledgebase/how-to-structure-quality-management-system-documentation/)).
+  NIST uses "policy" for a rule people must follow
+  ([csrc.nist.gov](https://csrc.nist.gov/glossary/term/security_policy)).
+  Rejected names: "guideline" (means optional), "standard" (clashes with
+  external standards), "principle" (a criterion, not a rule), "convention"
+  (only code style), "runbook" and "playbook" (alert response in SRE and
+  PagerDuty practice), Diataxis "how-to" (not binding,
+  [diataxis.fr](https://diataxis.fr/)).
+- **Lifecycles.** The GDS Way keeps standards apart from manuals and gives
+  each page a `review_in` period
+  ([gds-way.digital.cabinet-office.gov.uk](https://gds-way.digital.cabinet-office.gov.uk/)).
+  The Google SRE workbook says procedures go stale as fast as production
+  changes ([sre.google/workbook/on-call](https://sre.google/workbook/on-call/)),
+  so a procedure has `last_verified` and is deleted when a script replaces it.
+- **One source of truth.** GitLab's handbook-first rule and docs-as-code
+  practice ([handbook.gitlab.com](https://handbook.gitlab.com/handbook/about/handbook-usage/),
+  [writethedocs.org](https://www.writethedocs.org/guide/docs-as-code/)) and
+  Google's documentation guide
+  ([google.github.io/styleguide/docguide/best_practices](https://google.github.io/styleguide/docguide/best_practices.html))
+  support "one rule, one doc; link, do not restate", minimum viable docs, and
+  doc changes in the same change as the code.
+
+| Finding | Design choice |
+| --- | --- |
+| Coding rules end up as ADRs | Routing test: code first, then ADR, procedure, policy, split; "a rule with no tradeoff is a policy" |
+| One format for all kinds was reverted (MADR) | Three folders, three templates, metadata per kind |
+| Policies and procedures go stale | `review_in` and `last_verified`; the validator warns on expiry |
+| Rules get copied into agent files | One line per rule in `CLAUDE.md` / `AGENTS.md`, naming its source |
+| Renumbering breaks references | Policy and procedure file names are the ID; no numbers |

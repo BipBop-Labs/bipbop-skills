@@ -21,7 +21,7 @@
     {
       "name": "adr",
       "source": "./plugins/adr",
-      "description": "Architecture Decision Records: init, distill from existing code, record, review diffs, validate. Stack-agnostic.",
+      "description": "Architecture Decision Records, policies, and procedures: init, distill from existing code, record, review diffs, validate. Stack-agnostic.",
       "category": "development",
       "tags": [
         "adr",

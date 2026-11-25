@@ -1,19 +1,36 @@
 # adr
 
-Architecture Decision Records (ADRs) for any repository, built for coding
-agents. The plugin tells agents *why* code is the way it is, stops them from
-undoing deliberate decisions, and turns the important ones into checks.
-Nothing in it assumes a language or framework.
+Architecture Decision Records (ADRs), policies, and procedures for any
+repository, built for coding agents. The plugin tells agents *why* code is the
+way it is, stops them from undoing deliberate decisions, and turns the
+important ones into checks. Nothing in it assumes a language or framework.
+
+## Three kinds of rule doc
+
+| Kind | Folder | Holds |
+| --- | --- | --- |
+| ADR | `docs/adr/NNNN-slug.md` | How the system is built, with real options and a tradeoff |
+| Policy | `docs/policies/<name>.md` | A rule or definition to follow (writing rule, metric definition, review gate) |
+| Procedure | `docs/procedures/<name>.md` | Numbered steps for one task (deploy order, backfill) |
+
+Routing test, in order: code, lint, test, or config first; then ADR;
+procedure; policy; split a doc that mixes kinds. One rule, one doc: other docs
+and agent instruction files link to it and do not restate it. A rule with no
+tradeoff is a policy. Full rules in [skills/adr/SKILL.md](skills/adr/SKILL.md).
+
+Policy frontmatter: `title`, `status`, `owner`, `paths`, `last_reviewed`,
+`review_in`. Procedure frontmatter: `title`, `owner`, `paths`, `trigger`,
+`last_verified`. The file name is the ID, so there is no renumbering.
 
 ## What it does
 
 | Skill | Invoke as | Purpose |
 | --- | --- | --- |
 | `adr` | automatic | Standing rules: format, status lifecycle, when to write an ADR, how agents read them, known-debt log, rationale honesty. |
-| `init` | `/adr:init` | Create or adopt the ADR folder, template, index, `known-debt.md`, and the CLAUDE.md/AGENTS.md pointer. Idempotent. |
+| `init` | `/adr:init` | Create or adopt the ADR folder, template, index, `known-debt.md`, and the CLAUDE.md/AGENTS.md pointer. Offers `docs/policies/` and `docs/procedures/`. Idempotent. |
 | `distill` | `/adr:distill` | Recover implicit decisions from code and git history, rank them, and triage each as accept, accident/tech debt, reject, or skip. Resumable. |
-| `new` | `/adr:new` | Record a decision from the conversation or diff, with the user confirming the decision and the why. Updates or consolidates related records. |
-| `review` | `/adr:review` | Check a diff or branch against accepted ADRs. Report only. |
+| `new` | `/adr:new` | Record an ADR, policy, or procedure from the conversation or diff. Chooses the kind with the routing test. Updates or consolidates related records. |
+| `review` | `/adr:review` | Check a diff or branch against accepted ADRs, policies, and procedures. Report only. |
 
 Plus `scripts/validate-adrs.py`, a dependency-free Python script for
 structural validation, and an optional, off-by-default Stop hook that
@@ -98,7 +115,7 @@ may fix those.
 ## Validation script
 
 ```bash
-python3 "$CLAUDE_PLUGIN_ROOT/scripts/validate-adrs.py" [--root .] [--adr-dir docs/adr] [--strict] [--fail-on-proposed] [--json] [--no-code-scan]
+python3 "$CLAUDE_PLUGIN_ROOT/scripts/validate-adrs.py" [--root .] [--adr-dir docs/adr] [--policy-dir docs/policies] [--procedure-dir docs/procedures] [--adrs-only] [--strict] [--fail-on-proposed] [--json] [--no-code-scan]
 python3 "$CLAUDE_PLUGIN_ROOT/scripts/validate-adrs.py" --print-setup   # pre-commit and CI snippets
 ```
 
@@ -106,7 +123,15 @@ Checks: required frontmatter and allowed statuses; unique consecutive IDs matchi
 filenames; index in sync with the folder;
 rejection of obsolete statuses and supersession metadata; referenced paths still existing (warning); `@decision`
 tags pointing to existing ADRs. With `--fail-on-proposed`,
-an ADR still `proposed` is an error. Exit codes: `0` clean, `1` errors (or
+an ADR or policy still `proposed` is an error.
+
+For `docs/policies/` and `docs/procedures/` (when they exist): kebab-case file
+names with no number, no ADR in the wrong folder, required frontmatter per
+kind, numbered steps in a procedure, index in sync, `ADR-NNNN` mentions and
+relative links that resolve, stale `paths` (warning), and an expired review
+(warning): `last_reviewed` + `review_in` for a policy, `last_verified` +
+`review_in` (default 6 months) for a procedure. `--adrs-only` skips both
+folders. Exit codes: `0` clean, `1` errors (or
 warnings with `--strict`), `2` no ADR folder or bad usage.
 
 It does not judge whether code complies with a decision. That is

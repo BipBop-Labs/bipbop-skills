@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Structural validation for Architecture Decision Records (ADRs).
+"""Structural validation for rule docs: ADRs, policies and procedures.
 
 Deterministic checks only. No LLM, no network, Python 3.8+ standard library.
 
-Checks:
+ADR checks:
   1. Every ADR has the required frontmatter fields and an allowed status.
   2. ADR numbers are unique and sequential, and match the filename.
   3. The index (README.md) lists every ADR and links only to existing ones.
@@ -11,6 +11,16 @@ Checks:
   5. File paths referenced by ADRs still exist (staleness alarm).
   6. `@decision ADR-NNNN` comments in code point to existing ADRs.
   7. With --fail-on-proposed: no ADR is still `proposed`.
+
+Policy and procedure checks (docs/policies/ and docs/procedures/ by default):
+  8. File names are kebab-case without a number, and the file is not an ADR.
+  9. Required frontmatter for the kind; a policy has an allowed status.
+ 10. A procedure has numbered steps.
+ 11. The folder index (README.md) lists every doc and links only to existing ones.
+ 12. Frontmatter paths match files (warning); ADR-NNNN mentions and relative
+     links resolve.
+ 13. A policy past last_reviewed + review_in, or a procedure past
+     last_verified + review_in (default 6 months), is a warning.
 
 Out of scope: judging whether code complies with a decision.
 
@@ -28,6 +38,7 @@ import json
 import os
 import re
 import sys
+from datetime import date as Date, timedelta
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
@@ -63,6 +74,22 @@ SKIP_DIRS = {
     "Pods", "DerivedData", ".gradle", ".terraform", ".dart_tool",
 }
 MAX_SCAN_BYTES = 1_000_000
+
+DEFAULT_POLICY_DIRS = ("docs/policies", "doc/policies", "policies")
+DEFAULT_PROCEDURE_DIRS = ("docs/procedures", "doc/procedures", "procedures")
+KIND_REQUIRED_FIELDS = {
+    "policy": ("title", "status", "owner", "last_reviewed", "review_in"),
+    "procedure": ("title", "owner", "trigger", "last_verified"),
+}
+KIND_DATE_FIELD = {"policy": "last_reviewed", "procedure": "last_verified"}
+DEFAULT_PROCEDURE_REVIEW = "6 months"
+NON_RULE_FILES = {"template.md"}
+KEBAB_FILENAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*\.md$")
+NUMBERED_FILENAME_RE = re.compile(r"^\d+-")
+ADR_REF_RE = re.compile(r"\bADR-(?P<num>\d{4})\b")
+NUMBERED_STEP_RE = re.compile(r"^\s{0,3}1[.)]\s+\S", re.MULTILINE)
+REVIEW_IN_RE = re.compile(r"^(?P<n>\d+)\s*(?P<unit>day|week|month|year)s?$", re.IGNORECASE)
+UNIT_DAYS = {"day": 1, "week": 7, "month": 30, "year": 365}
 
 
 class Report:
@@ -298,6 +325,124 @@ def validate(
     return {"adr_dir": rel(adr_dir), "adrs": len(adrs), "decision_tags": tag_count}
 
 
+def find_kind_dir(root: Path, explicit: Optional[str], defaults: Tuple[str, ...]) -> Optional[Path]:
+    if explicit:
+        candidate = (root / explicit).resolve()
+        return candidate if candidate.is_dir() else None
+    return next((root / rel for rel in defaults if (root / rel).is_dir()), None)
+
+
+def review_deadline(last: str, review_in: str) -> Optional[Date]:
+    """Return the date a doc expires, or None if the fields cannot be read."""
+    try:
+        if DATE_RE.match(review_in):
+            return Date.fromisoformat(review_in)
+        match = REVIEW_IN_RE.match(review_in.strip())
+        if not match or not DATE_RE.match(last):
+            return None
+        days = int(match.group("n")) * UNIT_DAYS[match.group("unit").lower()]
+        return Date.fromisoformat(last) + timedelta(days=days)
+    except ValueError:
+        return None
+
+
+def validate_kind(
+    root: Path,
+    kind: str,
+    folder: Path,
+    adr_numbers: Optional[set],
+    report: Report,
+    fail_on_proposed: bool = False,
+    today: Optional[Date] = None,
+) -> int:
+    """Check one policy or procedure folder. Return the number of docs."""
+    rel = lambda p: str(Path(p).resolve().relative_to(root.resolve())) if _inside(root, p) else str(p)  # noqa: E731
+    today = today or Date.today()
+    docs = []
+    for path in sorted(folder.iterdir()):
+        if not path.is_file() or path.suffix != ".md" or path.name in INDEX_NAMES or path.name in NON_RULE_FILES:
+            continue
+        where = rel(path)
+        try:
+            text = path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError) as exc:
+            report.error(where, f"cannot read: {exc}")
+            continue
+        fields, body = parse_frontmatter(text)
+        if fields is None:
+            report.error(where, "missing YAML frontmatter (--- block at top of file)")
+            fields, body = {}, text
+        if ADR_ID_RE.match(str(fields.get("id", ""))) or ADR_FILENAME_RE.match(path.name):
+            report.error(where, f"looks like an ADR; move it to the ADR folder or rewrite it as a {kind}")
+            continue
+        if not KEBAB_FILENAME_RE.match(path.name) or NUMBERED_FILENAME_RE.match(path.name):
+            report.error(where, f"{kind} file name must be kebab-case.md with no number")
+        docs.append(path.name)
+
+        for key in KIND_REQUIRED_FIELDS[kind]:
+            if key not in fields or fields[key] in ("", []):
+                report.error(where, f"missing required {kind} frontmatter field '{key}'")
+        if kind == "policy":
+            status = str(fields.get("status", "")).lower()
+            if status and status not in ALLOWED_STATUSES:
+                report.error(where, f"status '{status}' not in {', '.join(ALLOWED_STATUSES)}")
+            if fail_on_proposed and status == "proposed":
+                report.error(where, "status is 'proposed'; a person must accept it or remove the draft before it merges")
+        if kind == "procedure" and not NUMBERED_STEP_RE.search(str(body)):
+            report.error(where, "procedure has no numbered steps (a line that starts with '1.')")
+        if not str(body).strip():
+            report.error(where, "body is empty")
+
+        date_key = KIND_DATE_FIELD[kind]
+        last = str(fields.get(date_key, ""))
+        if last and not DATE_RE.match(last):
+            report.error(where, f"{date_key} '{last}' must be YYYY-MM-DD")
+        review_in = str(fields.get("review_in", "") or (DEFAULT_PROCEDURE_REVIEW if kind == "procedure" else ""))
+        if last and review_in:
+            deadline = review_deadline(last, review_in)
+            if deadline is None:
+                report.error(where, f"review_in '{review_in}' must be YYYY-MM-DD or like '6 months'")
+            elif deadline < today:
+                report.warn(where, f"expired on {deadline.isoformat()}: check it, then update {date_key}")
+
+        for pattern in as_list(fields.get("paths")):
+            if not _path_pattern_matches(root, pattern):
+                report.warn(where, f"frontmatter path '{pattern}' matches nothing in the repository (stale?)")
+        if adr_numbers is not None:
+            for match in ADR_REF_RE.finditer(str(body)):
+                if int(match.group("num")) not in adr_numbers:
+                    report.error(where, f"mentions ADR-{match.group('num')}, which does not exist")
+        for target in LINK_RE.findall(str(body)):
+            target = target.split("#", 1)[0]
+            if not target or "://" in target or target.startswith("mailto:"):
+                continue
+            if not (path.parent / target).exists():
+                report.error(where, f"links to missing file {target}")
+
+    index_path = next((folder / n for n in INDEX_NAMES if (folder / n).is_file()), None)
+    if index_path is None:
+        report.error(rel(folder), "index file README.md is missing")
+    else:
+        index_text = index_path.read_text(encoding="utf-8", errors="replace")
+        linked = set()
+        for target in LINK_RE.findall(index_text):
+            target = target.split("#", 1)[0]
+            if not target or "://" in target or target.startswith("mailto:"):
+                continue
+            if "/" in target.strip("./") or not target.endswith(".md"):
+                continue
+            name = Path(target).name
+            if name in INDEX_NAMES or name in NON_RULE_FILES:
+                continue
+            linked.add(name)
+            if not (folder / name).is_file():
+                report.error(rel(index_path), f"links to missing {kind} {target}")
+        for name in docs:
+            if name not in linked:
+                report.error(rel(index_path), f"does not list {name}")
+    return len(docs)
+
+
 def _inside(root: Path, path: Path) -> bool:
     try:
         Path(path).resolve().relative_to(root.resolve())
@@ -367,6 +512,9 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--root", default=".", help="repository root (default: current directory)")
     parser.add_argument("--adr-dir", help="ADR folder relative to root (default: auto-detect docs/adr and friends)")
+    parser.add_argument("--policy-dir", help="policy folder relative to root (default: auto-detect docs/policies)")
+    parser.add_argument("--procedure-dir", help="procedure folder relative to root (default: auto-detect docs/procedures)")
+    parser.add_argument("--adrs-only", action="store_true", help="check ADRs only; skip policies and procedures")
     parser.add_argument("--no-code-scan", action="store_true", help="skip scanning code for @decision tags")
     parser.add_argument("--strict", action="store_true", help="treat warnings as errors")
     parser.add_argument(
@@ -387,13 +535,34 @@ def main(argv: Optional[List[str]] = None) -> int:
         print(f"error: root {args.root} is not a directory", file=sys.stderr)
         return 2
     adr_dir = find_adr_dir(root, args.adr_dir)
-    if adr_dir is None:
+    kind_dirs: Dict[str, Optional[Path]] = {"policy": None, "procedure": None}
+    if not args.adrs_only:
+        for kind, explicit, defaults in (
+            ("policy", args.policy_dir, DEFAULT_POLICY_DIRS),
+            ("procedure", args.procedure_dir, DEFAULT_PROCEDURE_DIRS),
+        ):
+            kind_dirs[kind] = find_kind_dir(root, explicit, defaults)
+            if explicit and kind_dirs[kind] is None:
+                print(f"error: {kind} directory {explicit} not found.", file=sys.stderr)
+                return 2
+    if adr_dir is None and (args.adr_dir or not any(kind_dirs.values())):
         looked = args.adr_dir or ", ".join(DEFAULT_ADR_DIRS)
         print(f"error: no ADR directory found (looked for: {looked}). Run /adr:init or pass --adr-dir.", file=sys.stderr)
         return 2
 
     report = Report()
-    summary = validate(root, adr_dir, not args.no_code_scan, report, args.fail_on_proposed)
+    if adr_dir is not None:
+        summary = validate(root, adr_dir, not args.no_code_scan, report, args.fail_on_proposed)
+        adr_numbers: Optional[set] = {
+            int(m.group("num")) for p in adr_dir.iterdir() for m in [ADR_FILENAME_RE.match(p.name)] if m
+        }
+    else:
+        summary = {"adr_dir": None, "adrs": 0, "decision_tags": 0}
+        adr_numbers = None
+    for kind, key in (("policy", "policies"), ("procedure", "procedures")):
+        folder = kind_dirs[kind]
+        summary[key] = validate_kind(root, kind, folder, adr_numbers, report, args.fail_on_proposed) if folder else 0
+        summary[f"{kind}_dir"] = str(folder.relative_to(root)) if folder else None
     failed = bool(report.errors) or (args.strict and bool(report.warnings))
 
     if args.json:
@@ -408,6 +577,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     print(
         f"{verdict}: {summary['adrs']} ADRs in {summary['adr_dir']}, "
         f"{summary['decision_tags']} @decision tags, "
+        f"{summary['policies']} policies, {summary['procedures']} procedures, "
         f"{len(report.errors)} errors, {len(report.warnings)} warnings"
         + (" (strict)" if args.strict else "")
     )

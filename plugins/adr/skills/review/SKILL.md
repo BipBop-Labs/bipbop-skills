@@ -1,6 +1,6 @@
 ---
 name: review
-description: Check the current diff or branch against accepted Architecture Decision Records and flag likely violations, changes that need a new ADR, and touches to known debt. Report only, never block or fix. Use when the user runs /adr:review or asks whether a change respects the ADRs or design decisions.
+description: Check the current diff or branch against accepted Architecture Decision Records, policies, and procedures, and flag likely violations, changes that need a new or changed doc, and touches to known debt. Report only, never block or fix. Use when the user runs /adr:review or asks whether a change respects the ADRs, policies, or design decisions.
 disable-model-invocation: true
 argument-hint: "[base-ref] [--staged]"
 allowed-tools: Read, Glob, Grep, Bash(git *), Bash(ls *), Bash(python3 *)
@@ -27,6 +27,8 @@ branch, else `HEAD`) or `--staged`.
      changed hunk (`git diff -U30` and grep the hunk);
    - index titles and tags that share a topic with the diff (dependency names
      in manifests, module names in paths, words in commit messages).
+   - the same `paths` match against the policy and procedure indexes, when
+     those folders exist.
    Open only those. List them with the reason each was selected.
 3. **Check for violations.** For each relevant accepted ADR, compare its
    Decision paragraph to what the diff does. Report a finding only when the
@@ -35,6 +37,13 @@ branch, else `HEAD`) or `--staged`.
    high / medium / low. Legacy superseded, deprecated, or rejected documents are not binding.
    Report them as collection-maintenance issues; do not treat them as current
    constraints or silently delete them.
+3b. **Check policies and procedures.** For each relevant accepted policy,
+   report a diff that plausibly breaks its Rule section, in the same form as
+   step 3. For each relevant procedure, report a diff that makes a step,
+   the verify step, or the rollback step wrong, and suggest an update to the
+   procedure in the same change. If the diff adds or edits a rule doc, check
+   that its kind is right (routing test in `../adr/SKILL.md`) and that it does
+   not restate a rule that another doc holds.
 4. **Check unrecorded design intent.** Apply "When an ADR is warranted" and
    "Keep the collection compact and current" in `../adr/SKILL.md`. Cite the
    evidence and essential missing context for each candidate; suggest updating
@@ -47,17 +56,22 @@ branch, else `HEAD`) or `--staged`.
    the entry.
 6. **Validator.** Run
    `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/validate-adrs.py" --no-code-scan`
-   only if the diff touches the ADR folder; include its errors.
+   only if the diff touches the ADR, policy, or procedure folder; include its errors.
 7. **Report** in this shape and nothing else:
 
 ```text
 ADR review of <range> (<n> files)
 
-Relevant ADRs: ADR-0003 (paths), ADR-0007 (@decision tag in src/x.py)
+Relevant docs: ADR-0003 (paths), ADR-0007 (@decision tag in src/x.py),
+policies/product-metrics.md (paths)
 
 Likely violations
 - [high] ADR-0003: src/net/client.py adds `import requests`; Decision says
   "all outbound HTTP goes through httpx". Edit the ADR or revert.
+
+Likely policy or procedure breaks
+- [medium] policies/product-metrics.md: src/metrics/active.py counts daily
+  users; Rule says "active means one session in the last 7 days".
 
 Qualifying ADR candidates
 - <evidence of the intended constraint, missing architectural context, and

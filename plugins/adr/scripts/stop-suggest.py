@@ -35,7 +35,7 @@ DECISION_RE = re.compile(
     r"dropp?(ed|ing) (the )?\S+ (dependency|backend|library|service)|adopt(ed|ing)|new (dependency|service|module|table|schema))\b",
     re.IGNORECASE,
 )
-ADR_DIR_RE = re.compile(r"(^|/)(docs?/adrs?|docs/decisions|docs/architecture/decisions|adrs?)/", re.IGNORECASE)
+ADR_DIR_RE = re.compile(r"(^|/)(docs?/adrs?|docs/decisions|docs/architecture/decisions|adrs?|docs?/policies|docs?/procedures)/", re.IGNORECASE)
 MIN_NEW_BYTES = 2048
 
 

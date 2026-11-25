@@ -69,7 +69,13 @@ Inspect implementation, checks and configuration, existing documentation, and
 relevant Git history for evidence of design intent. Cite files and commits you
 actually read. These sources are evidence, not automatic candidates.
 
-Apply "When an ADR is warranted" in `../adr/SKILL.md` before retaining a
+Apply the routing test in "Three kinds of rule doc" in `../adr/SKILL.md`
+to each candidate. A team rule with no tradeoff (a style rule, a metric
+definition, a review gate) is a policy candidate. A repeated sequence of manual
+steps is a procedure candidate. A rule that a lint or test can state is a
+check candidate, not a doc. Label each candidate with its kind.
+
+Apply "When an ADR is warranted" in `../adr/SKILL.md` before retaining an ADR
 candidate. Resolve uncertain intent with the user. Drop information already
 fully documented; propose updating related ADRs when new context fits there.
 
@@ -109,7 +115,10 @@ candidates and ask the user to reply with a verdict per number.
 
 ### 6. Act on each verdict
 
-- **Accept:** confirm the constraint and ask for the rationale in one line (or
+- **Accept a policy or procedure candidate:** write it with the "Policy or
+  procedure" steps of `/adr:new`. Record `verdict: accepted` and
+  `doc: <path>` in place of `adr`.
+- **Accept an ADR candidate:** confirm the constraint and ask for the rationale in one line (or
   "unknown"). Record the confirmed current constraint as `accepted` via `/adr:new`,
   preferring an existing ADR where its scope fits
   (template, numbering, index, optional `@decision` tag offer). Never create
