@@ -24,7 +24,7 @@ Se instalan por separado y sus skills llevan su propio namespace.
 
 | Plugin | Uso |
 | --- | --- |
-| [`adr`](plugins/adr/) | Architecture Decision Records para cualquier repositorio: `/adr:init`, `/adr:distill`, `/adr:new`, `/adr:review` y un validador sin dependencias. Instalar con `/plugin install adr@bipbop`. |
+| [`adr`](plugins/adr/) | Architecture Decision Records, políticas y procedimientos para cualquier repositorio: `/adr:init`, `/adr:distill`, `/adr:new`, `/adr:review` y un validador sin dependencias. Instalar con `/plugin install adr@bipbop`. |
 | [`bipflow`](plugins/bipflow/) | Flujo de Git para agentes: `/bipflow:commit` crea commits atómicos que respetan los hooks y `/bipflow:pr` abre pull requests con resumen técnico, plan de pruebas y resumen para el cliente. Instalar con `/plugin install bipflow@bipbop`. |
 
 ## Instalar y mantener al día

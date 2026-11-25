@@ -1,15 +1,50 @@
 ---
 name: adr
-description: Rules for reading existing ADRs and deciding whether a new ADR is warranted. Use when working under an existing ADR, evaluating an important lasting design constraint, or discussing ADRs. A dependency, schema, interface, or implementation change alone does not warrant a new ADR.
+description: Rules for reading existing ADRs, policies, and procedures, and for deciding which kind of doc, if any, a rule needs. Use when working under an existing ADR, policy, or procedure, evaluating an important lasting design constraint or team rule, or discussing ADRs. A dependency, schema, interface, or implementation change alone does not warrant a new doc.
 user-invocable: false
 ---
 
 # ADR rules
 
 Architecture Decision Records make deliberate choices visible so agents do not
-undo them. This skill holds the standing knowledge. The commands are:
-`/adr:init` (set up), `/adr:distill` (recover decisions from existing code),
-`/adr:new` (record a decision), `/adr:review` (check a diff against decisions).
+undo them. Policies and procedures hold the other rules a team writes down.
+This skill holds the standing knowledge. The commands are:
+`/adr:init` (set up), `/adr:distill` (recover rules from existing code),
+`/adr:new` (record a rule), `/adr:review` (check a diff against rules).
+
+## Three kinds of rule doc
+
+| Kind | Folder | Holds | Metadata |
+| --- | --- | --- | --- |
+| ADR | `docs/adr/` | How the system is built, chosen from real options with a tradeoff | `id`, `title`, `status`, `date`, `deciders`, `tags`, `paths` |
+| Policy | `docs/policies/` | A rule or definition people and agents must follow, whatever the code structure | `title`, `status`, `owner`, `paths`, `last_reviewed`, `review_in` |
+| Procedure | `docs/procedures/` | Numbered steps to finish one task | `title`, `owner`, `paths`, `trigger`, `last_verified` |
+
+Routing test. Apply the steps in order and stop at the first match:
+
+1. Can code, a lint, a test, or config state the rule fully? Put it there.
+   A doc gets one line with a link, or nothing.
+2. Does it fix how the system is built (structure, boundaries, data ownership,
+   dependencies, interfaces), with real options and a tradeoff? ADR.
+3. Is it a numbered sequence that a person or agent runs to finish one task?
+   Procedure.
+4. Is it a rule or definition to follow? Policy.
+5. Does it mix kinds? Split it. Each part goes to its kind and links to the
+   others.
+
+A rule with no tradeoff is a policy, not an ADR. Coding rules such as "no
+magic numbers" are policies, or lint config with no doc. Definitions, such as
+product metrics, are policies; if a machine-readable source holds the
+definition (a SQL view, a metric catalog), the policy links to it.
+
+**One rule, one doc; link, do not restate.** A rule lives in one place. Other
+docs, ADRs, and agent instruction files link to it. Agent instruction files
+(`CLAUDE.md`, `AGENTS.md`) keep one line per rule that names its source.
+
+A policy file name is its ID (`docs/policies/product-metrics.md`): kebab-case,
+no number, so there is no renumbering. Same for procedures. A procedure body
+has prerequisites, numbered steps, a verify step, and a rollback step. When a
+script replaces a procedure, delete the procedure.
 
 ## Folder and format
 
@@ -24,6 +59,10 @@ Defaults, used when the repository has no ADRs yet:
   `date`, `deciders`, `tags`, `paths`.
 - `paths` lists globs the decision governs. `/adr:review` and the validator use
   them. Keep the list tight.
+- Policy and procedure templates: [templates/policy-template.md](templates/policy-template.md)
+  and [templates/procedure-template.md](templates/procedure-template.md). Each
+  folder has a `README.md` index between `<!-- POLICY-INDEX:START -->` or
+  `<!-- PROCEDURE-INDEX:START -->` and the matching `END` marker.
 - Pointer for agents: [templates/agents-snippet.md](templates/agents-snippet.md),
   added to `CLAUDE.md` or `AGENTS.md` by `/adr:init`.
 
@@ -34,7 +73,9 @@ Detect the status convention (frontmatter `status:` versus an inline
 `**Status:**` line) and follow it. Only add `paths` when the existing format is
 frontmatter-based; otherwise record it as a bullet list under the status.
 Adoption does not authorize bulk rewrites or deletion of existing documents. Report legacy lifecycle conflicts
-and propose a scoped consolidation before changing them.
+and propose a scoped consolidation before changing them. The same applies to
+policies and procedures: if the repository keeps them in its own folders, or
+keeps its own `## History` convention, follow the repository.
 
 ## When an ADR is warranted
 
@@ -51,8 +92,8 @@ rationale to make a candidate qualify.
 
 Keep one source of truth: link to implementation and enforcement instead of
 copying their rules. A rule already explicit elsewhere warrants an ADR only
-when essential architectural context is missing. Business policies and
-operating procedures belong in their own authoritative sources.
+when essential architectural context is missing. Send policies and procedures
+to their own folders with the routing test.
 
 These three contrasts illustrate the level of decision, not automatic triggers:
 
@@ -93,9 +134,10 @@ rewrites or silently change accepted decisions.
 
 ## How agents read ADRs
 
-1. Read `docs/adr/README.md` (the index) first.
-2. Open only ADRs whose `paths`, tags, or title match the code you are about to
-   change. Three is typical. Never load all of them.
+1. Read `docs/adr/README.md` (the index) first. Read the policy and procedure
+   indexes when they exist.
+2. Open only ADRs, policies, and procedures whose `paths`, tags, or title match
+   the code you are about to change. Three is typical. Never load all of them.
 3. A `@decision ADR-NNNN` comment in code means stop and read that ADR before
    editing that spot. The comment form is language-agnostic:
    `# @decision ADR-0007: queue writes go through the outbox`.
@@ -132,13 +174,19 @@ approval.
 
 `${CLAUDE_PLUGIN_ROOT}/scripts/validate-adrs.py` checks structure only:
 frontmatter, consecutive unique IDs, index sync, obsolete lifecycle metadata, stale paths,
-and `@decision` tags. With `--fail-on-proposed` (meant for CI) an ADR still
+and `@decision` tags. When `docs/policies/` or `docs/procedures/` exist, it
+also checks their frontmatter, file names, index sync, links, numbered steps
+in procedures, and expired `review_in` or `last_verified` dates (warning).
+`--adrs-only` skips them. With `--fail-on-proposed` (meant for CI) an ADR still
 `proposed` is an error. Exit 0 clean, 1 errors, 2 no ADR folder. It never judges
 whether code complies with a decision; that is `/adr:review` and per-decision
 checks.
 
 ## Pitfalls
 
+- An ADR for a rule with no tradeoff. Route it as a policy.
+- The same rule in an ADR, a policy, and `CLAUDE.md`. Keep one source; link
+  from the others.
 - Writing ADRs for everything. Over-documentation is the top complaint in
   practice; apply the eligibility filter before drafting.
 - Appending a replacement ADR or an edit history instead of updating the

@@ -1,8 +1,8 @@
 ---
 name: init
-description: Set up Architecture Decision Records in the current repository (folder, template, index, known-debt log, CLAUDE.md or AGENTS.md pointer, optional validation hook). Use when the user runs /adr:init or asks to add, bootstrap, or wire up ADRs. Idempotent and adopts existing ADR folders.
+description: Set up Architecture Decision Records in the current repository (folder, template, index, known-debt log, CLAUDE.md or AGENTS.md pointer, optional validation hook), and optionally policy and procedure folders. Use when the user runs /adr:init or asks to add, bootstrap, or wire up ADRs, policies, or procedures. Idempotent and adopts existing folders.
 disable-model-invocation: true
-argument-hint: "[--dir docs/adr] [--no-snippet]"
+argument-hint: "[--dir docs/adr] [--no-snippet] [--no-rule-docs]"
 allowed-tools: Read, Glob, Grep, Bash(ls *), Bash(git *), Bash(python3 *), Bash(mkdir *), Bash(cp *), Write, Edit, AskUserQuestion
 ---
 
@@ -12,7 +12,7 @@ Create or adopt the ADR setup. Running it twice must change nothing.
 Standing rules: the `adr` skill in this plugin (`../adr/SKILL.md`).
 
 Arguments: `$ARGUMENTS`. `--dir <path>` overrides the folder; `--no-snippet`
-skips the CLAUDE.md/AGENTS.md edit.
+skips the CLAUDE.md/AGENTS.md edit; `--no-rule-docs` skips step 3b.
 
 ## Procedure
 
@@ -38,14 +38,32 @@ skips the CLAUDE.md/AGENTS.md edit.
 3. **Rebuild the index rows** between the markers from the ADR files present
    (ID, title, status, date, paths). If no markers exist in an adopted index,
    leave it alone and say so.
+3b. **Policies and procedures.** Unless `--no-rule-docs`: look for folders
+   the repository already uses for policies, standards, conventions, runbooks,
+   or procedures, and adopt them. Otherwise ask whether to create
+   `docs/policies/` and `docs/procedures/`. On yes, create in each one only
+   what is missing:
+   - `README.md` from `${CLAUDE_PLUGIN_ROOT}/skills/adr/templates/policy-index.md`
+     or `procedure-index.md` (append the marker block to an existing
+     README that has no markers);
+   - `template.md` from `policy-template.md` or `procedure-template.md` in
+     the same templates folder.
+   Do not move existing docs between kinds; list candidates for the user and
+   point to the routing test in `../adr/SKILL.md`.
 4. **Agent pointer.** Unless `--no-snippet`: pick `CLAUDE.md` if it exists,
    else `AGENTS.md` if it exists, else create `AGENTS.md`. If the file already
    contains `<!-- ADR:START -->`, do nothing. Otherwise append the block from
    `${CLAUDE_PLUGIN_ROOT}/skills/adr/templates/agents-snippet.md`, with
-   `docs/adr/` replaced by the real folder. Show the user the diff.
+   `docs/adr/` replaced by the real folder. Drop the policies and procedures
+   paragraph when step 3b created neither folder, and use the real folder
+   names when it adopted others. If the file holds an older ADR block, offer
+   to replace it with the new one. If the file restates rules that a policy
+   holds, offer to replace each one with one line that names the policy.
+   Show the user the diff.
 5. **Validation.** Run
    `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/validate-adrs.py" --adr-dir <folder>`.
    Report its output. With zero ADRs it exits 0 with a warning; that is fine.
+   It also checks `docs/policies/` and `docs/procedures/` when they exist.
 6. **Offer wiring, do not impose.** Use AskUserQuestion if available, otherwise
    ask in plain text: copy the validator into the repository and add it as a
    pre-commit hook and/or CI step? Options: pre-commit framework, plain git
