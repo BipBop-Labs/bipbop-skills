@@ -1,12 +1,12 @@
 ---
-name: new
-description: Record a new rule doc (an ADR, a policy, or a procedure) from the current conversation or diff, after the user confirms it. This includes updates to related docs and their consolidation. Use when the user runs /adr:new, says "write an ADR for this", "write a policy" or "document these steps", or asks to record a lasting architectural constraint or team rule. Apply the routing test and the eligibility filter before you write a draft.
+name: adr-new
+description: Record a new rule doc (an ADR, a policy, or a procedure) from the current conversation or diff, after the user confirms it. This includes updates to related docs and their consolidation. Use when the user runs /bipbop-skills:adr-new, says "write an ADR for this", "write a policy" or "document these steps", or asks to record a lasting architectural constraint or team rule. Apply the routing test and the eligibility filter before you write a draft.
 disable-model-invocation: true
 argument-hint: "[--kind adr|policy|procedure] [title or summary]"
 allowed-tools: Read, Glob, Grep, Bash(git *), Bash(ls *), Bash(python3 *), Write, Edit, AskUserQuestion, Agent
 ---
 
-# /adr:new
+# /bipbop-skills:adr-new
 
 Record one qualifying concern concisely. Prefer an existing doc with the
 same scope to a new file. The user confirms the decision and the reason.
@@ -34,7 +34,7 @@ the steps below one time for each part.
    briefly and stop. A run of this command does not establish eligibility.
 
 1. **Find the ADR folder and conventions.** Read the index. If there is no
-   ADR folder, say so, offer `/adr:init`, and stop. Note the numbering, and
+   ADR folder, say so, offer `/bipbop-skills:adr-init`, and stop. Note the numbering, and
    note if statuses are in frontmatter or inline. Next number = highest
    existing + 1.
 2. **Find its home.** Read related ADRs by title, tags, and `paths`. Apply
@@ -76,7 +76,7 @@ the steps below one time for each part.
    `@decision ADR-NNNN: <one line>` as a comment in the comment syntax of the file.
    Do not add tags without a yes.
 9. **Validate.** Run
-   `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/validate-adrs.py"`. Fix the structural
+   `python3 "${CLAUDE_PLUGIN_ROOT}/skills/adr/scripts/validate-adrs.py"`. Fix the structural
    errors that it reports. Then report: files updated, created, or removed, status,
    references repaired, tags added, and if the decision is enforceable according to
    `../adr/references/enforcement-by-stack.md` (one sentence, no code unless the user
@@ -98,7 +98,7 @@ the steps below one time for each part.
 
 1. **Find the folder.** Use the folder that the repository uses for this kind.
    Default: `docs/policies/` or `docs/procedures/`. If the folder does not exist, offer
-   `/adr:init` and stop.
+   `/bipbop-skills:adr-init` and stop.
 2. **Find its home.** Read the folder index. If a doc already covers the rule
    or task, update that doc. Do not restate a rule that a different doc holds.
    Link to that doc.
@@ -116,7 +116,7 @@ the steps below one time for each part.
 6. **Agent files.** If `CLAUDE.md` or `AGENTS.md` restates the rule, offer to
    replace the text with one line that names the new doc.
 7. **Validate.** Run
-   `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/validate-adrs.py"`. Fix the
+   `python3 "${CLAUDE_PLUGIN_ROOT}/skills/adr/scripts/validate-adrs.py"`. Fix the
    errors that it reports. Report the files that you changed.
 8. **Test with a fresh agent.** Ask the user first: the test costs one subagent
    run. Start a subagent with no context from this session. Give it a normal

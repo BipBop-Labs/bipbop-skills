@@ -10,36 +10,14 @@
     {
       "name": "bipbop-skills",
       "source": "./",
-      "description": "Public skills for software, prompts, and product writing.",
+      "description": "Public skills for software, prompts, product writing, ADRs, commits, and pull requests.",
       "category": "development",
       "tags": [
         "skills",
         "software",
-        "writing"
-      ]
-    },
-    {
-      "name": "adr",
-      "source": "./plugins/adr",
-      "description": "Architecture Decision Records, policies, and procedures: init, distill from existing code, record, review diffs, validate. Stack-agnostic.",
-      "category": "development",
-      "tags": [
+        "writing",
         "adr",
-        "architecture",
-        "documentation",
-        "agents"
-      ]
-    },
-    {
-      "name": "bipflow",
-      "source": "./plugins/bipflow",
-      "description": "Git workflow skills: atomic commits and pull requests with sections for reviewers and clients.",
-      "category": "development",
-      "tags": [
-        "git",
-        "commit",
-        "pull-request",
-        "agents"
+        "git"
       ]
     }
   ]

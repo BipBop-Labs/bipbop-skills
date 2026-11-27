@@ -1,7 +1,7 @@
 # adr
 
 Architecture Decision Records (ADRs), policies, and procedures for any
-repository, built for coding agents. The plugin does three things:
+repository, built for coding agents. The `adr` skills do three things:
 
 - It tells agents *why* the code is as it is.
 - It stops agents from undoing deliberate decisions.
@@ -27,7 +27,7 @@ Routing test, in order:
 
 One rule, one doc: other docs
 and agent instruction files link to the rule and do not restate it. A rule with no
-tradeoff is a policy. The full rules are in [skills/adr/SKILL.md](skills/adr/SKILL.md).
+tradeoff is a policy. The full rules are in [skills/adr/SKILL.md](SKILL.md).
 
 Policy frontmatter: `title`, `status`, `owner`, `paths`, `last_reviewed`,
 `review_in`. Procedure frontmatter: `title`, `owner`, `paths`, `trigger`,
@@ -38,60 +38,35 @@ Policy frontmatter: `title`, `status`, `owner`, `paths`, `last_reviewed`,
 | Skill | Invoke as | Purpose |
 | --- | --- | --- |
 | `adr` | automatic | Standing rules: format, status lifecycle, when to write an ADR, how agents read ADRs, known-debt log, rationale honesty. |
-| `init` | `/adr:init` | Create or adopt the ADR folder, template, index, `known-debt.md`, and the CLAUDE.md/AGENTS.md pointer. Offers `docs/policies/` and `docs/procedures/`. A second run changes nothing. |
-| `distill` | `/adr:distill` | Recover implicit decisions from code and git history, rank them, and triage each one as accept, accident/tech debt, reject, or skip. A stopped run can resume. |
-| `new` | `/adr:new` | Record an ADR, policy, or procedure from the conversation or diff. Chooses the kind with the routing test. Updates or consolidates related records. |
-| `review` | `/adr:review` | Check a diff or branch against accepted ADRs, policies, and procedures. Report only. |
+| `adr-init` | `/bipbop-skills:adr-init` | Create or adopt the ADR folder, template, index, `known-debt.md`, and the CLAUDE.md/AGENTS.md pointer. Offers `docs/policies/` and `docs/procedures/`. A second run changes nothing. |
+| `adr-distill` | `/bipbop-skills:adr-distill` | Recover implicit decisions from code and git history, rank them, and triage each one as accept, accident/tech debt, reject, or skip. A stopped run can resume. |
+| `adr-new` | `/bipbop-skills:adr-new` | Record an ADR, policy, or procedure from the conversation or diff. Chooses the kind with the routing test. Updates or consolidates related records. |
+| `adr-review` | `/bipbop-skills:adr-review` | Check a diff or branch against accepted ADRs, policies, and procedures. Report only. |
 
-The plugin also has `scripts/validate-adrs.py`, a Python script with no dependencies
+The `adr` skill also has [`scripts/validate-adrs.py`](scripts/validate-adrs.py), a Python script with no dependencies
 that validates structure. It also has an optional Stop hook, off by default, that
-suggests a check of the applicable ADRs and the eligibility filter (see [hooks/README.md](hooks/README.md)).
+suggests a check of the applicable ADRs and the eligibility filter (see [references/stop-hook.md](references/stop-hook.md)).
 
-## Install
-
-```text
-/plugin marketplace add BipBop-Labs/bipbop-skills
-/plugin install adr@bipbop
-```
-
-Codex CLI:
-
-```bash
-codex plugin marketplace add BipBop-Labs/bipbop-skills --ref main
-codex plugin add adr@bipbop
-```
-
-## Update
-
-```text
-/plugin marketplace update bipbop
-/plugin update adr@bipbop
-/reload-plugins
-```
-
-Codex CLI:
-
-```bash
-codex plugin marketplace upgrade bipbop
-```
+These skills ship in the `bipbop-skills` plugin. To install it, see the
+[root README](../../README.md).
 
 ## Typical workflow
 
-1. Run `/adr:init` in the target repository. It creates `docs/adr/` with
+1. Run `/bipbop-skills:adr-init` in the target repository. It creates `docs/adr/` with
    `README.md` (index), `template.md`, and `known-debt.md`. It adds a short block to
    `CLAUDE.md` or `AGENTS.md`. It offers to wire the validator into
    pre-commit or CI. If ADRs already exist in a different folder, it adopts them.
-2. Run `/adr:distill` on an existing codebase. It shows only qualifying candidates,
+2. Run `/bipbop-skills:adr-distill` on an existing codebase. It shows only qualifying candidates,
    five or fewer at a time,
    with evidence, missing architectural intent, and future design risk.
    Zero candidates is a valid result. You accept, mark as debt, reject, or
    skip each one. The state is in `docs/adr/.distill-state.json`. Thus later runs do not
    ask again, and you can distill new code incrementally.
-3. Run `/adr:new` only when the [eligibility filter](skills/adr/SKILL.md#when-an-adr-is-warranted)
+3. Run `/bipbop-skills:adr-new` only when the [eligibility filter](SKILL.md#when-an-adr-is-warranted)
    finds important, lasting architectural intent that authoritative
    sources do not record. Implementation changes alone do not qualify. Keep their rules in
    code, tests, or configuration.
-4. Run `/adr:review` before you merge. It shows which accepted decisions a diff
+4. Run `/bipbop-skills:adr-review` before you merge. It shows which accepted decisions a diff
    touches, which changes need an ADR, and which known-debt items the diff fixes.
 
 ## ADR format
@@ -112,7 +87,7 @@ paths: [src/net/**]
 
 Sections: Context, Decision, Options considered, Consequences, Rationale
 status (`confirmed` or `unknown`), Evidence. Full template in
-[skills/adr/templates/adr-template.md](skills/adr/templates/adr-template.md).
+[skills/adr/templates/adr-template.md](templates/adr-template.md).
 
 Rules:
 
@@ -131,8 +106,8 @@ Rules:
 ## Validation script
 
 ```bash
-python3 "$CLAUDE_PLUGIN_ROOT/scripts/validate-adrs.py" [--root .] [--adr-dir docs/adr] [--policy-dir docs/policies] [--procedure-dir docs/procedures] [--adrs-only] [--strict] [--fail-on-proposed] [--json] [--no-code-scan]
-python3 "$CLAUDE_PLUGIN_ROOT/scripts/validate-adrs.py" --print-setup   # pre-commit and CI snippets
+python3 "$CLAUDE_PLUGIN_ROOT/skills/adr/scripts/validate-adrs.py" [--root .] [--adr-dir docs/adr] [--policy-dir docs/policies] [--procedure-dir docs/procedures] [--adrs-only] [--strict] [--fail-on-proposed] [--json] [--no-code-scan]
+python3 "$CLAUDE_PLUGIN_ROOT/skills/adr/scripts/validate-adrs.py" --print-setup   # pre-commit and CI snippets
 ```
 
 Checks for ADRs:
@@ -162,10 +137,10 @@ Checks for `docs/policies/` and `docs/procedures/` (when they exist):
 folders. Exit codes: `0` clean, `1` errors (or
 warnings with `--strict`), `2` no ADR folder or bad usage.
 
-The script does not judge if code obeys a decision. `/adr:review` and the per-decision checks from
-[skills/adr/references/enforcement-by-stack.md](skills/adr/references/enforcement-by-stack.md) do that.
+The script does not judge if code obeys a decision. `/bipbop-skills:adr-review` and the per-decision checks from
+[skills/adr/references/enforcement-by-stack.md](references/enforcement-by-stack.md) do that.
 
-For CI, copy the script into the repository (`/adr:init` offers to do this). Then the
+For CI, copy the script into the repository (`/bipbop-skills:adr-init` offers to do this). Then the
 job does not depend on a plugin cache path. Run it with
 `--strict --fail-on-proposed`, so that a draft with no decision does not merge. Remove rejected drafts.
 Keep `--fail-on-proposed` out of pre-commit hooks: a local draft of a
@@ -173,7 +148,7 @@ Keep `--fail-on-proposed` out of pre-commit hooks: a local draft of a
 
 ## Migrating existing collections
 
-This lifecycle changes the earlier behavior of the plugin. Adoption does not automatically
+This lifecycle changes the earlier behavior of these skills. Adoption does not automatically
 rewrite a repository. For an authorized migration, do these steps:
 
 1. Rewrite the current decisions.

@@ -1,15 +1,15 @@
 ---
-name: init
-description: Set up Architecture Decision Records in the current repository (folder, template, index, known-debt log, CLAUDE.md or AGENTS.md pointer, optional validation hook), and optionally policy and procedure folders. Use when the user runs /adr:init or asks to add, bootstrap, or wire up ADRs, policies, or procedures. A second run changes nothing, and the skill adopts existing folders.
+name: adr-init
+description: Set up Architecture Decision Records in the current repository (folder, template, index, known-debt log, CLAUDE.md or AGENTS.md pointer, optional validation hook), and optionally policy and procedure folders. Use when the user runs /bipbop-skills:adr-init or asks to add, bootstrap, or wire up ADRs, policies, or procedures. A second run changes nothing, and the skill adopts existing folders.
 disable-model-invocation: true
 argument-hint: "[--dir docs/adr] [--no-snippet] [--no-rule-docs]"
 allowed-tools: Read, Glob, Grep, Bash(ls *), Bash(git *), Bash(python3 *), Bash(mkdir *), Bash(cp *), Write, Edit, AskUserQuestion
 ---
 
-# /adr:init
+# /bipbop-skills:adr-init
 
 Create or adopt the ADR setup. A second run must change nothing.
-Standing rules: the `adr` skill in this plugin (`../adr/SKILL.md`).
+Standing rules: the `adr` skill (`../adr/SKILL.md`).
 
 Arguments: `$ARGUMENTS`. `--dir <path>` overrides the folder. `--no-snippet`
 skips the CLAUDE.md/AGENTS.md edit. `--no-rule-docs` skips step 3b.
@@ -61,29 +61,29 @@ skips the CLAUDE.md/AGENTS.md edit. `--no-rule-docs` skips step 3b.
    holds, offer to replace each rule with one line that names the policy.
    Show the diff to the user.
 5. **Validation.** Run
-   `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/validate-adrs.py" --adr-dir <folder>`.
+   `python3 "${CLAUDE_PLUGIN_ROOT}/skills/adr/scripts/validate-adrs.py" --adr-dir <folder>`.
    Report its output. With zero ADRs, it exits 0 with a warning. That is correct.
    It also checks `docs/policies/` and `docs/procedures/` when they exist.
 6. **Offer wiring. Do not impose it.** Use AskUserQuestion if it is available. Otherwise,
    ask in plain text: copy the validator into the repository and add it as a
    pre-commit hook, a CI step, or both? Options: pre-commit framework, plain git
    hook, GitHub Actions step, none. On yes:
-   - `cp "${CLAUDE_PLUGIN_ROOT}/scripts/validate-adrs.py" scripts/validate-adrs.py`
+   - `cp "${CLAUDE_PLUGIN_ROOT}/skills/adr/scripts/validate-adrs.py" scripts/validate-adrs.py`
      (or the folder where the repository keeps scripts; ask if it is not clear);
    - add the snippet that
-     `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/validate-adrs.py" --print-setup` prints
+     `python3 "${CLAUDE_PLUGIN_ROOT}/skills/adr/scripts/validate-adrs.py" --print-setup` prints
      to the chosen place, in the existing config style. The CI snippets
      run `--strict --fail-on-proposed`. Thus a pull request with an ADR that is still
      `proposed` fails until a person accepts the ADR or removes the rejected draft. Keep that flag
      out of pre-commit hooks. Tell the user.
    Never write into `.git/hooks` without explicit approval.
 7. **Report.** List the created files, adopted conventions, skipped steps, and the
-   next command: `/adr:distill` for an existing codebase, `/adr:new` for a
+   next command: `/bipbop-skills:adr-distill` for an existing codebase, `/bipbop-skills:adr-new` for a
    new one.
 
 ## Idempotency check
 
-A second run of `/adr:init` must give "nothing to do" for each step. If a
+A second run of `/bipbop-skills:adr-init` must give "nothing to do" for each step. If a
 step would change a file on the second run, you applied steps 2 to 4 incorrectly.
 Fix the approach, not the file.
 

@@ -4,6 +4,10 @@ Todos los cambios relevantes de este proyecto se documentan aquí. El formato si
 
 ## [Unreleased]
 
+### Changed
+
+- `bipbop-skills` 0.9.0: las skills de los plugins `adr` y `bipflow` pasan a `skills/`, y los dos plugins se borran. El marketplace publica solo `bipbop-skills`. Las skills `init`, `distill`, `new` y `review` de `adr` cambian de nombre a `adr-init`, `adr-distill`, `adr-new` y `adr-review`. `commit`, `pr` y `adr` mantienen su nombre. `validate-adrs.py` y `stop-suggest.py` pasan a `skills/adr/scripts/`, y sus tests a `skills/adr/tests/`. Quien tenga `adr@bipbop` o `bipflow@bipbop` debe desinstalarlos y usar los nombres nuevos (tabla en el README).
+
 ### Added
 
 - Plugin `adr` (0.1.0) en `plugins/adr/`: Architecture Decision Records para cualquier repositorio, con `/adr:init`, `/adr:distill`, `/adr:new`, `/adr:review`, validador `validate-adrs.py` sin dependencias y hook Stop opcional desactivado por defecto. El marketplace ahora admite plugins adicionales en `plugins/<nombre>/`.
