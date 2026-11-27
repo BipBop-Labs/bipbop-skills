@@ -12,6 +12,7 @@ Incluidas en el plugin `bipbop-skills`.
 | [`create-skills`](skills/create-skills/) | Crear, revisar, validar y empaquetar skills portables siguiendo las mejores prácticas de Claude, Codex y ChatGPT. |
 | [`microcopy`](skills/microcopy/) | Escribir botones, errores, vacíos, confirmaciones y otros textos breves de interfaz. |
 | [`code-principles`](skills/code-principles/) | Nueve principios para todo el código que diseñas, escribes, arreglas o revisas, con una prueba por principio. |
+| [`fix`](skills/fix/) | Arreglar un bug en su causa: reproducirlo, encontrar la causa con evidencia, test que falla primero, refactor de la sección si su diseño causó el bug, y verificar donde se reprodujo. |
 | [`research-first`](skills/research-first/) | Investigar cómo resuelve la industria una tarea (estándares, regulaciones, guías y errores conocidos), destilarlo en un brief con fuentes y hacer la tarea apoyada en él. |
 | [`simple-writing`](skills/simple-writing/) | Reescribir textos para que se entiendan a la primera, en lenguaje simple o lectura fácil. |
 | [`test-audit`](skills/test-audit/) | Filtrar tests nuevos al escribirlos y auditar tests de bajo valor, acoplados a la implementación o duplicados. Adaptada de [OpenClaw](https://github.com/openclaw/openclaw) (MIT). |

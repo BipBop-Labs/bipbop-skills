@@ -14,6 +14,10 @@ Todos los cambios relevantes de este proyecto se documentan aquí. El formato si
 - Skill `test-audit`, adaptada de la skill homónima de [OpenClaw](https://github.com/openclaw/openclaw) (MIT, licencia incluida en `skills/test-audit/LICENSE`), para filtrar tests nuevos y auditar tests de bajo valor. Se quitaron las referencias a scripts y skills propios de OpenClaw; el resto del texto se mantiene.
 - Skill `writing-simplified-technical-english` (`bipbop-skills` 0.6.0), adaptada de la skill homónima del [plugin de PostHog](https://github.com/PostHog/ai-plugin) (MIT), que a su vez adapta [danyuchn/asd-ste100-skill](https://github.com/danyuchn/asd-ste100-skill) (MIT, licencia incluida en `skills/writing-simplified-technical-english/LICENSE`). Aplica las reglas de ASD-STE100 a la prosa que escribe un agente: un significado por palabra, voz activa, tiempos simples, una idea por oración y oraciones cortas. Se reemplazó el estilo propio de PostHog por uno neutro y se agregó `references/spanish.md`, con las mismas reglas adaptadas al español.
 
+### Added
+
+- Skill `fix` (`bipbop-skills` 0.8.0): arregla un bug en su causa. Reproduce el bug, encuentra la causa con evidencia, escribe primero un test que falla, arregla el patrón en todos los lugares, refactoriza la sección si su diseño causó el bug y verifica en la misma superficie.
+
 ### Changed
 
 - `code-principles` (`bipbop-skills` 0.8.0) es la forma de programar de todo modelo que tenga el plugin. Un hook `SessionStart` (`hooks/hooks.json`) carga sus principios en el contexto al inicio de cada sesión, sin invocar la skill. El hook solo lee `skills/code-principles/SKILL.md` y lo imprime: no usa red ni escribe archivos. La sección de review se quita: `reviflow:pr-review` aplica los principios con su propio formato.
