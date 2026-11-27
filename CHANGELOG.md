@@ -16,6 +16,7 @@ Todos los cambios relevantes de este proyecto se documentan aquí. El formato si
 
 ### Added
 
+- Skill `privacy-tyc-review` (`bipbop-skills` 0.9.0): audita código contra la Política de Privacidad y los T&C del repositorio. Primero busca qué documentos rigen (en `AGENTS.md`, `CLAUDE.md`, `README.md` o los puntos de aceptación del código); si no hay, responde "No encontré T&C en este repo" y no reporta hallazgos. Después recorre doce categorías (proveedores, finalidades excluidas, minimización, rol de encargado, retención, derechos del titular, IA como apoyo, logs, seguridad, registro, cookies e incidentes) y reporta hasta cinco hallazgos con la cláusula fuente.
 - Skill `fix` (`bipbop-skills` 0.8.0): arregla un bug en su causa. Reproduce el bug, encuentra la causa con evidencia, escribe primero un test que falla, arregla el patrón en todos los lugares, refactoriza la sección si su diseño causó el bug y verifica en la misma superficie.
 
 ### Changed
