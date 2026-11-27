@@ -1,37 +1,15 @@
 ---
-name: writing-simplified-technical-english
-description: 'Write English that a reader cannot misread: one meaning per word, active voice, simple tenses, one idea per sentence, short sentences. Based on ASD-STE100 (Simplified Technical English), the controlled-language standard written for aircraft maintenance manuals. Use it for any prose an agent produces that someone else acts on. That covers reports and findings, PR descriptions and commit messages, instructions handed to another agent, tool descriptions, error messages, status summaries, and prompts. Also use it on request, with triggers like "simplify this", "make this readable", "too dense", "rewrite in STE", "simplified technical english", "ASD-STE100". The same rules apply to Spanish text, with the adaptations in references/spanish.md.'
+name: writing
+description: 'Write text a reader cannot misread: one meaning per word, active voice, simple tenses, one idea per sentence, short sentences, in English and Spanish. Use every time you write text for a person or another agent: chat replies to the user, status updates, reports, findings, PR descriptions, commit messages, code comments, docs, messages, prompts, tool descriptions, and error messages. Also use on request: "simplify this", "make this clearer", "too dense", "STE".'
 ---
 
-# Writing simplified technical English
+# Writing
 
-ASD-STE100 is a controlled-language standard.
-The aerospace and defense industry wrote it so that a technician cannot misread a maintenance instruction.
-It removes the two biggest sources of misreading: words that carry more than one meaning, and sentences that support more than one structure.
+Apply these rules to every text you write for someone else, while you write it. Do not write a dense draft and clean it up afterward.
 
-The same discipline fixes the usual failure of agent-written prose.
-Agent output is often correct and unreadable: long sentences, stacked hedges, passive voice, and a synonym rotation that makes one action look like three.
-The reader has no author to ask, so ambiguity costs them a re-read at best and a wrong action at worst.
-
-Apply the rules below as you write.
-Do not write a dense draft and clean it up afterward.
-
-## When to use this
-
-Use it for text that a person or another agent must act on:
-
-- Reports, findings, and summaries.
-- PR descriptions, commit messages, and code comments.
-- Instructions passed to another agent, and prompts.
-- Tool descriptions, error messages, empty states, and log lines.
-
-Do not use it where voice is the point: marketing copy, blog posts, or anything persuasive.
-STE is deliberately flat.
-Do not use it alone for a message that a person reads, or for interface text.
-A message to a person also follows `simple-writing`. That covers Discord and Slack messages, emails, PR comments, and replies to another developer.
-Interface text follows `microcopy`.
-Also leave quoted text alone.
-If you quote a user, a log, or a document, quote it as it is.
+Leave quoted text as it is.
+Do not use the rules for marketing or persuasive copy.
+Interface text also follows `microcopy`. Text for non-technical readers also follows `simple-writing`.
 
 ## The rules
 
@@ -54,19 +32,18 @@ The house style of the project sits on top of these rules and wins where the two
 If the project has no house style, use sentence case and the Oxford comma.
 Do not use the em-dash.
 
+## Rule details
+
+- Verb forms: use the infinitive, the imperative, the simple present, the simple past, the simple future, and the past participle as an adjective. Use an "-ing" form only inside a technical noun, never as a verb form.
+- Passive voice: use it only in descriptive text, and only when the actor is unknown or does not matter to the reader. Never use it in instructions.
+- Safety instructions: open the instruction with the command or the condition. Do not put it mid-sentence.
+
 ## Spanish
 
 The rules do not change when you write in Spanish.
 The language that the reader uses decides the language of the text, and the rules apply to both.
-Some rules need a different form, because Spanish grammar is different:
-
-- Simple tenses: write "Recibimos el informe", not "Hemos recibido el informe".
-- Active voice: name the actor. "El worker borra el archivo", not "El archivo es borrado" or "Se borra el archivo".
-- Verbs, not nouns: write "revisar", not "realizar la revisión".
-- Noun clusters become chains of "de". Use two "de" in a row at most.
-- Sentence length: 25 words or fewer for instructions, 30 or fewer for descriptions.
-
-Read `references/spanish.md` before you write Spanish text. It has the full table and examples.
+Some rules take a different form in Spanish.
+Read `references/spanish.md` before you write Spanish text.
 
 ## How to rewrite
 
@@ -93,6 +70,5 @@ Before you send the text, read it once and ask:
 
 ## References
 
-- `references/writing-rules.md`: the detail behind the table, plus sources.
 - `references/before-after.md`: worked examples of the rewrite, including agent output.
 - `references/spanish.md`: the same rules for Spanish text, with examples.

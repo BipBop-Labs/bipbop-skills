@@ -6,7 +6,7 @@ Listas para el paso 3 de la skill. No hay que cubrir cada ítem: elige los que a
 
 **Antes de buscar, define:**
 
-- El tipo de mensaje: transaccional (confirmación, aviso de servicio), comercial o marketing, interno, institucional, o respuesta a un reclamo. La regulación cambia mucho entre transaccional y comercial.
+- El tipo de mensaje: transaccional (confirmación, aviso de servicio), comercial o marketing, interno, institucional, o respuesta a un reclamo.
 - El país del destinatario, y si es una persona o una empresa.
 - La relación: cliente actual, prospecto, empleado o proveedor.
 
@@ -45,8 +45,6 @@ Listas para el paso 3 de la skill. No hay que cubrir cada ítem: elige los que a
 - La documentación oficial y el changelog de la versión que usa el proyecto, no de la última versión.
 - OWASP (Cheat Sheets y ASVS) para todo lo que toca autenticación, entrada de usuarios, secretos o permisos.
 - Si existe una librería mantenida que ya resuelve el problema: actividad reciente, licencia y adopción.
-- Implementaciones de referencia en proyectos conocidos: el código, sus tests y los PRs que lo cambiaron.
-- Código open source que resuelve lo mismo, buscado por nombres de API, mensajes de error o archivos de configuración en GitHub code search, grep.app o Sourcegraph.
 - Lo que el propio repositorio ya hace en casos parecidos, que se busca antes que en internet.
 
 **Errores comunes:**
@@ -54,7 +52,7 @@ Listas para el paso 3 de la skill. No hay que cubrir cada ítem: elige los que a
 - Issues abiertos y CVEs de las librerías candidatas.
 - Postmortems públicos sobre el mismo tipo de sistema.
 - Las razones por las que la gente abandonó un enfoque popular.
-- Issues cerrados y reverts en proyectos que implementaron lo mismo: muestran los casos borde que costó descubrir.
+- Issues cerrados y reverts en proyectos que implementaron lo mismo.
 
 ## Procesos y políticas (onboarding, vacaciones, gestión de incidentes, aprobaciones)
 

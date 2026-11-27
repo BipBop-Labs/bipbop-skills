@@ -1,10 +1,5 @@
 # Spanish
 
-ASD-STE100 is a standard for English only.
-It has no Spanish edition.
-This file applies the same rule categories to Spanish text.
-The adaptations are a decision of this skill, not text from the standard.
-
 Use this file together with the rule table in `SKILL.md`.
 A rule that does not appear here applies with no change.
 
@@ -21,16 +16,12 @@ A rule that does not appear here applies with no change.
 | Chains of "de"        | Two "de" in a row at most: "la válvula de la bomba de combustible"    | "la configuración del manejador de prioridad de la cola de tareas"   |
 | No missing words      | Keep the article and the verb. Name the subject when it is not clear. | "Archivos sin respaldo se pierden."                                  |
 | One hedge, at most    | "Probablemente el cliente está desactualizado."                       | "Podría eventualmente haber ocurrido un error debido a un posible…"  |
-| Paragraphs            | One topic, 6 sentences or fewer                                       | Multi-topic paragraphs                                               |
-| Lists                 | Use a list for 3 or more steps or conditions                          | A sequence buried in one sentence                                    |
 | Jargon                | Keep the term the team uses, and use one form: "deploy"               | Alternate "deploy", "despliegue", and "puesta en producción"         |
 
-## Detail behind the adaptations
+## Rule details
 
 **Verbs, not nouns.**
-The English rule gives each word one part of speech.
-Spanish word endings already show the part of speech, so that problem is rare.
-The Spanish problem is the noun that hides a verb.
+Do not hide a verb in a noun.
 Write "pagar", not "efectuar el pago".
 Write "decidir", not "tomar una decisión".
 
@@ -60,10 +51,6 @@ Write "El job de exportación falló después del deploy."
 "Su" can refer to the reader, to a third person, or to a thing.
 When more than one owner is possible, name the owner: "la clave del usuario", not "su clave".
 
-**Sentence length.**
-A Spanish sentence usually needs more words than its English equivalent.
-For that reason the limits are 5 words higher than the English limits.
-
 **Instructions.**
 Use the imperative for steps, and use one form of address in the whole text: "tú" or "usted".
 Open a safety instruction with the command or the condition: "No borres la tabla antes de que termine la exportación."
@@ -83,8 +70,6 @@ Use a comma, parentheses, or a new sentence.
 Write the opening "¿" and "¡", and write every accent.
 
 ## Before and after
-
-Every example below is invented to show a rule.
 
 | Rule                 | Before                                                               | After                                                             |
 | -------------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------- |

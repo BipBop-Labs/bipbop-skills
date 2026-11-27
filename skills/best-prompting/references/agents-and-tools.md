@@ -35,7 +35,7 @@ Order the request so that stable content comes first and volatile content last: 
 
 A tool definition is a prompt the model reads at the moment it decides what to do, so it deserves the same care as the system prompt.
 
-**Choose tools around tasks.** A tool that does one recognisable job ("schedule a meeting") is easier to select than three that mirror API endpoints. If an engineer on the team could not say with confidence which of two tools applies in a given situation, the model will not manage either: merge them or sharpen the boundary. Overlap between tools hurts selection more than the raw count does. Vendors suggest keeping roughly twenty or fewer loaded at once and deferring the rest behind a search or discovery step; treat the number as a rough guide, since the studies behind such thresholds are weak.
+**Choose tools around tasks.** A tool that does one recognisable job ("schedule a meeting") is easier to select than three that mirror API endpoints. If an engineer on the team could not say with confidence which of two tools applies in a given situation, the model will not manage either: merge them or sharpen the boundary. Overlap between tools hurts selection more than the raw count does. Keep roughly twenty or fewer loaded at once and defer the rest behind a search or discovery step; treat the number as a rough guide.
 
 **Name them unambiguously.** Use one term per capability, a shared prefix for related tools, and parameter names that say what the value is (`user_id`, not `user`). Tools whose effect is risky benefit from saying so in the name, for example a `draft_` and `send_` pair instead of a single `email` tool.
 
@@ -92,7 +92,7 @@ These rules apply to the text inside skills and always-loaded instruction files.
 
 ## Long runs: compaction, handoffs and state
 
-Over a long task the context fills up and is summarised, or a fresh model picks up where another stopped. Summaries lose detail, and the details lost first are constraints and exact values.
+Summaries lose detail, and constraints and exact values are lost first.
 
 - **Keep durable state in files.** A task list, a progress log and the decisions made belong in files the agent reads at the start of a session and updates as it goes, along with an instruction to maintain them.
 - **Say what must survive a summary.** A compaction prompt should ask for: the goal and the definition of done; the person's constraints and decisions in close to their own words; the current state; what was tried and why it was set aside; what remains; exact values that would be costly to rediscover (paths, identifiers, commands, error text); the state of any approvals; and work that should not be redone.

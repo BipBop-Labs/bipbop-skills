@@ -1,10 +1,10 @@
 # Testing and iterating on a prompt
 
-Read this when a prompt will run more than a handful of times, when changing a prompt that already works, or when moving a prompt to a different model. A prompt is a hypothesis about how a model will behave, and the only evidence is what the model produces.
+Read this when a prompt will run more than a handful of times, when changing a prompt that already works, or when moving a prompt to a different model.
 
 ## Define success before drafting
 
-Write down what a good output is in terms two people would judge the same way. "Answers correctly and politely" leaves the edge cases open; "cites the policy clause it relied on, offers the refund only inside the 30-day window, and hands off to a person when the order is not found" can be checked. Most prompts need several criteria at once (correctness, format, tone, latency, cost), and writing them down often shows that the team does not yet agree on what it wants.
+Write down what a good output is in terms two people would judge the same way. "Answers correctly and politely" leaves the edge cases open; "cites the policy clause it relied on, offers the refund only inside the 30-day window, and hands off to a person when the order is not found" can be checked. Most prompts need several criteria at once (correctness, format, tone, latency, cost).
 
 ## Build a small set of cases
 
@@ -42,7 +42,7 @@ When an output is wrong, find the sentence in the prompt that produced it. Askin
 
 ## Remove before adding
 
-Prompts collect instructions written to compensate for a model that has since been replaced, and those instructions keep their cost after their reason is gone. Before adding a rule to fix a failure, check whether an existing instruction causes it. Remove one group of instructions at a time and rerun the cases; removing everything at once makes it impossible to tell which parts mattered.
+Before adding a rule to fix a failure, check whether an existing instruction causes it. Remove one group of instructions at a time and rerun the cases; removing everything at once makes it impossible to tell which parts mattered.
 
 ## Changing models
 

@@ -1,8 +1,5 @@
 # Before and after
 
-Every example below is invented to show a rule.
-None comes from a real report, ticket, or conversation.
-
 ## Single sentences
 
 | Rule                 | Before                                                               | After                                                         |
@@ -72,12 +69,3 @@ After:
 > The property stopped arriving on 12 May.
 > Every breakdown by plan undercounts from that date.
 
-## What not to simplify
-
-Keep the longer sentence when the shorter one loses something:
-
-- A condition: "Delete the row only after the export finishes."
-- A scope qualifier: "This applies to teams on the legacy ingestion path."
-- A number, a date, or a unit.
-
-Say why you kept it, in one line, rather than dropping it.

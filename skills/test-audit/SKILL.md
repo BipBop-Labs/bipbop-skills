@@ -8,8 +8,7 @@ description: "Use whenever writing, changing, reviewing, or sweeping tests. Auth
 Three modes, one value bar. Authoring mode gates every new or changed test at
 write time. Audit mode runs focused sweeps of tests that re-assert source,
 duplicate stronger proof, couple behavior to implementation, or keep test-only
-production seams alive. Continue broad audits as separate coherent follow-up
-PRs; optimize for confidence, not deletion count. Campaign mode prunes one
+production seams alive. Campaign mode prunes one
 whole subsystem's test surface (every test file a plugin or core area owns);
 before starting one, read [CAMPAIGN.md](CAMPAIGN.md).
 
@@ -35,14 +34,12 @@ refactoring is asserting implementation, not behavior; rewrite it at the
 owning boundary before landing it.
 
 Bug regression tests must fail on the pre-fix code for the intended reason and
-pass after the owner-boundary repair. A regression test that never demonstrably
-failed proves the mock, not the fix. One regression at the owner boundary
+pass after the owner-boundary repair. One regression at the owner boundary
 covers the bug; do not replay the same scenario at every layer it crosses.
 
 ## Junk patterns
 
-The shared checklist for both modes: the authoring gate rejects a new test that
-matches one, and audits hunt for existing tests that do.
+Both modes use this checklist.
 
 - assertion-free coverage probes;
 - self-comparisons and identity copiers;
@@ -152,8 +149,7 @@ path they prescribe.
 ## Landing and continuation
 
 Commit, push, open a PR, or land only when authorized. Use the repository's
-PR flow. Land one
-coherent PR at a time; after landing, refresh from current `main` and rerun
+PR flow. Land one coherent PR at a time; after landing, refresh from current `main` and rerun
 read-only discovery for the next high-confidence batch.
 
 ## Handoff

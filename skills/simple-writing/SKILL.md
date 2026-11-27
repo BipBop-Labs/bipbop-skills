@@ -27,10 +27,9 @@ replies to another developer. Apply the rules as you write the message.
 - Use the plain language level.
 - Write in the language of the channel or of the person you answer.
 - When the reader is a developer, keep the technical terms they already use (file names,
-  commands, tool names, error text) and do not explain them. Every other rule still applies:
-  answer first, one idea per sentence, short sentences, concrete dates and names.
+  commands, tool names, error text) and do not explain them. Every other rule still applies.
 - A technical artifact (a PR description, a commit message, a report, a prompt) follows
-  `writing-simplified-technical-english`. A message that carries technical detail follows
+  `writing`. A message that carries technical detail follows
   both skills.
 
 ## The rules
@@ -38,8 +37,7 @@ replies to another developer. Apply the rules as you write the message.
 Both levels share these. Easy read applies them harder.
 
 1. **Answer first.** The thing the reader has to do goes in the first paragraph. Reasons,
-   context and caveats go after. Most "confusing" text is just a good answer buried under
-   background.
+   context and caveats go after.
 2. **One idea per sentence.** If a sentence has an "and" joining two ideas, split it.
 3. **Short sentences.** Plain language: 15-20 words on average. Easy read: under 15, and each
    sentence starts on its own line.
@@ -52,10 +50,8 @@ Both levels share these. Easy read applies them harder.
    negatives.
 8. **Steps as a numbered list.** Anything the reader must *do* becomes 1, 2, 3 - one action per
    step, in the order they happen.
-9. **Repeat what matters.** Repeating the key action at the end is not redundancy, it is how it
-   sticks.
-10. **No irony, no metaphor, no idioms.** They are the first thing to break for a stressed or
-    non-native reader.
+9. **Repeat what matters.** Repeat the key action at the end.
+10. **No irony, no metaphor, no idioms.**
 11. **Concrete over abstract.** "Next Tuesday" beats "in the coming days". "The green button
     that says Send" beats "the corresponding control".
 12. **Numbers as digits.** "3 points", not "three points".
@@ -69,8 +65,7 @@ Both levels share these. Easy read applies them harder.
   parts that are inconvenient. If something matters legally or operationally, it stays - moved
   to its own short sentence, in plain words.
 - **Don't lead with the refusal or the constraint.** "We can't do X, because..." reads as *we
-  won't help*. Lead with what now happens instead, then the reason. This is the single most
-  common failure when replying to a client request.
+  won't help*. Lead with what now happens instead, then the reason.
 - **Don't invent certainty.** Simple does not mean absolute. If something is not decided, say
   "we don't know yet" in short words.
 
@@ -82,8 +77,7 @@ Both levels share these. Easy read applies them harder.
 3. **Break every sentence to one idea.** Cut every word that carries nothing: "in order to" →
    "to", "at this point in time" → "now", "we would like to inform you that" → delete.
 4. **Turn the how-to into numbered steps.**
-5. **Move reasons to the end**, in one or two short sentences. Reasons are read last and only by
-   some people, which is fine.
+5. **Move reasons to the end**, in one or two short sentences.
 6. **Reread as the reader.** Where could they stop and think "what does that mean?" That is the
    only bug that matters. Fix it and stop.
 
@@ -101,8 +95,6 @@ Same rules, plus what is specific to Spanish:
 - **Verbos simples, en presente.** "Les llega un correo", no "les será enviado un correo".
 - **Frases de una línea.** Si una frase ocupa dos líneas, hay dos ideas adentro.
 - **Sin anglicismos ni siglas** sin explicar. La primera vez se escribe completo.
-
-Reference standard: UNE 153101:2018 EX (lectura fácil).
 
 ## Example
 
@@ -131,14 +123,3 @@ After (answer first, steps, reason last):
 > El enlace vence por seguridad. Así nadie más puede usarlo.
 
 Same information. The reader knows what to do after 20 seconds.
-
-## Sources
-
-- [Federal Plain Language Guidelines](https://www.plainlanguage.gov/guidelines/) - short
-  sentences, active voice, everyday words, 15-20 word average.
-- [Mencap - guidelines for accessible writing](https://www.mencap.org.uk/easy-read) - one idea
-  per sentence, plain English, no jargon or abbreviations.
-- [The Easy Read Standard](https://easyreadstandard.org/) - evidence behind short sentences and
-  layout.
-- [Lectura fácil: pautas y recomendaciones, UNE 153101:2018 EX](https://olgacarreras.blogspot.com/2019/02/lectura-facil-pautas-y-recomendaciones.html)
-- [Lectura fácil: qué es, pautas y ejemplos (DKV)](https://dkv.es/corporativo/blog-360/inclusion/lectura-facil)

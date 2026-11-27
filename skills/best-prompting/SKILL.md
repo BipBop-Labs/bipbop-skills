@@ -5,7 +5,7 @@ description: Mejores prácticas, agnósticas al modelo, para escribir y revisar 
 
 # Best prompting
 
-Guidance for writing and reviewing any text a language model will read: system prompts, tool descriptions, delegation briefs, instruction files, and prompts inside a pipeline. It is model-agnostic. It keeps to practices that current vendor guidance agrees on, checked against independent studies where they exist, and where behaviour differs between models or model generations it says so and tells you to settle the question with a test instead of a rule.
+Guidance for writing and reviewing any text a language model will read: system prompts, tool descriptions, delegation briefs, instruction files, and prompts inside a pipeline. Where behaviour differs between models, settle the question with a test, not a rule.
 
 The person's explicit instructions and the conventions already used in the repository's prompts take precedence over this skill.
 
@@ -53,11 +53,11 @@ Say what the task is for and who will use the result. A model that knows the sum
 
 Give the whole task in one place. Requirements revealed a piece at a time over several turns are followed less reliably than the same requirements stated together.
 
-A role line ("you are a senior tax lawyer") is useful for setting tone, register and scope. Studies find it does not make answers more accurate, so it is no substitute for the context above.
+A role line ("you are a senior tax lawyer") sets tone, register and scope. It does not make answers more accurate and does not replace the context above.
 
 ### Describe the destination, and script the route only when the route is the requirement
 
-State the outcome, the criteria for success, the constraints, and when to stop. Then let the model choose how to get there. Step-by-step scripts written for weaker models make current ones mechanical and block better approaches.
+State the outcome, the criteria for success, the constraints, and when to stop. Then let the model choose how to get there. Step-by-step scripts make current models mechanical and block better approaches.
 
 Match the degree of freedom to how fragile the task is. Where many approaches are valid, give goals and heuristics. Where an operation is fragile, the order matters, or consistency across runs is the point, give exact steps. Smaller models pull in the other direction: the smaller and faster the model, the more it benefits from a longer, more explicit, ordered prompt.
 
@@ -69,21 +69,19 @@ Give stop conditions explicitly. Say what done means, when to stop gathering inf
 
 ### Say each thing once, and make the prompt agree with itself
 
-Contradictions do more damage than gaps. A model that meets two conflicting instructions spends effort reconciling them, picks one unpredictably, or stops to ask. Repetition has a similar cost: a rule stated three times is applied too broadly.
-
-Length has a cost too. Measured adherence falls as the number of instructions grows, and instructions near the start are followed more reliably than later ones, so every rule added weakens the others a little.
+Contradictions do more damage than gaps. A rule stated three times is applied too broadly. Every rule added weakens the others a little, and early instructions are followed more reliably than later ones.
 
 - State each instruction once, in the place it applies.
 - Among the instructions, put the ones that matter most first. The context that makes them understandable can come before them.
 - Put an exception next to the rule it modifies.
 - Check that examples obey the rules written around them.
-- When several sources of instruction exist (system prompt, loaded files, the person's messages), say which wins, and then remove the conflicts you can find anyway. In tests, models resolve a conflict between the system prompt and the user unreliably even when told the order of priority.
+- When several sources of instruction exist (system prompt, loaded files, the person's messages), say which wins, and then remove the conflicts you can find anyway. Models resolve such conflicts unreliably even when told the order.
 
 ### Calibrate strength
 
 Keep absolute words for true invariants: safety limits, required output fields, actions that must never happen. For judgment calls, write a decision rule that names the consideration ("ask before acting when the action cannot be undone"). Capitals and words like "critical" make a responsive model apply the rule too widely and too rigidly; calm, specific wording works better. If one instruction keeps being missed in testing, strengthen that line alone, since emphasis spread over many lines singles out none of them.
 
-Leave out tips, threats, flattery and emotional appeals. Repeated studies find they have no reliable effect on current models.
+Leave out tips, threats, flattery and emotional appeals. They have no reliable effect.
 
 ### Say what to do, and keep prohibitions narrow
 
@@ -102,7 +100,7 @@ Current models do what the text says. They do not extend a rule from one item to
 
 ### Use examples for what description cannot pin down
 
-Examples are the strongest signal in a prompt, and models imitate them closely, including length, phrasing and incidental details. That makes them the best tool for fixing a format or a voice, and a risky one for conveying judgment, since the model tends to stay near the cases shown.
+Models imitate examples closely, including length, phrasing and incidental details. Use them to fix a format or a voice. They are risky for conveying judgment, since the model stays near the cases shown.
 
 - Try a clear description first; add examples when the output still misses.
 - Use several that differ from each other in meaningful ways, so the common thread is the lesson, and mark them as illustrations.
@@ -115,9 +113,9 @@ Whether examples help or constrain depends on the model, so check the output wit
 
 Mark instructions, background, input data and examples as different things, with tags or headings used consistently, so that a document's text is never mistaken for an instruction. Prose is the better form for guidance that involves priorities and trade-offs; lists and tables suit reference material the model will look things up in.
 
-Include only the material the task needs. Accuracy drops as context grows, and near-relevant distractors lower it further, so a focused excerpt beats the whole document when you can tell which part matters.
+Include only the material the task needs. Accuracy drops as context grows and near-relevant distractors lower it further, so give a focused excerpt over the whole document when you can tell which part matters.
 
-When a long document is included, vendors recommend placing it before the question and the instructions that refer to it; independent tests on recent models have not confirmed a position effect, so check it if it matters. For cost, put content that never changes ahead of content that changes per request, because providers cache prompts by prefix.
+Place a long document before the question and the instructions that refer to it; test this if position matters. For cost, put content that never changes ahead of content that changes per request, because providers cache prompts by prefix.
 
 ### Specify the output
 
@@ -142,7 +140,7 @@ Asking a model to "double-check your answer" with no new information rarely impr
 
 ### Write the authorisation boundary once
 
-How readily a model acts without asking changes with every release, so prompts that push in one direction ("keep going", "always ask first") age badly. State the boundary itself:
+Do not write prompts that push in one direction ("keep going", "always ask first"); that default changes with every release. State the boundary itself:
 
 - what the model may do without asking, typically reading, searching, and local reversible changes;
 - what needs confirmation, typically anything destructive, hard to reverse, visible to other people, or beyond the requested scope;
@@ -201,7 +199,6 @@ Judge the prompt by its outputs when you can run it. A prompt that reads well an
 
 - Read `references/agents-and-tools.md` when the prompt belongs to an agent: it has tools, delegates to other models, loads skills or instruction files, or runs long enough to be compacted. It opens with a list of contents; read the sections that match.
 - Read `references/testing.md` when writing or changing a prompt that will run repeatedly, or when changing models.
-- Read `references/sources.md` when someone asks where a recommendation comes from, how strong the evidence behind it is, or where sources disagree, and to find the vendor's own page for a specific model. Several recommendations here rest on vendor guidance alone, and that file says which.
 
 ## Verification
 

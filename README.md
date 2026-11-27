@@ -10,13 +10,12 @@ Incluidas en el plugin `bipbop-skills`.
 | --- | --- |
 | [`best-prompting`](skills/best-prompting/) | Escribir y revisar prompts, descripciones de tools y briefs para agentes, con prácticas agnósticas al modelo y la evidencia detrás de cada una. |
 | [`create-skills`](skills/create-skills/) | Crear, revisar, validar y empaquetar skills portables siguiendo las mejores prácticas de Claude, Codex y ChatGPT. |
-| [`krug-usability-testing`](skills/krug-usability-testing/) | Planear, ejecutar y revisar tests de usabilidad y validación temprana de conceptos, y priorizar arreglos mínimos. |
 | [`microcopy`](skills/microcopy/) | Escribir botones, errores, vacíos, confirmaciones y otros textos breves de interfaz. |
-| [`ousterhout-software-design`](skills/ousterhout-software-design/) | Diseñar y revisar software con foco en complejidad, módulos profundos e información oculta. |
+| [`code-principles`](skills/code-principles/) | Nueve chequeos de diseño para revisar un diff o diseñar un módulo, con una prueba por chequeo y un formato de hallazgo. |
 | [`research-first`](skills/research-first/) | Investigar cómo resuelve la industria una tarea (estándares, regulaciones, guías y errores conocidos), destilarlo en un brief con fuentes y hacer la tarea apoyada en él. |
 | [`simple-writing`](skills/simple-writing/) | Reescribir textos para que se entiendan a la primera, en lenguaje simple o lectura fácil. |
 | [`test-audit`](skills/test-audit/) | Filtrar tests nuevos al escribirlos y auditar tests de bajo valor, acoplados a la implementación o duplicados. Adaptada de [OpenClaw](https://github.com/openclaw/openclaw) (MIT). |
-| [`writing-simplified-technical-english`](skills/writing-simplified-technical-english/) | Escribir prosa técnica que no se pueda malinterpretar (informes, descripciones de PR, commits, instrucciones a otros agentes, mensajes de error) con las reglas de ASD-STE100, en inglés y en español. Adaptada de la skill homónima del [plugin de PostHog](https://github.com/PostHog/ai-plugin) (MIT). |
+| [`writing`](skills/writing/) | Escribir todo texto para una persona o un agente (respuestas, informes, PRs, commits, mensajes, prompts) con las reglas de ASD-STE100, para que no se pueda malinterpretar, en inglés y en español. Adaptada de la skill homónima del [plugin de PostHog](https://github.com/PostHog/ai-plugin) (MIT). |
 
 ## Plugins adicionales
 

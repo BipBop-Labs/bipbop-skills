@@ -7,11 +7,10 @@ description: Escribir microcopy (botones, errores, vacíos, confirmaciones) sigu
 
 Guía para escribir textos de interfaz cortos (botones, errores, estados vacíos,
 confirmaciones, tooltips, placeholders, toasts) en los productos Revi (Clara,
-Norman, Celeste). El criterio general: **el microcopy es una mini-conversación
-entre el producto y el funcionario**. La web de UX writing y lo que hacemos en
-Revi coinciden en casi todo; donde difieren, manda la voz de Revi.
+Norman, Celeste). El microcopy es una conversación corta entre el producto y el
+funcionario. Si una regla general choca con la voz de Revi, manda la voz de Revi.
 
-## Principios base (mejores prácticas de UX writing, aplicadas)
+## Principios base
 
 1. **Específico, no genérico.** "Error" o "Ocurrió un problema" desperdician el
    espacio. Nombrar el objeto real: "El plano no se pudo subir".
@@ -62,16 +61,14 @@ vacío. Ahí aplican otras reglas:
 - **Sin remates.** Nada de contrastes armados ni cierres que buscan efecto
   ("…y nunca más pierdes un plazo", "no es un trámite, es una decisión").
 
-## Voz de Revi (esto nos diferencia; contrastado con lo anterior)
+## Voz de Revi
 
-- **Español de Chile, tuteo.** "Puedes", "Revisa", "Tu expediente". Nunca
-  usted salvo en comunicaciones formales del canal institucional (emails de
-  CChC a municipios van en tuteo cordial; ver `email_copy.py` como referencia).
-- **Trato de tú, verbo en presente, sin jerga legal innecesaria.** Somos
-  asistentes de revisión, no la regulación.
-- **Sin emojis, sin exclamaciones en serie, sin marketing.** La personalidad
-  es **sobria, técnica e institucional** (ver `frontend/DESIGN.md` de
-  revi-dga-mono: "nunca lúdica ni recargada"). Nada de "¡Genial!" ni
+- **Español de Chile, tuteo, verbo en presente, sin jerga legal innecesaria.**
+  "Puedes", "Revisa", "Tu expediente". Nunca usted salvo en comunicaciones
+  formales del canal institucional (emails de CChC a municipios van en tuteo
+  cordial; ver `backend/app/scripts/reactivation_campaign/email_copy.py`).
+- **Sin emojis, sin exclamaciones en serie.** La personalidad es **sobria,
+  técnica e institucional**, nunca lúdica ni recargada. Nada de "¡Genial!" ni
   celebraciones que retrasen la siguiente decisión.
 - **Un solo CTA por superficie.** Un email de Revi termina con un botón "Ir a
   Revi" y no pide responder ni agendar. Aplica igual en UI: una acción
@@ -112,12 +109,3 @@ vacío. Ahí aplican otras reglas:
 - [ ] ¿Las confirmaciones destructivas repiten la acción en el botón?
 - [ ] ¿Cada ayuda, subtítulo o eyebrow dice algo que su título no dice?
 - [ ] ¿Las descripciones son oraciones completas y terminan sin remate?
-
-## Referencias externas
-
-- Microcopy patterns (errors P-R-S, empty states, confirmations):
-  https://vaishvanara.github.io/techwritingkb/technical-writing/ux-writing
-- Principios y ejemplos: https://courseux.com/microcopy-examples
-- Límites de caracteres por elemento: https://typecount.com/blog/microcopy-ux-writing-guide
-- Copys de referencia del producto: `backend/app/scripts/reactivation_campaign/email_copy.py`
-- Tono visual: `frontend/DESIGN.md` en revi-dga-mono

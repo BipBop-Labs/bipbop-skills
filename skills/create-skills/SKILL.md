@@ -5,7 +5,7 @@ description: Create or revise portable agent skills and validate their packaging
 
 # Create skills
 
-Create focused, portable agent skills that activate for the right requests, guide a repeatable workflow, and provide observable completion criteria. Use the common subset supported by Claude Code, Codex, and ChatGPT unless the task explicitly targets one host.
+Create focused, portable skills with clear triggers, a repeatable workflow, and observable completion criteria. Use the common subset supported by Claude Code, Codex, and ChatGPT unless the task explicitly targets one host.
 
 ## When to use
 
@@ -86,11 +86,11 @@ Rules:
 - Keep the description precise enough to avoid broad accidental activation.
 - Add host-specific fields only when the current official schema supports them and the skill needs them.
 
-The description controls discovery. If the skill activates at the wrong time, fix the description before adding defensive prose to the body.
+If the skill activates at the wrong time, fix the description before you add defensive prose to the body.
 
 ## 5. Write an actionable body
 
-Use only sections that change behavior. A strong default structure is:
+Use only sections that change behavior. Default structure:
 
 ```markdown
 # Skill title
@@ -179,7 +179,7 @@ Before publishing, inspect every file and the Git diff for:
 
 Invent public examples from scratch. Merely replacing a person's name is not sufficient when the rest of the scenario remains identifiable.
 
-For third-party material, record the source and license. Link to the original when a summary is enough. Do not publish a chapter-by-chapter substitute for a book, extensive quotations, or copied examples merely because they were transformed into Markdown.
+For third-party material, record the source and license. Link to the original when a summary is enough. Do not publish a chapter-by-chapter substitute for a book, long quotations, or copied examples, even when converted to Markdown.
 
 ## 9. Test activation and behavior
 
@@ -213,8 +213,6 @@ At minimum:
 9. verify every expected `SKILL.md` exists in the installed cache;
 10. repeat from the Git-backed branch or tag before announcing distribution success.
 
-A manifest that parses is not proof that clients discover or install the skill.
-
 For this repository, run:
 
 ```bash
@@ -237,20 +235,6 @@ When adding a skill to a versioned marketplace:
 
 Treat a new backward-compatible skill as a minor release. Treat removals, renames, incompatible behavior, or new mandatory permissions as major changes.
 
-## Pitfalls
-
-- **Description as documentation:** a long description harms routing; move procedure into the body.
-- **One giant skill:** unrelated goals with different triggers become unpredictable.
-- **Router-only skill:** indirection duplicates the catalog without adding workflow value.
-- **Manifest-only confidence:** JSON validity does not prove installation or discovery.
-- **Duplicated trees:** copies for different clients drift over time.
-- **Machine-local assumptions:** absolute paths and personal configuration break portability.
-- **Unverified side effects:** a tool's success message is not the resulting state.
-- **Private examples:** sanitized names can still leave a recognizable incident.
-- **Unlicensed source material:** summaries can still become substitutes when they preserve an entire work's sequence, examples, and detail.
-- **Premature scripting:** code adds maintenance and security surface without necessarily improving reliability.
-- **Overfitting tests:** activation that works only for the evaluation phrasing is not robust.
-
 ## Verification checklist
 
 - [ ] The skill supports one recognizable goal.
@@ -268,13 +252,3 @@ Treat a new backward-compatible skill as a minor release. Treat removals, rename
 - [ ] Installed caches contain the expected skill files.
 - [ ] README, changelog, and synchronized versions were updated.
 - [ ] Git-backed installation was verified before release.
-
-## Official references
-
-Check these sources again before relying on changing manifest or client behavior:
-
-- [OpenAI: Build skills](https://developers.openai.com/plugins/build/skills)
-- [OpenAI: Package your plugin](https://developers.openai.com/plugins/build/plugins)
-- [OpenAI: Plugin management](https://learn.chatgpt.com/docs/enterprise/plugin-management)
-- [Claude Code: Create plugins](https://code.claude.com/docs/en/plugins)
-- [Claude Code: Create and distribute a plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces)
