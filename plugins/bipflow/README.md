@@ -5,8 +5,8 @@ a careful teammate would.
 
 | Skill | Invoke as | Purpose |
 | --- | --- | --- |
-| `commit` | `/bipflow:commit` | Create atomic, well-written commits: review the real diff, stage explicitly, follow the repository style, respect hooks. |
-| `pr` | `/bipflow:pr` | Open a pull request with a technical summary, a test plan, and a client-facing summary in Spanish. Targets `stg` when the repository has one, otherwise the default branch; from `stg` it tells a new work branch apart from a promotion to the default branch. |
+| `commit` | `/bipflow:commit` | Create atomic, well-written commits: review the real diff, stage files explicitly, follow the repository style, and obey the hooks. |
+| `pr` | `/bipflow:pr` | Open a pull request with a technical summary, a test plan, and a client summary in Spanish. The pull request targets `stg` when the repository has one. If not, it targets the default branch. On `stg`, the skill tells a new work branch apart from a promotion to the default branch. |
 
 ## Install
 

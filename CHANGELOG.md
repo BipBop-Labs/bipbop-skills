@@ -20,6 +20,8 @@ Todos los cambios relevantes de este proyecto se documentan aquí. El formato si
 
 - `writing` reemplaza a `writing-simplified-technical-english`. Se usa en todo texto para una persona o un agente, incluidas las respuestas al usuario. Se acorta la introducción. Quien la llame por su nombre anterior debe usar el nuevo.
 - `best-prompting`, `create-skills`, `microcopy`, `research-first`, `simple-writing`, `test-audit` y `writing`: se quitan citas, listas de fuentes, historia y texto de contexto que no cambian lo que hace el modelo. Se borran `references/sources.md` de `best-prompting` y `research-first`, y `references/writing-rules.md` de `writing`. Las reglas no cambian.
+- Todas las skills y los plugins `adr` (0.4.1) y `bipflow` (0.2.1) se reescriben con las reglas de `writing`.
+- `best-prompting` se acota a prompts de agentes del producto: system prompts, descripciones de tools, prompts de un pipeline y briefs a sus propios subagentes. Ya no cubre briefs de un asistente de código, CLAUDE.md, AGENTS.md ni skills.
 
 ### Removed
 

@@ -1,45 +1,71 @@
 ---
 name: best-prompting
-description: Mejores prácticas, agnósticas al modelo, para escribir y revisar texto dirigido a un LLM. Úsala siempre que se escriba, edite o revise un system prompt, una descripción de tool, un brief para un subagente, un archivo de instrucciones para agentes o un prompt de compactación, al depurar un prompt que no se comporta como se espera, y al revisar PRs que tocan prompts.
+description: Mejores prácticas, agnósticas al modelo, para escribir y revisar los prompts de los agentes LLM que construimos en nuestro producto. Úsala cuando escribes, editas o revisas un system prompt, una descripción de tool, un prompt dentro de un pipeline o un brief que un agente del producto envía a sus subagentes. Úsala también cuando depuras un prompt que no se comporta como esperas y cuando revisas PRs que tocan prompts del producto. No es para briefs que un asistente de código (Claude Code, Codex) escribe para sus subagentes, ni para CLAUDE.md o AGENTS.md, ni para skills, ni para prompts de compactación de un asistente de código.
 ---
 
 # Best prompting
 
-Guidance for writing and reviewing any text a language model will read: system prompts, tool descriptions, delegation briefs, instruction files, and prompts inside a pipeline. Where behaviour differs between models, settle the question with a test, not a rule.
+Use this skill to write and review the prompts of the LLM agents in our product.
+Where the behavior differs between models, a test settles the question, not a rule.
 
-The person's explicit instructions and the conventions already used in the repository's prompts take precedence over this skill.
+The explicit instructions of the person win over this skill.
+The conventions of the prompts that already exist in the repository also win over this skill.
 
 ## When to use
 
-Use it when writing a new prompt, editing or reviewing an existing one, diagnosing a prompt that misbehaves, or moving a prompt to a different model.
+Use this skill for these texts of a product agent:
 
-Other skills cover neighbouring work: `microcopy` for text shown to people in an interface, and `create-skills` for packaging and validating a skill (this skill covers the wording inside one).
+- a system prompt;
+- a tool description;
+- a prompt inside a pipeline;
+- a brief that a product agent sends to its own subagents.
 
-## Before editing: check that the prompt is the problem
+Use it when you write a new prompt, edit or review a prompt, find why a prompt misbehaves, or move a prompt to a different model.
 
-A failure does not always mean an instruction is missing. Decide which of these it is before touching the text:
+Do not use it for these texts:
 
-- **Missing context.** The model lacked a fact, a definition or the purpose of the task. Supply it.
-- **Conflicting instructions.** Two parts of the prompt, or the prompt and another loaded file, disagree. Resolve the conflict; adding a third rule makes it worse.
-- **An instruction that over-applies.** An existing rule causes the behaviour. Remove or narrow it.
-- **A tool problem.** The tool is missing, badly described, or returns something the model cannot use.
-- **Something that needs enforcement.** A rule that must hold every time (a permission, a required format, a safety limit) belongs in code: a schema, a validator, a hook or a permission check. A prompt states a policy and cannot guarantee it.
-- **No way to tell.** There are no cases to run, so nobody knows whether a change helped.
+- a brief that a coding assistant (Claude Code, Codex) writes for its own subagents;
+- a CLAUDE.md or AGENTS.md file;
+- a skill;
+- a compaction prompt of a coding assistant.
 
-When the answer is a tool, a validator or a permission, say so. A recommended change outside the prompt is a valid result of prompt work, and the prompt then carries one sentence of policy so the model can explain the limit.
+Text that people see in an interface follows `microcopy`.
+
+## Before you edit: make sure the prompt is the problem
+
+A failure does not always mean that an instruction is missing.
+Before you change the text, find which of these causes the failure:
+
+- **Missing context.** The model did not have a fact, a definition, or the purpose of the task. Give it.
+- **Conflicting instructions.** Two parts of the prompt disagree, or the prompt and another loaded file disagree. Remove the conflict. A third rule makes it worse.
+- **An instruction that over-applies.** A rule that exists causes the behavior. Remove the rule or make it narrower.
+- **A tool problem.** The tool is missing, its description is bad, or it returns data that the model cannot use.
+- **A rule that needs enforcement.** A rule that must hold every time (a permission, a required format, a safety limit) belongs in code: a schema, a validator, a hook, or a permission check. A prompt states a policy. It cannot guarantee it.
+- **No way to tell.** There are no cases to run, so nobody knows if a change helped.
+
+When the fix is a tool, a validator, or a permission, say so.
+A change outside the prompt is a valid result of prompt work.
+The prompt then gets one sentence of policy, so the model can explain the limit.
 
 ## Procedure
 
-1. Write down the outcome and how you will recognise a good output, and collect a few inputs to try, including awkward ones.
-2. Draft the smallest prompt that fully describes the behaviour you want. Minimal means nothing unnecessary, which is often still long.
-3. Run it on the model it will ship on and read the outputs.
-4. For each failure, find the cause and fix that. Every instruction in the prompt should trace to a requirement someone stated or a failure you observed.
-5. Change one thing at a time and rerun the same inputs.
-6. Before finishing, reread the whole prompt for contradictions, duplicated rules and text that no longer earns its place.
+1. Write down the outcome and how you recognize a good output. Collect a few inputs to try, and include difficult ones.
+2. Write the smallest prompt that fully describes the behavior you want. "Smallest" means nothing unnecessary. That is often still long.
+3. Run the prompt on the model that it will ship on. Read the outputs.
+4. For each failure, find the cause and fix the cause. Each instruction in the prompt must come from a stated requirement or from a failure that you saw.
+5. Change one thing at a time. Run the same inputs again.
+6. Before you finish, read the whole prompt again. Look for contradictions, duplicate rules, and text that does no work.
 
-When the prompt cannot be run (no access to the model, the tools or the data), replace steps 3 to 5 with a cold read: give the draft and the requirements, without your reasoning, to a fresh reader, and have them walk through a hard case and say where the prompt lets the wrong thing happen. Then say plainly that the prompt is untested and list the cases to run first.
+Sometimes you cannot run the prompt, because you have no access to the model, the tools, or the data.
+Then replace steps 3 to 5 with a cold read:
 
-When the prompt depends on a fact you do not have, such as how an approval arrives or what a tool returns, mark it as an assumption for whoever deploys the prompt. An invented fact reads the same as a real one to the model.
+1. Give the draft and the requirements to a fresh reader. Do not give your reasoning.
+2. Tell the reader to go through a hard case and to say where the prompt lets the wrong thing happen.
+3. Say clearly that the prompt is not tested. List the cases to run first.
+
+The prompt can depend on a fact that you do not have, for example how an approval arrives or what a tool returns.
+Mark that fact as an assumption for the person who deploys the prompt.
+To the model, an invented fact reads the same as a real one.
 
 For a prompt that will run many times, read `references/testing.md` before step 1.
 
@@ -47,164 +73,247 @@ For a prompt that will run many times, read `references/testing.md` before step 
 
 ### Write for a capable reader who has none of your context
 
-The model knows nothing about the project, the audience, the quality bar, or what was tried last week unless the prompt says so. A useful test: give the prompt to a competent colleague who has never seen the task and ask whether they could do excellent work without asking questions. The questions they would ask are what the prompt is missing.
+The model knows nothing about the product, the audience, the quality bar, or what the team tried last week, unless the prompt says it.
+Use this test: give the prompt to a competent colleague who never saw the task.
+Ask if that colleague could do excellent work with no questions.
+The questions that the colleague would ask show what the prompt is missing.
 
-Say what the task is for and who will use the result. A model that knows the summary is for an executive deciding whether to fund a project makes better choices throughout than one told only to summarise. Spend the words on the parts where a smart newcomer would go wrong, and leave out what any capable model does well unprompted.
+Say what the task is for and who will use the result.
+Tell the model that the summary is for an executive who decides whether to fund a project. Then it makes better choices than a model told only to "summarize".
+Spend words where a smart newcomer would go wrong.
+Leave out what a capable model does well with no prompt.
 
-Give the whole task in one place. Requirements revealed a piece at a time over several turns are followed less reliably than the same requirements stated together.
+Give the whole task in one place.
+The model obeys requirements given together more reliably than the same requirements given one at a time over several turns.
 
-A role line ("you are a senior tax lawyer") sets tone, register and scope. It does not make answers more accurate and does not replace the context above.
+A role line ("you are a senior tax lawyer") sets tone, register, and scope.
+It does not make the answers more accurate, and it does not replace the context above.
 
-### Describe the destination, and script the route only when the route is the requirement
+### Describe the destination. Script the route only when the route is the requirement
 
-State the outcome, the criteria for success, the constraints, and when to stop. Then let the model choose how to get there. Step-by-step scripts make current models mechanical and block better approaches.
+State the outcome, the criteria for success, the constraints, and when to stop.
+Then let the model choose how to get there.
+Step-by-step scripts make current models mechanical and block better approaches.
 
-Match the degree of freedom to how fragile the task is. Where many approaches are valid, give goals and heuristics. Where an operation is fragile, the order matters, or consistency across runs is the point, give exact steps. Smaller models pull in the other direction: the smaller and faster the model, the more it benefits from a longer, more explicit, ordered prompt.
+Match the freedom to how fragile the task is:
 
-Give stop conditions explicitly. Say what done means, when to stop gathering information, and what to do when the evidence is missing or the task turns out to be infeasible. Without them, models either stop early or keep going past the point of usefulness. Check that the definition of done cannot be met without doing the work: if "not examined" or "could not determine" is an acceptable final answer, say exactly when, or the model will reach for it.
+- When many approaches are valid, give goals and heuristics.
+- When an operation is fragile, the order matters, or consistency across runs is the point, give exact steps.
+- Smaller models need the opposite. The smaller and faster the model, the more it gains from a longer, explicit, ordered prompt.
+
+Give explicit stop conditions.
+Say what "done" means and when to stop the search for information.
+Say what to do when the evidence is missing or the task is not possible.
+With no stop conditions, models stop too early or continue past the point where the work is useful.
+Make sure that the model cannot meet the definition of done without the work.
+If "not examined" or "could not determine" is an acceptable final answer, say exactly when. If you do not, the model will use it.
 
 ### Give the reason with the rule
 
-"Never use ellipses" is weaker than "the reply is read aloud by a speech engine that cannot pronounce ellipses, so leave them out". The reason lets the model handle the cases the rule did not anticipate, and tells it how much weight the rule deserves. A clause is usually enough; a rule that needs a paragraph of justification is probably a description of a situation, and is better written as one.
+"Never use ellipses" is weaker than "a speech engine reads the reply aloud and cannot pronounce ellipses, so leave them out".
+The reason lets the model handle cases that the rule did not expect.
+The reason also tells the model how much weight the rule has.
+A clause is usually enough.
+If a rule needs a paragraph of reasons, it probably describes a situation. Write it as a description of that situation.
 
 ### Say each thing once, and make the prompt agree with itself
 
-Contradictions do more damage than gaps. A rule stated three times is applied too broadly. Every rule added weakens the others a little, and early instructions are followed more reliably than later ones.
+Contradictions do more damage than gaps.
+The model applies a rule stated three times too broadly.
+Each new rule makes the other rules a little weaker.
+The model obeys early instructions more reliably than late ones.
 
-- State each instruction once, in the place it applies.
-- Among the instructions, put the ones that matter most first. The context that makes them understandable can come before them.
-- Put an exception next to the rule it modifies.
-- Check that examples obey the rules written around them.
-- When several sources of instruction exist (system prompt, loaded files, the person's messages), say which wins, and then remove the conflicts you can find anyway. Models resolve such conflicts unreliably even when told the order.
+- State each instruction once, in the place where it applies.
+- Put the most important instructions first. The context that explains them can come before them.
+- Put an exception next to the rule that it changes.
+- Make sure that the examples obey the rules around them.
+- When there are several sources of instruction (the system prompt, loaded files, the messages of the person), say which source wins. Then remove the conflicts that you find. Models resolve such conflicts unreliably, even when the prompt gives the order.
 
 ### Calibrate strength
 
-Keep absolute words for true invariants: safety limits, required output fields, actions that must never happen. For judgment calls, write a decision rule that names the consideration ("ask before acting when the action cannot be undone"). Capitals and words like "critical" make a responsive model apply the rule too widely and too rigidly; calm, specific wording works better. If one instruction keeps being missed in testing, strengthen that line alone, since emphasis spread over many lines singles out none of them.
+Use absolute words only for true invariants: safety limits, required output fields, and actions that must never happen.
+For a judgment call, write a decision rule that names the consideration: "ask before you act when the action cannot be undone".
+Capitals and words like "critical" make a responsive model apply the rule too widely and too rigidly.
+Calm, specific words work better.
+If the model misses one instruction again and again in tests, make that one line stronger.
+Emphasis on many lines singles out none of them.
 
-Leave out tips, threats, flattery and emotional appeals. They have no reliable effect.
+Leave out tips, threats, flattery, and emotional appeals. They have no reliable effect.
 
 ### Say what to do, and keep prohibitions narrow
 
-A positive instruction gives the model a target: "write in flowing paragraphs" works better than "do not use bullet points". Broad prohibitions over-apply, because the model follows them to the letter in situations the author did not picture.
+A positive instruction gives the model a target.
+"Write in flowing paragraphs" works better than "do not use bullet points".
+A broad prohibition over-applies, because the model obeys it to the letter in situations that the author did not imagine.
 
-When a prohibition is needed, scope it to the specific thing and give the alternative. Naming an unwanted pattern does work when the pattern is concrete and recognisable, such as ending a turn by asking permission for work already requested.
+When you need a prohibition, limit it to the specific thing and give the alternative.
+A named unwanted pattern does work when the pattern is concrete and easy to recognize. An example: the model ends a turn with a request for permission to do work that the person already asked for.
 
-### Assume the instruction will be taken literally
+### Expect the model to read the instruction literally
 
-Current models do what the text says. They do not extend a rule from one item to all of them, and they do not infer a request that was not made.
+Current models do what the text says.
+They do not extend a rule from one item to all items.
+They do not infer a request that nobody made.
 
-- State the scope: "apply this to every section", when that is what is meant.
-- Say whether you want an action or advice. "Can you suggest improvements?" gets suggestions; "improve this function" gets edits.
-- Be careful with filters. A reviewer told to report only important issues will find the minor ones and stay silent about them. When coverage matters, ask for everything with a severity attached, and filter in a later step.
-- If you want ambition beyond the literal request, ask for it; if you want restraint, say what is out of scope.
+- State the scope: "apply this to every section", when that is what you mean.
+- Say if you want an action or advice. "Can you suggest improvements?" gets suggestions. "Improve this function" gets edits.
+- Be careful with filters. Tell a reviewer to report only important issues, and it finds the minor ones but does not report them. When coverage matters, ask for all issues with a severity, and filter in a later step.
+- If you want more than the literal request, ask for it. If you want restraint, say what is out of scope.
 
-### Use examples for what description cannot pin down
+### Use examples for what a description cannot fix
 
-Models imitate examples closely, including length, phrasing and incidental details. Use them to fix a format or a voice. They are risky for conveying judgment, since the model stays near the cases shown.
+Models copy examples closely, including length, phrasing, and incidental details.
+Use examples to fix a format or a voice.
+Examples are risky when they must teach judgment, because the model stays near the cases shown.
 
-- Try a clear description first; add examples when the output still misses.
-- Use several that differ from each other in meaningful ways, so the common thread is the lesson, and mark them as illustrations.
-- Wrap them in tags so they are not read as instructions.
-- Keep examples that correct a measured problem and cut the rest.
+- Try a clear description first. Add examples when the output still misses.
+- Use several examples that differ from each other in ways that matter, so that the common part is the lesson. Mark them as illustrations.
+- Put the examples in tags, so the model does not read them as instructions.
+- Keep the examples that correct a measured problem. Cut the others.
 
-Whether examples help or constrain depends on the model, so check the output with and without them.
+Examples help some models and constrain others.
+Compare the output with and without them.
 
 ### Separate the kinds of content
 
-Mark instructions, background, input data and examples as different things, with tags or headings used consistently, so that a document's text is never mistaken for an instruction. Prose is the better form for guidance that involves priorities and trade-offs; lists and tables suit reference material the model will look things up in.
+Mark instructions, background, input data, and examples as different things.
+Use tags or headings, and use them consistently.
+Then the model never takes the text of a document for an instruction.
+Prose is the better form for guidance with priorities and trade-offs.
+Lists and tables suit reference material that the model looks things up in.
 
-Include only the material the task needs. Accuracy drops as context grows and near-relevant distractors lower it further, so give a focused excerpt over the whole document when you can tell which part matters.
+Include only the material that the task needs.
+Accuracy decreases as the context grows, and near-relevant distractors decrease it more.
+When you can tell which part of a document matters, give that excerpt, not the whole document.
 
-Place a long document before the question and the instructions that refer to it; test this if position matters. For cost, put content that never changes ahead of content that changes per request, because providers cache prompts by prefix.
+Put a long document before the question and before the instructions that refer to it.
+If the position matters, test it.
+For cost, put the content that never changes before the content that changes per request. Providers cache prompts by prefix.
 
 ### Specify the output
 
-- Name the format, the length, the audience and the order of the content. Concrete shapes ("three short paragraphs, conclusion first") work where adjectives ("concise", "friendly") leave the model guessing.
-- For length, say what must be kept and what can go. A bare "be concise" can strip out required content.
-- For editing, say what to preserve before asking for improvement.
-- Use the platform's structured-output or schema feature for machine-read output, and keep the prompt for what the fields mean. On small models a strict format can lower the quality of the reasoning behind the answer; if that shows up, let the model answer freely and convert to the format in a second step.
-- The style of the prompt leaks into the output. A prompt written as bullet fragments tends to get bullet fragments back.
-- Do not rely on a default for formatting or verbosity; defaults change between models.
+- Name the format, the length, the audience, and the order of the content. A concrete shape ("three short paragraphs, conclusion first") works. Adjectives ("concise", "friendly") leave the model to guess.
+- For length, say what the model must keep and what it can remove. A bare "be concise" can remove required content.
+- For an edit, say what to keep before you ask for improvements.
+- For output that code reads, use the structured-output or schema feature of the platform. Use the prompt to say what the fields mean. On small models, a strict format can lower the quality of the reasoning behind the answer. If you see that, let the model answer freely and convert the answer to the format in a second step.
+- The style of the prompt goes into the output. A prompt written as bullet fragments tends to get bullet fragments back.
+- Do not depend on a default for format or verbosity. Defaults change between models.
 
 ### Let the model reason in its own way
 
-When the model has a built-in reasoning mode, control depth with that setting. "Think step by step" and hand-written thinking steps add little there, cost time, and can make results worse.
+When the model has a built-in reasoning mode, use that setting to control depth.
+In that mode, "think step by step" and hand-written thinking steps add little, cost time, and can make results worse.
 
-With reasoning switched off, asking the model to work through the problem before answering still helps, mainly on maths, logic and other symbolic tasks. In that case the working has to come before the answer: in a structured output, a field for the working placed after the answer field does nothing.
+When reasoning is off, an instruction to work through the problem before the answer still helps, mainly on maths, logic, and other symbolic tasks.
+Then the working must come before the answer.
+In a structured output, a field for the working after the answer field does nothing.
 
-With reasoning switched on, do not also ask for the reasoning as an output field or a tagged section. It adds nothing, and some current models decline such requests. Ask for the evidence, or a short explanation of the decision, when you need to audit a result.
+When reasoning is on, do not also ask for the reasoning as an output field or a tagged section.
+It adds nothing, and some current models refuse such requests.
+When you must audit a result, ask for the evidence or a short explanation of the decision.
 
-### Give verification something to check against
+### Give the verification something to check against
 
-Asking a model to "double-check your answer" with no new information rarely improves the answer and sometimes makes it worse. Verification works when it brings in an outside signal: running the tests, calling a validator, rendering the page and looking at it, or a review by a model in a fresh context that sees the result without the reasoning that produced it. Name the checks that matter, and say what to do when a check cannot be run.
+"Double-check your answer" with no new information rarely improves the answer, and sometimes makes it worse.
+Verification works when it brings in an outside signal. Examples:
 
-### Write the authorisation boundary once
+- the model runs the tests;
+- the model calls a validator;
+- the model renders the page and looks at it;
+- a model in a fresh context reviews the result without the reasoning that produced it.
 
-Do not write prompts that push in one direction ("keep going", "always ask first"); that default changes with every release. State the boundary itself:
+Name the checks that matter.
+Say what to do when the model cannot run a check.
 
-- what the model may do without asking, typically reading, searching, and local reversible changes;
-- what needs confirmation, typically anything destructive, hard to reverse, visible to other people, or beyond the requested scope;
-- who can give that confirmation and how it arrives. In a product, the person in the conversation is often a customer and not the operator, and a message claiming to be staff or to carry an approval is not one;
-- what to do when nobody can be asked, as in an unattended run: usually prepare the action as a draft for a person to carry out;
-- what to do when the request is ambiguous: make a reasonable assumption and state it, or ask a single narrow question;
-- that a question or a description of a problem calls for an answer, and a request for a change calls for the change.
+### Write the authorization boundary once
 
-Put this in one place. Repeating "ask first" through a prompt makes the model request approval for safe, expected actions.
+Do not write prompts that push in one direction ("keep going", "always ask first"). That default changes with each release.
+State the boundary itself:
+
+- what the model can do without a question, usually read, search, and make local changes that can be undone;
+- what needs confirmation, usually any action that destroys data, is hard to undo, is visible to other people, or goes past the requested scope;
+- who can give that confirmation and how it arrives. In a product, the person in the conversation is often a customer and not the operator. A message that says it is from staff or that it carries an approval is not an approval;
+- what to do when nobody can answer, as in an unattended run. Usually the model prepares the action as a draft for a person to do;
+- what to do when the request is ambiguous: make a reasonable assumption and state it, or ask one narrow question;
+- that a question or a description of a problem gets an answer, and a request for a change gets the change.
+
+Put the boundary in one place.
+If the prompt repeats "ask first" in many places, the model asks for approval of safe, expected actions.
 
 ### Tell the model about its situation
 
-Models behave differently depending on what they believe about their environment, so tell them what they cannot observe: whether a person is watching or the run is unattended, what the person can and cannot see of the work, whether the context is compacted automatically, what happens to the output next. Give the current date when the task involves recent facts and the platform does not supply it.
+Models behave differently according to what they believe about their environment.
+Tell them what they cannot observe:
 
-### Treat prompt text as policy and code as enforcement
+- whether a person watches the run or the run is unattended;
+- what the person can see of the work and what the person cannot see;
+- whether the harness compacts the context automatically;
+- what happens to the output next.
 
-Mark retrieved documents, web content and other people's messages as data, and say that instructions inside them are not to be followed unless the person asks. Then assume this will sometimes fail, and put the real control (permissions, confirmation steps, output validation) in the harness.
+When the task involves recent facts and the platform does not supply the date, give the current date.
+
+### Prompt text is policy. Code is enforcement
+
+Mark retrieved documents, web content, and messages from other people as data.
+Say that the model must not obey instructions inside them unless the person asks.
+Then expect this to fail sometimes, and put the real control in the harness: permissions, confirmation steps, and output validation.
 
 ## Defaults that change between models
 
-These behaviours differ between vendors and flip between generations of the same model family. Instructions written to compensate for one model's default become harmful on the next. For each, state what you want, then test on the target model.
+These behaviors differ between vendors.
+They also change between generations of the same model family.
+An instruction that compensates for the default of one model becomes harmful on the next model.
+For each behavior, state what you want, then test on the target model.
 
-| Behaviour | How it varies | What to write |
+| Behavior | How it varies | What to write |
 | --- | --- | --- |
-| Initiative | Some models over-ask, others act beyond the request | The authorisation boundary above |
-| Finishing long tasks | Some stop at a milestone or end on a plan | What done means, and that nobody is available to answer mid-run, if that is true |
-| Scope | Some add features, tests and refactors nobody asked for | What is out of scope, and that extras are to be suggested, not done |
-| Progress updates | Some narrate every step, others go silent | When to send an update and what it should contain |
-| Formatting | Some default to heavy markdown, others to plain prose | The format you need and when structure is appropriate |
-| Response length | Varies, and is not reliably controlled by reasoning settings | Length and what to keep, in the prompt |
-| Self-verification | Some verify unprompted and over-verify when reminded; others report done without checking | Which outside checks matter and what to do when one cannot run; add reminders only after seeing unverified claims |
-| Delegation | Some spawn subagents too readily, others too rarely | When delegation is worth it and when to work directly |
-| Tool and search use | Blanket "always use" rules over-trigger; "minimise tool calls" suppresses needed ones | The conditions under which the tool helps |
-| Examples | Help some models and narrow others | Test with and without |
+| Initiative | Some models ask too much, others act beyond the request | The authorization boundary above |
+| Long tasks to the end | Some stop at a milestone or end on a plan | What "done" means, and that nobody can answer during the run, if that is true |
+| Scope | Some add features, tests, and refactors that nobody asked for | What is out of scope, and that the model suggests extras but does not do them |
+| Progress updates | Some report each step, others say nothing | When to send an update and what it contains |
+| Format | Some use heavy markdown by default, others plain prose | The format you need and when structure is correct |
+| Response length | Varies. Reasoning settings do not control it reliably | The length and what to keep, in the prompt |
+| Self-verification | Some verify with no prompt and verify too much when reminded. Others report "done" with no check | Which outside checks matter and what to do when one cannot run. Add reminders only after you see claims with no verification |
+| Delegation | Some start subagents too readily, others too rarely | When delegation is worth it and when to do the work directly |
+| Tool and search use | A blanket "always use" rule triggers too often. "Minimize tool calls" suppresses calls that the task needs | The conditions in which the tool helps |
+| Examples | Help some models and narrow others | Test with and without them |
 
-When a prompt moves to a new model, start by removing compensations and see what the model does unaided. `references/testing.md` has the procedure.
+When a prompt moves to a new model, first remove the compensations and see what the model does with no help.
+`references/testing.md` has the procedure.
 
-## Reviewing a prompt
+## Review a prompt
 
-Work through the checks below, then report the findings with the most consequential first. Give each finding as the problem, where it is in the prompt, and the change that fixes it. List separately the questions that block shipping and that only the author can answer. If you did not run the prompt, say so: the findings are then predictions from reading, and any text you propose adding is a draft to test. Include a rewritten prompt when asked for one.
+Do the checks below.
+Then report the findings, the most consequential first.
+For each finding, give the problem, its location in the prompt, and the change that fixes it.
+List separately the questions that block the release and that only the author can answer.
+If you did not run the prompt, say so. The findings are then predictions from a reading, and any text that you propose to add is a draft to test.
+Include a rewritten prompt when the person asks for one.
 
-1. **Contradictions** inside the prompt and with other text loaded alongside it.
-2. **Missing context**: purpose, audience, quality bar, definition of done, stop conditions, what to do when a tool fails or returns nothing.
-3. **Rules that belong in code**, because they must hold every time, and **tools the prompt assumes but the model does not have**.
-4. **Over-strength**: capitals, stacked absolutes, the same rule repeated, emphasis on many lines.
-5. **Broad prohibitions and unscoped filters** that a literal reader would over-apply.
-6. **Scripts where an outcome would do**, and vague adjectives where a concrete shape is needed.
-7. **Leftovers** from an earlier model or an earlier version of the task: persistence nudges, verification reminders, formatting bans, instructions for tools that no longer exist.
-8. **Examples**: a single one that will be copied wholesale, several that are too alike, or any that disagree with the rules.
-9. **Text that does no work**: restated defaults, encouragement, incentives and threats, a role line standing in for real context.
-10. **Who can authorise what**, when the people who talk to the model are not the people who run it.
+1. **Contradictions** inside the prompt, and with other text loaded with it.
+2. **Missing context**: purpose, audience, quality bar, definition of done, stop conditions, and what to do when a tool fails or returns nothing.
+3. **Rules that belong in code**, because they must hold every time. Also **tools that the prompt expects but the model does not have**.
+4. **Too much strength**: capitals, stacked absolutes, the same rule repeated, emphasis on many lines.
+5. **Broad prohibitions and filters with no scope** that a literal reader would over-apply.
+6. **Scripts where an outcome is enough**, and vague adjectives where the prompt needs a concrete shape.
+7. **Leftovers** from an earlier model or an earlier version of the task: persistence nudges, verification reminders, format bans, and instructions for tools that no longer exist.
+8. **Examples**: one example that the model will copy as a whole, several that are too similar, or any that disagree with the rules.
+9. **Text that does no work**: restated defaults, encouragement, incentives and threats, and a role line in place of real context.
+10. **Who can authorize what**, when the people who talk to the model are not the people who run it.
 
-Judge the prompt by its outputs when you can run it. A prompt that reads well and fails its cases is not good, and a plain one that passes them is.
+When you can run the prompt, judge it by its outputs.
+A prompt that reads well and fails its cases is not good. A plain prompt that passes them is good.
 
 ## References
 
-- Read `references/agents-and-tools.md` when the prompt belongs to an agent: it has tools, delegates to other models, loads skills or instruction files, or runs long enough to be compacted. It opens with a list of contents; read the sections that match.
-- Read `references/testing.md` when writing or changing a prompt that will run repeatedly, or when changing models.
+- Read `references/agents-and-tools.md` when the prompt belongs to an agent that has tools, delegates to subagents, loads files on demand, or runs long enough for the harness to compact its context. The file starts with a list of contents. Read the sections that apply.
+- Read `references/testing.md` when you write or change a prompt that will run many times, or when you change models.
 
 ## Verification
 
 The work is done when:
 
-- the prompt has been run on the model it will ship on, or the response says plainly that it was not run, why, and what was done instead;
-- the outputs that were read are described, with any failure that remains;
-- each instruction added or removed is tied to a stated requirement or an observed behaviour, and facts the author did not have are marked as assumptions;
+- you ran the prompt on the model that it will ship on, or the response says clearly that you did not run it, why, and what you did instead;
+- the response describes the outputs that you read, with any failure that remains;
+- each instruction that you added or removed comes from a stated requirement or a behavior that you saw, and the facts that the author did not have are marked as assumptions;
 - a final read found no contradictions and no repeated rules.

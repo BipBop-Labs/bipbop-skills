@@ -26,9 +26,9 @@ Interface text also follows `microcopy`. Text for non-technical readers also fol
 | One hedge, at most          | "The client version is probably out of date."                        | "An error may have occurred which could be caused by..."    |
 | Paragraphs                  | One topic, 6 sentences or fewer                                      | Multi-topic paragraphs                                      |
 | Lists                       | Use a list for 3 or more steps or conditions                         | A sequence buried in one sentence                           |
-| Jargon                      | Keep the technical term you need, and define it once                 | Use an internal name the reader has never seen              |
+| Jargon                      | Keep the technical term you need, and define it once                 | Use an internal name the reader does not know               |
 
-The house style of the project sits on top of these rules and wins where the two disagree.
+Where the house style of the project and these rules disagree, follow the house style.
 If the project has no house style, use sentence case and the Oxford comma.
 Do not use the em-dash.
 
@@ -41,18 +41,19 @@ Do not use the em-dash.
 ## Spanish
 
 The rules do not change when you write in Spanish.
-The language that the reader uses decides the language of the text, and the rules apply to both.
+Write in the language that the reader uses.
+The rules apply to both languages.
 Some rules take a different form in Spanish.
 Read `references/spanish.md` before you write Spanish text.
 
 ## How to rewrite
 
-1. Read the text once for meaning. Do not start rewriting before you know what it must still say.
+1. Read the text once for meaning. Do not start to rewrite until you know what the text must still say.
 2. Go sentence by sentence. Name the rule each sentence breaks.
 3. Rewrite the sentence to fix that break. Keep every fact, number, condition, and qualifier.
 4. Check the result against the rules again. A rewrite often introduces a new long sentence.
 
-Precision beats brevity.
+Precision is more important than brevity.
 If a shorter sentence would drop a safety condition, a scope qualifier, or a number, keep the longer sentence and say why.
 
 If the text already follows the rules, say so.
@@ -62,7 +63,7 @@ Do not change compliant text.
 
 Before you send the text, read it once and ask:
 
-- Does any sentence run past 25 words?
+- Does any sentence have more than 25 words?
 - Does any sentence carry two instructions?
 - Does the same action appear under two different verbs?
 - Can a passive sentence name its actor?

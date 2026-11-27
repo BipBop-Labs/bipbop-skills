@@ -1,20 +1,20 @@
 # Qué buscar según el tipo de tarea
 
-Listas para el paso 3 de la skill. No hay que cubrir cada ítem: elige los que aplican al contexto del paso 1. Si la tarea no calza en ninguna sección, usa los seis ejes del paso 3 tal cual.
+Estas listas son para el paso 3 de la skill. No cubras cada ítem: elige los que aplican al contexto del paso 1. Si la tarea no calza en ninguna sección, usa los seis ejes del paso 3 sin cambios.
 
 ## Comunicaciones (correos, avisos, comunicados, mensajes a clientes)
 
 **Antes de buscar, define:**
 
 - El tipo de mensaje: transaccional (confirmación, aviso de servicio), comercial o marketing, interno, institucional, o respuesta a un reclamo.
-- El país del destinatario, y si es una persona o una empresa.
+- El país del destinatario, y si el destinatario es una persona o una empresa.
 - La relación: cliente actual, prospecto, empleado o proveedor.
 
 **Obligatorio:**
 
 - Reglas de comunicación comercial y de spam en la jurisdicción del destinatario. Ejemplos: CAN-SPAM en Estados Unidos; ePrivacy, GDPR y PECR en la UE y el Reino Unido; la ley de protección del consumidor y la de datos personales en países de Latinoamérica.
 - Protección del consumidor cuando el mensaje anuncia cambios de precio, de condiciones o de contrato: plazos de aviso, derecho a terminar y forma de notificación.
-- Datos personales: qué se puede incluir en el mensaje y qué base legal permite enviarlo.
+- Datos personales: qué datos puede incluir el mensaje y qué base legal permite enviarlo.
 - Reglas del sector cuando aplican, como finanzas, salud, telecomunicaciones o educación.
 
 **Guías y práctica:**
@@ -44,8 +44,8 @@ Listas para el paso 3 de la skill. No hay que cubrir cada ítem: elige los que a
 
 - La documentación oficial y el changelog de la versión que usa el proyecto, no de la última versión.
 - OWASP (Cheat Sheets y ASVS) para todo lo que toca autenticación, entrada de usuarios, secretos o permisos.
-- Si existe una librería mantenida que ya resuelve el problema: actividad reciente, licencia y adopción.
-- Lo que el propio repositorio ya hace en casos parecidos, que se busca antes que en internet.
+- Una librería mantenida que ya resuelve el problema, si existe: actividad reciente, licencia y adopción.
+- Lo que el propio repositorio ya hace en casos parecidos. Busca esto antes que en internet.
 
 **Errores comunes:**
 
@@ -56,21 +56,21 @@ Listas para el paso 3 de la skill. No hay que cubrir cada ítem: elige los que a
 
 ## Procesos y políticas (onboarding, vacaciones, gestión de incidentes, aprobaciones)
 
-**Antes de buscar, define:** el país y la legislación laboral o sectorial que aplica, el tamaño de la organización y quién va a operar el proceso.
+**Antes de buscar, define:** el país y la legislación laboral o sectorial que aplica, el tamaño de la organización y quién opera el proceso.
 
 **Obligatorio:**
 
-- La ley aplicable y la guía del regulador. Por ejemplo, el código del trabajo para políticas de personas o la regulación sectorial para procesos de compliance.
+- La ley aplicable y la guía del regulador. Por ejemplo, el código del trabajo para políticas de personas, o la regulación sectorial para procesos de compliance.
 - Los contratos y las certificaciones vigentes de la organización, como ISO 27001 o SOC 2, que ya imponen controles.
 
 **Guías y práctica:**
 
-- Marcos reconocidos: ISO, NIST, ITIL, o el estándar del sector.
-- Handbooks públicos de organizaciones comparables, incluidos los que viven en repositorios abiertos, como los de empresas que publican sus procesos o los manuales de servicios de gobierno.
-- Las políticas, ADRs y procesos que la organización ya tiene. Un proceso nuevo debe calzar con los existentes.
+- Marcos reconocidos: ISO, NIST, ITIL o el estándar del sector.
+- Handbooks públicos de organizaciones comparables. Incluye los handbooks en repositorios abiertos, como los de empresas que publican sus procesos o los manuales de servicios de gobierno.
+- Las políticas, ADRs y procesos que la organización ya tiene. Un proceso nuevo debe calzar con los procesos existentes.
 
 **Errores comunes:**
 
 - Procesos copiados de organizaciones mucho más grandes.
 - Pasos sin responsable.
-- Políticas que nadie puede cumplir y por lo tanto nadie cumple.
+- Políticas que nadie puede cumplir y que, por eso, nadie cumple.

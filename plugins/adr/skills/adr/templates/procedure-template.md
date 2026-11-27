@@ -23,7 +23,7 @@ last_verified: YYYY-MM-DD
 
 ## Rollback
 
-- How to undo the steps if verification fails.
+- How to undo the steps if the verify step fails.
 
 ## Related
 

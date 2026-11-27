@@ -1,34 +1,43 @@
 # Hooks
 
 This plugin ships **no active hooks**. `hooks/hooks.json` does not exist on
-purpose, so installing the plugin changes nothing about your sessions.
+purpose, so the plugin install changes nothing in your sessions.
 
-## Optional: Stop hook that suggests checking ADRs
+## Optional: Stop hook that suggests an ADR check
 
-`scripts/stop-suggest.py` is an adrchive-style Stop hook reduced to a
+`scripts/stop-suggest.py` is an adrchive-style Stop hook that only gives a
 suggestion. It never writes an ADR and never blocks. It reads only the part of
-the transcript it has not inspected yet, and prints a one-line system message
-when the session edited a dependency manifest, lockfile, migration, schema,
-CI file, or Dockerfile, or when assistant text contains decision language
-("switched to", "instead of", "we decided", "migrate to"). It stays quiet when
-the session already wrote into an ADR folder. The message asks the agent to
-check applicable ADRs and apply the standing eligibility filter before suggesting
-a new one. These heuristics cannot establish whether a new ADR qualifies.
+the transcript that it did not examine before. It prints a one-line system message
+in two cases:
 
-Why it is off by default: Claude Code loads every hook in `hooks/hooks.json`
-whenever the plugin is enabled, with no per-hook opt-out, and keyword
-heuristics fire on ordinary refactors often enough to annoy. adrchive's own
-dogfooding produced six drafts in one day with an LLM classifier; a
-keyword one would be noisier. A suggestion the user can ignore is the most this
-hook should do, and even that is a per-repository choice.
+- the session edited a dependency manifest, lockfile, migration, schema,
+  CI file, or Dockerfile;
+- assistant text contains decision language
+  ("switched to", "instead of", "we decided", "migrate to").
 
-To enable it in one repository:
+It stays quiet when
+the session already wrote into an ADR folder. The message tells the agent to
+check the applicable ADRs and to apply the standing eligibility filter before it suggests
+a new ADR. These heuristics cannot show if a new ADR qualifies.
+
+Why the hook is off by default:
+
+- Claude Code loads every hook in `hooks/hooks.json`
+  when the plugin is enabled. There is no opt-out per hook.
+- Keyword heuristics fire on ordinary refactors often enough to annoy.
+- The adrchive dogfood run produced six drafts in one day with an LLM classifier. A
+  keyword classifier would be noisier.
+
+The most this hook should do is a suggestion that the user can ignore. Even that
+is a choice for each repository.
+
+To enable the hook in one repository:
 
 1. Copy the script: `cp "<plugin-root>/scripts/stop-suggest.py" scripts/adr-stop-suggest.py`
-   (any path works; the hook config below assumes this one).
+   (any path works; the hook config below uses this one).
 2. Merge `hooks/stop-suggest.example.json` into `.claude/settings.json` (or
    `.claude/settings.local.json` to keep it personal).
-3. Start a new session. Run `/hooks` to confirm it is listed.
+3. Start a new session. Run `/hooks` to make sure that the hook is in the list.
 
-The per-session byte offset is stored under `$CLAUDE_PLUGIN_DATA` when set,
+The hook stores the byte offset of each session under `$CLAUDE_PLUGIN_DATA` when it is set,
 else `$TMPDIR`, else `/tmp`, in `adr-stop-suggest/<session>.offset`.

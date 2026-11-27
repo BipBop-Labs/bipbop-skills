@@ -13,16 +13,16 @@ review_in: 6 months     # or a date, YYYY-MM-DD
 
 State the rule or the definition in one to five sentences. Write what people
 and agents must do. If code, a lint, a test, or config can state the rule
-fully, put it there and link it here instead.
+fully, put the rule there and put only a link here.
 
 ## Scope
 
-Who and what the rule applies to. Name the exceptions.
+The people and things that the rule applies to. Name the exceptions.
 
 ## Why
 
-One short paragraph. Link the source of the rule (a law, a contract, a
-decision of the team) when there is one.
+One short paragraph. If the rule has a source (a law, a contract, a
+decision of the team), link to it.
 
 ## Related
 

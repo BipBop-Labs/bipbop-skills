@@ -5,7 +5,7 @@ procedures whose `trigger`, `paths`, or topic match your task.
 
 Rules for agents:
 
-- Follow the steps in order. If a step fails, stop and report; do not improvise.
+- Do the steps in order. If a step fails, stop and report. Do not improvise.
 - If a step is out of date, fix the procedure in the same change and update
   `last_verified`.
 - When a script does all the steps, delete the procedure and link the script.

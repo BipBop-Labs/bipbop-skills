@@ -1,9 +1,9 @@
 # Known debt
 
-Things in this codebase that look deliberate but are not. Agents and people may
-fix these without an ADR. When one is fixed, delete its entry.
+Things in this codebase that look deliberate but are not. Agents and people can
+fix these without an ADR. When you fix one, delete its entry.
 
-Format: one entry per item. Keep each under five lines.
+Format: one entry per item. Keep each entry shorter than five lines.
 
 <!-- KNOWN-DEBT:START -->
 <!-- KNOWN-DEBT:END -->

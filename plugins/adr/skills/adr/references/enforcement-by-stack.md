@@ -1,7 +1,7 @@
 # Enforcement options by stack
 
-Use this table when an accepted ADR can be turned into a check. Pick the tool
-the repository already runs when possible. Verified 2026-10-02.
+Use this table when you can turn an accepted ADR into a check. When possible, pick a tool
+that the repository already runs. Checked 2026-10-02.
 
 | Stack | Tool | What it checks | Runs as |
 | --- | --- | --- | --- |
@@ -27,17 +27,19 @@ the repository already runs when possible. Verified 2026-10-02.
 
 ## Deciding enforceable vs advisory
 
-Enforceable when the decision reduces to one of:
+A decision is enforceable when it reduces to one of these rules:
 
 - "module A must not import module B" (dependency rule);
 - "only X may be used for Y" (banned alternatives: a dependency, an API, a string);
 - "every file matching P must contain or not contain Q" (pattern rule);
 - "config key K must equal V" (config rule).
 
-Advisory when the decision is about process, taste, or trade-offs that need
-judgement ("prefer small PRs", "keep the domain layer thin"). Record it, tag the
-code with `@decision`, and rely on `/adr:review`.
+A decision is advisory when it is about process, taste, or tradeoffs that need
+judgment ("prefer small PRs", "keep the domain layer thin"). Record it, tag the
+code with `@decision`, and use `/adr:review`.
 
-Caveats: NetArchTest has had no commits since mid-2024, prefer ArchUnitNET.
-cargo-deny governs external crates, not internal layering. pytest-archon is
-small and low-activity.
+Caveats:
+
+- NetArchTest got no commits after mid-2024. Prefer ArchUnitNET.
+- cargo-deny governs external crates, not internal layering.
+- pytest-archon is small and has low activity.

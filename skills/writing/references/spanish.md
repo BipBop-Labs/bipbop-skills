@@ -42,7 +42,7 @@ The two forms hide the actor.
 Use them only in descriptive text, when the actor is unknown or does not matter to the reader: "La oficina se cierra a las 18:00."
 
 **Subject.**
-Spanish lets the writer drop the subject pronoun, and that is correct: "Recibimos el informe."
+In Spanish, the writer can drop the subject pronoun. This is correct: "Recibimos el informe."
 Name the subject when the verb ending does not identify it.
 "Falló después del deploy" does not say what failed.
 Write "El job de exportación falló después del deploy."
