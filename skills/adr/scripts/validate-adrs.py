@@ -475,7 +475,7 @@ SETUP_TEXT = """\
 # The script is standard-library Python; copy it into the repository so CI and
 # hooks do not depend on a Claude plugin cache:
 #
-#   cp "<plugin>/scripts/validate-adrs.py" scripts/validate-adrs.py
+#   cp "<plugin>/skills/adr/scripts/validate-adrs.py" scripts/validate-adrs.py
 #
 # --- Option A: pre-commit framework (.pre-commit-config.yaml) --------------
 repos:
@@ -547,7 +547,7 @@ def main(argv: Optional[List[str]] = None) -> int:
                 return 2
     if adr_dir is None and (args.adr_dir or not any(kind_dirs.values())):
         looked = args.adr_dir or ", ".join(DEFAULT_ADR_DIRS)
-        print(f"error: no ADR directory found (looked for: {looked}). Run /adr:init or pass --adr-dir.", file=sys.stderr)
+        print(f"error: no ADR directory found (looked for: {looked}). Run /bipbop-skills:adr-init or pass --adr-dir.", file=sys.stderr)
         return 2
 
     report = Report()

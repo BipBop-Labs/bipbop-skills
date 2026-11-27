@@ -1,6 +1,6 @@
 # BipBop Skills
 
-Marketplace público de skills mantenidas por [BipBop Labs](https://bipbop.cl) para Claude Code, Codex y ChatGPT. El marketplace `bipbop` publica tres plugins: `bipbop-skills`, con las skills generales del árbol `skills/`, y los plugins `adr` y `bipflow`, que viven en `plugins/`. Cada árbol es la fuente canónica para todos los clientes.
+Marketplace público de skills mantenidas por [BipBop Labs](https://bipbop.cl) para Claude Code, Codex y ChatGPT. El marketplace `bipbop` publica un plugin, `bipbop-skills`, con todas las skills del árbol `skills/`. Ese árbol es la fuente canónica para todos los clientes.
 
 ## Skills disponibles
 
@@ -8,34 +8,26 @@ Incluidas en el plugin `bipbop-skills`.
 
 | Skill | Uso |
 | --- | --- |
+| [`adr`](skills/adr/) | Reglas para leer Architecture Decision Records, políticas y procedimientos, y para decidir qué tipo de documento necesita una regla. El modelo la carga solo. Ver el [README de adr](skills/adr/README.md). |
+| [`adr-init`](skills/adr-init/) | Crear o adoptar la carpeta de ADRs, su template, su índice, `known-debt.md` y el puntero en CLAUDE.md o AGENTS.md. |
+| [`adr-distill`](skills/adr-distill/) | Recuperar decisiones implícitas del código y la historia de git, y decidir con la persona cuáles se registran. |
+| [`adr-new`](skills/adr-new/) | Registrar un ADR, una política o un procedimiento desde la conversación o el diff. |
+| [`adr-review`](skills/adr-review/) | Revisar un diff o una rama contra los ADRs, políticas y procedimientos aceptados. Solo reporta. |
 | [`best-prompting`](skills/best-prompting/) | Escribir y revisar prompts, descripciones de tools y briefs para agentes, con prácticas agnósticas al modelo y la evidencia detrás de cada una. |
+| [`commit`](skills/commit/) | Crear commits atómicos: revisar el diff real, elegir qué stagear, seguir el estilo del repositorio y respetar los hooks. |
 | [`create-skills`](skills/create-skills/) | Crear, revisar, validar y empaquetar skills portables siguiendo las mejores prácticas de Claude, Codex y ChatGPT. |
 | [`microcopy`](skills/microcopy/) | Escribir botones, errores, vacíos, confirmaciones y otros textos breves de interfaz. |
 | [`code-principles`](skills/code-principles/) | Nueve principios para todo el código que diseñas, escribes, arreglas o revisas, con una prueba por principio. |
 | [`fix`](skills/fix/) | Arreglar un bug en su causa: reproducirlo, encontrar la causa con evidencia, test que falla primero, refactor de la sección si su diseño causó el bug, y verificar donde se reprodujo. |
+| [`pr`](skills/pr/) | Abrir un pull request con resumen técnico, plan de pruebas y resumen para el cliente. Apunta a `stg` cuando el repositorio la tiene. |
 | [`research-first`](skills/research-first/) | Investigar cómo resuelve la industria una tarea (estándares, regulaciones, guías y errores conocidos), destilarlo en un brief con fuentes y hacer la tarea apoyada en él. |
 | [`simple-writing`](skills/simple-writing/) | Reescribir textos para que se entiendan a la primera, en lenguaje simple o lectura fácil. |
 | [`test-audit`](skills/test-audit/) | Filtrar tests nuevos al escribirlos y auditar tests de bajo valor, acoplados a la implementación o duplicados. Adaptada de [OpenClaw](https://github.com/openclaw/openclaw) (MIT). |
 | [`writing`](skills/writing/) | Escribir todo texto para una persona o un agente (respuestas, informes, PRs, commits, mensajes, prompts) con las reglas de ASD-STE100, para que no se pueda malinterpretar, en inglés y en español. Adaptada de la skill homónima del [plugin de PostHog](https://github.com/PostHog/ai-plugin) (MIT). |
 
-## Plugins adicionales
-
-Se instalan por separado y sus skills llevan su propio namespace.
-
-| Plugin | Uso |
-| --- | --- |
-| [`adr`](plugins/adr/) | Architecture Decision Records, políticas y procedimientos para cualquier repositorio: `/adr:init`, `/adr:distill`, `/adr:new`, `/adr:review` y un validador sin dependencias. Instalar con `/plugin install adr@bipbop`. |
-| [`bipflow`](plugins/bipflow/) | Flujo de Git para agentes: `/bipflow:commit` crea commits atómicos que respetan los hooks y `/bipflow:pr` abre pull requests con resumen técnico, plan de pruebas y resumen para el cliente. Instalar con `/plugin install bipflow@bipbop`. |
-
 ## Instalar y mantener al día
 
-El marketplace se llama `bipbop` y se agrega una sola vez. Después instalas solo los plugins que necesites:
-
-| Plugin | Qué trae | Ejemplo de uso |
-| --- | --- | --- |
-| `bipbop-skills` | Las skills generales de la tabla de arriba. | `/bipbop-skills:microcopy` |
-| `adr` | Architecture Decision Records. | `/adr:new` |
-| `bipflow` | Commits y pull requests. | `/bipflow:commit` |
+El marketplace se llama `bipbop` y se agrega una sola vez. Después instalas el plugin `bipbop-skills`. Las skills se invocan con su namespace, por ejemplo `/bipbop-skills:microcopy` o `/bipbop-skills:adr-init`.
 
 ### Claude Code
 
@@ -44,8 +36,6 @@ Instalar, dentro de Claude Code:
 ```text
 /plugin marketplace add BipBop-Labs/bipbop-skills
 /plugin install bipbop-skills@bipbop
-/plugin install adr@bipbop
-/plugin install bipflow@bipbop
 ```
 
 Actualizar:
@@ -53,12 +43,10 @@ Actualizar:
 ```text
 /plugin marketplace update bipbop
 /plugin update bipbop-skills@bipbop
-/plugin update adr@bipbop
-/plugin update bipflow@bipbop
 /reload-plugins
 ```
 
-El primer comando descarga el catálogo nuevo; los siguientes actualizan cada plugin instalado, y `/reload-plugins` aplica los cambios sin reiniciar la sesión. Un plugin solo se actualiza cuando sube su versión, así que revisa el [CHANGELOG](CHANGELOG.md) para saber qué cambió.
+El primer comando descarga el catálogo nuevo, el segundo actualiza el plugin, y `/reload-plugins` aplica los cambios sin reiniciar la sesión. Un plugin solo se actualiza cuando sube su versión, así que revisa el [CHANGELOG](CHANGELOG.md) para saber qué cambió.
 
 Para no hacerlo a mano, activa la actualización automática: `/plugin` > **Marketplaces** > `bipbop` > **Enable auto-update**. Claude Code revisa el marketplace al iniciar y actualiza los plugins instalados. En marketplaces de terceros como este viene desactivada por defecto.
 
@@ -66,10 +54,20 @@ Revisar lo instalado o quitar un plugin:
 
 ```text
 /plugin list
-/plugin uninstall bipflow@bipbop
+/plugin uninstall bipbop-skills@bipbop
 ```
 
-Las skills `commit` y `pr` vivían antes en `bipbop-skills`. Si las usabas desde ahí, instala `bipflow` e invócalas como `/bipflow:commit` y `/bipflow:pr`.
+Los plugins `adr` y `bipflow` ya no existen. Sus skills ahora viven en `bipbop-skills`. Si los tenías instalados, desinstálalos con `/plugin uninstall adr@bipbop` y `/plugin uninstall bipflow@bipbop`. Los nombres nuevos son:
+
+| Antes | Ahora |
+| --- | --- |
+| `/adr:init` | `/bipbop-skills:adr-init` |
+| `/adr:distill` | `/bipbop-skills:adr-distill` |
+| `/adr:new` | `/bipbop-skills:adr-new` |
+| `/adr:review` | `/bipbop-skills:adr-review` |
+| `adr:adr` | `bipbop-skills:adr` |
+| `/bipflow:commit` | `/bipbop-skills:commit` |
+| `/bipflow:pr` | `/bipbop-skills:pr` |
 
 ### Codex CLI
 
@@ -78,8 +76,6 @@ Instalar:
 ```bash
 codex plugin marketplace add BipBop-Labs/bipbop-skills --ref main
 codex plugin add bipbop-skills@bipbop
-codex plugin add adr@bipbop
-codex plugin add bipflow@bipbop
 ```
 
 Actualizar. Codex conserva un snapshot local del marketplace, así que hay que pedir los cambios nuevos:
@@ -114,15 +110,10 @@ Un administrador puede importar `https://github.com/BipBop-Labs/bipbop-skills` d
 │   ├── references/                    # Material detallado opcional
 │   ├── scripts/                       # Automatización determinista opcional
 │   └── assets/                        # Recursos opcionales
-├── plugins/<nombre>/                  # Plugins adicionales con su propio manifest
-│   ├── plugin.json
-│   ├── .claude-plugin/plugin.json
-│   ├── skills/<nombre>/SKILL.md
-│   └── scripts/
 └── scripts/validate.py
 ```
 
-El marketplace y el plugin `bipbop-skills` viven en la raíz; los plugins adicionales, en `plugins/<nombre>/`. Así Claude y Codex resuelven el mismo árbol sin copias ni enlaces simbólicos que puedan divergir.
+El marketplace y el plugin `bipbop-skills` viven en la raíz. Así Claude y Codex resuelven el mismo árbol sin copias ni enlaces simbólicos que puedan divergir.
 
 ## Buenas prácticas para escribir skills
 
@@ -172,7 +163,7 @@ claude plugin validate .
 
 El validador local revisa JSON, coherencia entre manifests, frontmatter, nombres únicos, enlaces relativos, symlinks e identificadores sensibles. Claude agrega su validación oficial. Codex no expone un comando `plugin validate`; por eso el chequeo final usa una instalación aislada desde el marketplace.
 
-Antes de abrir una PR, prueba ambos clientes en directorios aislados. Si cambiaste un plugin adicional, reemplaza `bipbop-skills` por su nombre (`adr` o `bipflow`):
+Antes de abrir una PR, prueba ambos clientes en directorios aislados:
 
 ```bash
 CODEX_TEST_HOME="$(mktemp -d)"

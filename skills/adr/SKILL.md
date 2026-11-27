@@ -9,8 +9,8 @@ user-invocable: false
 Architecture Decision Records (ADRs) make deliberate choices visible, so that agents do not
 undo them. Policies and procedures hold the other rules that a team writes down.
 This skill holds the standing knowledge. The commands are:
-`/adr:init` (set up), `/adr:distill` (recover rules from existing code),
-`/adr:new` (record a rule), `/adr:review` (check a diff against rules).
+`/bipbop-skills:adr-init` (set up), `/bipbop-skills:adr-distill` (recover rules from existing code),
+`/bipbop-skills:adr-new` (record a rule), `/bipbop-skills:adr-review` (check a diff against rules).
 
 ## Three kinds of rule doc
 
@@ -57,14 +57,14 @@ Use these defaults when the repository has no ADRs yet:
 - Template: [templates/adr-template.md](templates/adr-template.md). Short,
   YAML frontmatter, one paragraph per section. Fields: `id`, `title`, `status`,
   `date`, `deciders`, `tags`, `paths`.
-- `paths` lists the globs that the decision governs. `/adr:review` and the validator use
+- `paths` lists the globs that the decision governs. `/bipbop-skills:adr-review` and the validator use
   them. Keep the list tight.
 - Policy and procedure templates: [templates/policy-template.md](templates/policy-template.md)
   and [templates/procedure-template.md](templates/procedure-template.md). Each
   folder has a `README.md` index between `<!-- POLICY-INDEX:START -->` or
   `<!-- PROCEDURE-INDEX:START -->` and the matching `END` marker.
 - Pointer for agents: [templates/agents-snippet.md](templates/agents-snippet.md).
-  `/adr:init` adds it to `CLAUDE.md` or `AGENTS.md`.
+  `/bipbop-skills:adr-init` adds it to `CLAUDE.md` or `AGENTS.md`.
 
 **Adopt, do not convert.** The repository can already have ADRs. Look in
 `docs/adr`, `doc/adr`, `docs/decisions`, `docs/architecture/decisions`, `adr/`,
@@ -172,14 +172,14 @@ approval.
 
 ## Validation
 
-`${CLAUDE_PLUGIN_ROOT}/scripts/validate-adrs.py` checks structure only:
+`${CLAUDE_PLUGIN_ROOT}/skills/adr/scripts/validate-adrs.py` checks structure only:
 frontmatter, consecutive unique IDs, index sync, obsolete lifecycle metadata, stale paths,
 and `@decision` tags. When `docs/policies/` or `docs/procedures/` exist, it
 also checks their frontmatter, file names, index sync, links, numbered steps
 in procedures, and expired `review_in` or `last_verified` dates (warning).
 `--adrs-only` skips them. With `--fail-on-proposed` (for CI), an ADR that is still
 `proposed` is an error. Exit codes: 0 clean, 1 errors, 2 no ADR folder. The validator never judges
-if code obeys a decision. `/adr:review` and per-decision
+if code obeys a decision. `/bipbop-skills:adr-review` and per-decision
 checks do that.
 
 ## Pitfalls

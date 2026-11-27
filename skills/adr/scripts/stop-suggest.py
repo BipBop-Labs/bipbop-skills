@@ -2,7 +2,7 @@
 """Optional Stop hook: suggest checking ADRs after possible design-related edits.
 
 Suggest-only. Never writes ADRs, never blocks. No LLM, no network, stdlib only.
-Opt-in: this file is NOT wired in hooks/hooks.json. See hooks/README.md.
+Opt-in: this file is NOT wired in hooks/hooks.json. See ../references/stop-hook.md.
 
 Input: Claude Code Stop hook JSON on stdin (session_id, transcript_path, stop_hook_active).
 Output: {"systemMessage": "..."} when a trigger is found in the part of the

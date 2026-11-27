@@ -1,11 +1,11 @@
-# Hooks
+# Optional Stop hook
 
-This plugin ships **no active hooks**. `hooks/hooks.json` does not exist on
-purpose, so the plugin install changes nothing in your sessions.
+The `adr` skills add **no active hook**. The plugin `hooks/hooks.json` does not
+load this hook, so the plugin install does not run it in your sessions.
 
-## Optional: Stop hook that suggests an ADR check
+## What the hook does
 
-`scripts/stop-suggest.py` is an adrchive-style Stop hook that only gives a
+`../scripts/stop-suggest.py` is an adrchive-style Stop hook that only gives a
 suggestion. It never writes an ADR and never blocks. It reads only the part of
 the transcript that it did not examine before. It prints a one-line system message
 in two cases:
@@ -33,9 +33,9 @@ is a choice for each repository.
 
 To enable the hook in one repository:
 
-1. Copy the script: `cp "<plugin-root>/scripts/stop-suggest.py" scripts/adr-stop-suggest.py`
+1. Copy the script: `cp "<plugin-root>/skills/adr/scripts/stop-suggest.py" scripts/adr-stop-suggest.py`
    (any path works; the hook config below uses this one).
-2. Merge `hooks/stop-suggest.example.json` into `.claude/settings.json` (or
+2. Merge `../assets/stop-suggest.example.json` into `.claude/settings.json` (or
    `.claude/settings.local.json` to keep it personal).
 3. Start a new session. Run `/hooks` to make sure that the hook is in the list.
 

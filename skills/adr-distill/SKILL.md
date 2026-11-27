@@ -1,12 +1,12 @@
 ---
-name: distill
-description: Find qualifying lasting design constraints in code and history. Remove implementation-only choices and choices that docs already cover, rank the remaining candidates, and triage each one with the user as accept (write ADR), accident (known debt), reject, or skip. The state is saved so a run can resume. Use when the user runs /adr:distill or asks to bootstrap, extract, or derive ADRs from existing code.
+name: adr-distill
+description: Find qualifying lasting design constraints in code and history. Remove implementation-only choices and choices that docs already cover, rank the remaining candidates, and triage each one with the user as accept (write ADR), accident (known debt), reject, or skip. The state is saved so a run can resume. Use when the user runs /bipbop-skills:adr-distill or asks to bootstrap, extract, or derive ADRs from existing code.
 disable-model-invocation: true
 argument-hint: "[--since <ref>] [--batch 5] [--reset]"
 allowed-tools: Read, Glob, Grep, Bash(git *), Bash(ls *), Bash(find *), Bash(wc *), Bash(python3 *), Write, Edit, AskUserQuestion
 ---
 
-# /adr:distill
+# /bipbop-skills:adr-distill
 
 Examine code and history for evidence of lasting architectural intent that authoritative
 sources do not record. Apply the eligibility filter before you rank. Do
@@ -48,7 +48,7 @@ skipped") or when their evidence changed after `updated`.
 
 ### 1. Prepare
 
-- An ADR folder is necessary. If there is none, offer `/adr:init` and stop.
+- An ADR folder is necessary. If there is none, offer `/bipbop-skills:adr-init` and stop.
 - Read the index. Drop information that the index already covers. If new qualifying intent
   belongs to an existing ADR, propose to update or consolidate the affected ADRs.
   Do not create a new record for it.
@@ -116,10 +116,10 @@ candidates and ask the user to reply with one verdict per number.
 ### 6. Act on each verdict
 
 - **Accept a policy or procedure candidate:** write it with the "Policy or
-  procedure" steps of `/adr:new`. Record `verdict: accepted` and
+  procedure" steps of `/bipbop-skills:adr-new`. Record `verdict: accepted` and
   `doc: <path>` in place of `adr`.
 - **Accept an ADR candidate:** confirm the constraint. Ask for the rationale in one line (or
-  "unknown"). Use `/adr:new` to record the confirmed current constraint as `accepted`.
+  "unknown"). Use `/bipbop-skills:adr-new` to record the confirmed current constraint as `accepted`.
   Prefer an existing ADR where its scope fits
   (template, numbering, index, optional offer of a `@decision` tag). Never create
   replacement chains, and never keep obsolete records for history. If the user
@@ -158,7 +158,7 @@ follow the existing lint or test setup of the repository and show the diff.
 
 Give a summary: candidates found, accepted (with IDs), debt entries, rejected,
 skipped, left out as too thin, checks added, and the validator result from
-`python3 "${CLAUDE_PLUGIN_ROOT}/scripts/validate-adrs.py"`.
+`python3 "${CLAUDE_PLUGIN_ROOT}/skills/adr/scripts/validate-adrs.py"`.
 
 ## Pitfalls
 

@@ -71,7 +71,7 @@ Phase 0.5 tested these tools on a Python repository with 21 commits.
 - **crowd.dev PR #4122**: `.claude/rules/adr-format.md`, template with
   deciders and risks, a guard hook that only warns, and the note that "patterns in
   transition" are the best first ADRs. Copied: AGENTS.md pointer, the
-  warn-only approach. Not copied: the reviewer agent (`/adr:review` is a skill instead).
+  warn-only approach. Not copied: the reviewer agent (`/bipbop-skills:adr-review` is a skill instead).
 - **joestump/claude-plugin-sdd**: grill-first questioning ("facts are yours,
   decisions are theirs"), a Confirmation section naming files a reviewer can
   check, status format detection, "left out as too thin" lists. Copied all
@@ -93,7 +93,7 @@ saved review state. That is why this plugin exists.
 
 ## 4. Enforcement tools by stack
 
-See [skills/adr/references/enforcement-by-stack.md](skills/adr/references/enforcement-by-stack.md).
+See [skills/adr/references/enforcement-by-stack.md](references/enforcement-by-stack.md).
 The skill finds the stack at runtime and then picks from that table.
 
 ## 5. Evidence, stated honestly
@@ -109,7 +109,7 @@ The skill finds the stack at runtime and then picks from that table.
 - **Adoption is low and often abandoned.** Buchgeher et al., IEEE Access 2023
   ([ieeexplore 10155430](https://ieeexplore.ieee.org/document/10155430)):
   ADR use on GitHub is rare but it grows. About half of the repositories
-  with ADRs have only one to five. This is why `/adr:distill` and the trigger
+  with ADRs have only one to five. This is why `/bipbop-skills:adr-distill` and the trigger
   list exist. The first five are the hard part. After that, over-documentation is the
   failure mode.
 - **Context files for agents: no measured win.**
@@ -140,10 +140,10 @@ The skill finds the stack at runtime and then picks from that table.
 | Finding | Design choice |
 | --- | --- |
 | Over-documentation is the main complaint | Falsifiable trigger list plus an explicit do-not list; batches of five |
-| Repos stall at one to five ADRs | `/adr:distill` with resumable state and incremental `--since` |
+| Repos stall at one to five ADRs | `/bipbop-skills:adr-distill` with resumable state and incremental `--since` |
 | Tools invent rationale | `Guess (unconfirmed):` label, `Rationale status: unknown`, user verdicts |
 | Context files cost tokens | Index first, `paths`-based selection, five-line snippet |
-| Loading is not enforcing | Enforcement table, `@decision` tags, `/adr:review` as a report-only backstop |
+| Loading is not enforcing | Enforcement table, `@decision` tags, `/bipbop-skills:adr-review` as a report-only backstop |
 | Stop-hook capture is noisy | Hook shipped disabled, suggest-only, no LLM |
 
 ## 7. ADR, policy, and procedure (2026-11-25)

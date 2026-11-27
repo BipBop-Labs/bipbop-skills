@@ -1,12 +1,12 @@
 ---
-name: review
-description: Check the current diff or branch against accepted Architecture Decision Records, policies, and procedures. Flag likely violations, changes that need a new or changed doc, and changes that touch known debt. Report only. Never block and never fix. Use when the user runs /adr:review or asks if a change respects the ADRs, policies, or design decisions.
+name: adr-review
+description: Check the current diff or branch against accepted Architecture Decision Records, policies, and procedures. Flag likely violations, changes that need a new or changed doc, and changes that touch known debt. Report only. Never block and never fix. Use when the user runs /bipbop-skills:adr-review or asks if a change respects the ADRs, policies, or design decisions.
 disable-model-invocation: true
 argument-hint: "[base-ref] [--staged]"
 allowed-tools: Read, Glob, Grep, Bash(git *), Bash(ls *), Bash(python3 *)
 ---
 
-# /adr:review
+# /bipbop-skills:adr-review
 
 Read-only. Compare a change set to accepted decisions and report.
 Standing rules: `../adr/SKILL.md`.
@@ -55,7 +55,7 @@ branch, else `HEAD`) or `--staged`.
    a change to it is permitted. If the diff appears to fix it, suggest the removal of
    the entry.
 6. **Validator.** Run
-   `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/validate-adrs.py" --no-code-scan`
+   `python3 "${CLAUDE_PLUGIN_ROOT}/skills/adr/scripts/validate-adrs.py" --no-code-scan`
    only if the diff touches the ADR, policy, or procedure folder. Include its errors.
 7. **Report** in this shape and nothing else:
 

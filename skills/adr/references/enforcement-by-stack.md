@@ -36,7 +36,7 @@ A decision is enforceable when it reduces to one of these rules:
 
 A decision is advisory when it is about process, taste, or tradeoffs that need
 judgment ("prefer small PRs", "keep the domain layer thin"). Record it, tag the
-code with `@decision`, and use `/adr:review`.
+code with `@decision`, and use `/bipbop-skills:adr-review`.
 
 Caveats:
 
