@@ -13,6 +13,7 @@ Incluidas en el plugin `bipbop-skills`.
 | [`microcopy`](skills/microcopy/) | Escribir botones, errores, vacíos, confirmaciones y otros textos breves de interfaz. |
 | [`code-principles`](skills/code-principles/) | Nueve principios para todo el código que diseñas, escribes, arreglas o revisas, con una prueba por principio. |
 | [`fix`](skills/fix/) | Arreglar un bug en su causa: reproducirlo, encontrar la causa con evidencia, test que falla primero, refactor de la sección si su diseño causó el bug, y verificar donde se reprodujo. |
+| [`privacy-tyc-review`](skills/privacy-tyc-review/) | Auditar código contra la Política de Privacidad y los T&C que rigen el repositorio: busca los documentos en `AGENTS.md` o en el código y revisa proveedores, finalidades excluidas, minimización, retención, derechos del titular, IA como apoyo, logs, seguridad, registro y cookies. |
 | [`research-first`](skills/research-first/) | Investigar cómo resuelve la industria una tarea (estándares, regulaciones, guías y errores conocidos), destilarlo en un brief con fuentes y hacer la tarea apoyada en él. |
 | [`simple-writing`](skills/simple-writing/) | Reescribir textos para que se entiendan a la primera, en lenguaje simple o lectura fácil. |
 | [`test-audit`](skills/test-audit/) | Filtrar tests nuevos al escribirlos y auditar tests de bajo valor, acoplados a la implementación o duplicados. Adaptada de [OpenClaw](https://github.com/openclaw/openclaw) (MIT). |
