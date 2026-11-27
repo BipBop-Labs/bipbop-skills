@@ -16,6 +16,7 @@ Todos los cambios relevantes de este proyecto se documentan aquí. El formato si
 
 ### Changed
 
+- `code-principles` (`bipbop-skills` 0.8.0) es la forma de programar de todo modelo que tenga el plugin. Un hook `SessionStart` (`hooks/hooks.json`) carga sus principios en el contexto al inicio de cada sesión, sin invocar la skill. El hook solo lee `skills/code-principles/SKILL.md` y lo imprime: no usa red ni escribe archivos. La sección de review se quita: `reviflow:pr-review` aplica los principios con su propio formato.
 - `code-principles` (`bipbop-skills` 0.7.0) reemplaza a `ousterhout-software-design`. Cambia el nombre y la forma: el resumen del libro (21 capítulos, cheatsheet, patterns y glossary, unas 2.900 líneas) pasa a ser un SKILL.md de unas 50 líneas con nueve chequeos de diseño. Los chequeos 3, 4, 6, 7 y 8 (modelo de dominio, tipos en el borde, restar, arreglar la causa, cambios de estado seguros) se basan en los principios de [pstack](https://github.com/cursor/plugins/tree/main/pstack), reescritos. La skill agrega un procedimiento de review (leer la interfaz y los callers, no solo el diff), un formato de hallazgo con costo y arreglo, y un tope de 3 hallazgos de diseño marcados como sugerencia. Quien llame a la skill por su nombre anterior debe usar el nuevo.
 
 - `writing` reemplaza a `writing-simplified-technical-english`. Se usa en todo texto para una persona o un agente, incluidas las respuestas al usuario. Se acorta la introducción. Quien la llame por su nombre anterior debe usar el nuevo.

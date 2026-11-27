@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "awk 'n>=2; /^---$/{n++}' \"${CLAUDE_PLUGIN_ROOT}/skills/code-principles/SKILL.md\""
+          }
+        ]
+      }
+    ]
+  }
+}
